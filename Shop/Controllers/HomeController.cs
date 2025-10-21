@@ -6,11 +6,24 @@ namespace Shop.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly AppDbContext _context;
+    public HomeController(AppDbContext context)
+    {
+        _context = context;
+    }
+
     public IActionResult Index()
     {
-        return View();
+        var featuredProducts = _context.Products.Take(4).ToList();
+        return View(featuredProducts);
     }
     public IActionResult Products()
+    {
+        var products = _context.Products.ToList();
+        return View(products);
+    }
+
+    public IActionResult ProductDetails()
     {
         return View();
     }
@@ -19,4 +32,5 @@ public class HomeController : Controller
     {
         return View();
     }
+
 }
