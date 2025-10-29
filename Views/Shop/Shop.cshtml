@@ -1,0 +1,193 @@
+@model List<Shop.Models.Product>
+@{
+    ViewData["Title"] = "Shop";
+    var categories = ViewBag.Categories as List<Shop.Models.Category>;
+    var currentCategoryId = ViewBag.CurrentCategoryId as int?;
+    var searchTerm = ViewBag.SearchTerm as string;
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var totalProducts = ViewBag.TotalProducts as int? ?? 0;
+}
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="left-sidebar">
+                    <h2>Category</h2>
+                    <div class="panel-group category-products" id="accordian">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a asp-controller="Shop" asp-action="Shop">
+                                        All Products
+                                    </a>
+                                </h4>
+                            </div>
+                        </div>
+                        @if (categories != null)
+                        {
+                            @foreach (var category in categories)
+                            {
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a asp-controller="Shop" asp-action="Shop" asp-route-categoryId="@category.CategoryId">
+                                                @category.Name
+                                            </a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <div class="brands_products">
+                        <!--brands_products-->
+                        <h2>Brands</h2>
+                        <div class="brands-name">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="#"> <span class="pull-right">(50)</span>Acne</a></li>
+                                <li><a href="#"> <span class="pull-right">(56)</span>Grüne Erde</a></li>
+                                <li><a href="#"> <span class="pull-right">(27)</span>Albiro</a></li>
+                                <li><a href="#"> <span class="pull-right">(32)</span>Ronhill</a></li>
+                                <li><a href="#"> <span class="pull-right">(5)</span>Oddmolly</a></li>
+                                <li><a href="#"> <span class="pull-right">(9)</span>Boudestijn</a></li>
+                                <li><a href="#"> <span class="pull-right">(4)</span>Rösch creative culture</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--/brands_products-->
+
+                    <div class="price-range">
+                        <!--price-range-->
+                        <h2>Price Range</h2>
+                        <div class="well text-center">
+                            <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2"><br />
+                            <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
+                        </div>
+                    </div>
+                    <!--/price-range-->
+
+                    <div class="shipping text-center">
+                        <!--shipping-->
+                        <img src="images/home/shipping.jpg" alt="" />
+                    </div>
+                    <!--/shipping-->
+
+                </div>
+            </div>
+
+            <div class="col-sm-9 padding-right">
+                <div class="features_items">
+                    <!--features_items-->
+                    <h2 class="title text-center">Shop Items</h2>
+                    
+                    <!-- Search form -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <form asp-controller="Shop" asp-action="Shop" method="get" class="search-form">
+                                <input type="text" name="search" placeholder="Search products..." value="@searchTerm" />
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>Showing @Model.Count of @totalProducts products</p>
+                        </div>
+                    </div>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var product in Model)
+                        {
+                            <div class="col-sm-4">
+                                <div class="product-image-wrapper">
+                                    <div class="single-products">
+                                        <div class="productinfo text-center">
+                                            <img src="@(product.Image ?? "/images/home/anh.jpg")" alt="" />
+                                            <h2>$@product.Price</h2>
+                                            <p>@product.Name</p>
+                                            <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
+                                                <i class="fa fa-shopping-cart"></i>Add to cart
+                                            </a>
+                                        </div>
+                                        <div class="product-overlay">
+                                            <div class="overlay-content">
+                                                <h2>$@product.Price</h2>
+                                                <p>@product.Name</p>
+                                                <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
+                                                    <i class="fa fa-shopping-cart"></i>Add to cart
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="choose">
+                                        <ul class="nav nav-pills nav-justified">
+                                            <li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+                                            <li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-sm-12">
+                            <p class="text-center">No products found.</p>
+                        </div>
+                    }
+                </div>
+                <!--features_items-->
+
+                <!-- Pagination -->
+                @if (totalPages > 1)
+                {
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ul class="pagination">
+                                @for (int i = 1; i <= totalPages; i++)
+                                {
+                                    <li class="@(i == currentPage ? "active" : "")">
+                                        <a asp-controller="Shop" asp-action="Shop" 
+                                           asp-route-categoryId="@currentCategoryId" 
+                                           asp-route-search="@searchTerm" 
+                                           asp-route-page="@i">@i</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.add-to-cart').click(function(e) {
+                e.preventDefault();
+                var productId = $(this).data('product-id');
+                
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Shop")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: 1 },
+                    success: function(response) {
+                        if (response.success) {
+                            $('.cart-count').text(response.cartCount);
+                            alert('Product added to cart!');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Error adding product to cart');
+                    }
+                });
+            });
+        });
+    </script>
+}
