@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Login/Signup";
+}
+
+<section id="form">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-1">
+                <div class="login-form">
+                    <h2>Login to your account</h2>
+                    <form asp-action="Login" method="post">
+                        <input type="text" name="username" placeholder="Username" required />
+                        <input type="password" name="password" placeholder="Password" required />
+                        <span>
+                            <input type="checkbox" class="checkbox">
+                            Keep me signed in
+                        </span>
+                        <button type="submit" class="btn btn-default">Login</button>
+
+                        @if (ViewBag.Error != null)
+                        {
+                            <p style="color:red; margin-top:10px;">@ViewBag.Error</p>
+                        }
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-sm-1">
+                <h2 class="or">OR</h2>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="signup-form">
+                    <h2>New User Signup!</h2>
+                    <form asp-action="Register" method="post">
+                        <input type="text" name="username" placeholder="Username" required />
+                        <input type="email" name="email" placeholder="Email Address" required />
+                        <input type="password" name="password" placeholder="Password" required />
+                        <button type="submit" class="btn btn-default">Signup</button>
+
+                        @if (ViewBag.Success != null)
+                        {
+                            <p style="color:green; margin-top:10px;">@ViewBag.Success</p>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
