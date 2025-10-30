@@ -6,9 +6,9 @@ namespace Shop.Models
     public static class IdentitySeedData
     {
         private const string adminUser = "admin";
-        private const string adminPassword = "123456";
+        private const string adminPassword = "Admin123@";
 
-        public static async void EnsurePopulated(IApplicationBuilder app)
+        public static async Task EnsurePopulated(IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices.CreateScope();
 

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Shop.Models;
 
 namespace Shop.Controllers;
@@ -14,18 +15,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        var featuredProducts = _context.Products.Take(4).ToList();
-        return View(featuredProducts);
-    }
-    public IActionResult Products()
-    {
-        var products = _context.Products.ToList();
-        return View(products);
-    }
-
-    public IActionResult ProductDetails()
-    {
-        return View();
+        return RedirectToAction("Index", "Shop");
     }
 
     public IActionResult Privacy()
@@ -33,4 +23,9 @@ public class HomeController : Controller
         return View();
     }
 
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
 }

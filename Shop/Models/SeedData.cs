@@ -16,82 +16,84 @@ namespace Shop.Models
                 context.Database.Migrate();
             }
 
+            // Seed Categories first
+            if (!context.Categories.Any())
+            {
+                context.Categories.AddRange(
+                    new Category { Name = "Electronics", Description = "Electronic devices and gadgets", IsActive = true },
+                    new Category { Name = "Clothing", Description = "Fashion and apparel", IsActive = true },
+                    new Category { Name = "Home & Garden", Description = "Home improvement and garden supplies", IsActive = true },
+                    new Category { Name = "Sports", Description = "Sports and fitness equipment", IsActive = true },
+                    new Category { Name = "Books", Description = "Books and educational materials", IsActive = true }
+                );
+                context.SaveChanges();
+            }
+
+            // Seed Products
             if (!context.Products.Any())
             {
+                var electronicsCategory = context.Categories.First(c => c.Name == "Electronics");
+                var clothingCategory = context.Categories.First(c => c.Name == "Clothing");
+                var sportsCategory = context.Categories.First(c => c.Name == "Sports");
+
                 context.Products.AddRange(
                     new Product
                     {
-                        Name = "Kayak",
-                        Description =
-                            "A boat for one person",
-                        Category = "Watersports",
-                        Price = 275,
+                        Name = "Smartphone Pro Max",
+                        Description = "Latest smartphone with advanced features",
+                        CategoryId = electronicsCategory.CategoryId,
+                        Price = 999.99m,
+                        SalePrice = 899.99m,
+                        StockQuantity = 50,
+                        IsFeatured = true,
                         Image = "/images/home/anh.jpg"
                     },
                     new Product
                     {
-                        Name = "Lifejacket",
-                        Description = "Protective and fashionable",
-                        Category = "Watersports",
-                        Price = 48.95m,
+                        Name = "Wireless Headphones",
+                        Description = "High-quality wireless headphones with noise cancellation",
+                        CategoryId = electronicsCategory.CategoryId,
+                        Price = 299.99m,
+                        StockQuantity = 30,
+                        IsFeatured = true,
                         Image = "/images/home/anh.jpg"
                     },
                     new Product
                     {
-                        Name = "Soccer Ball",
-                        Description = "FIFA-approved size and weight",
-                        Category = "Soccer",
-                        Price = 19.50m,
+                        Name = "Designer T-Shirt",
+                        Description = "Premium cotton t-shirt with modern design",
+                        CategoryId = clothingCategory.CategoryId,
+                        Price = 49.99m,
+                        StockQuantity = 100,
+                        IsFeatured = true,
                         Image = "/images/home/anh.jpg"
                     },
                     new Product
                     {
-                        Name = "Corner Flags",
-                        Description =
-                          "Give your playing field a professional touch",
-                        Category = "Soccer",
-                        Price = 34.95m,
+                        Name = "Running Shoes",
+                        Description = "Comfortable running shoes for all terrains",
+                        CategoryId = sportsCategory.CategoryId,
+                        Price = 129.99m,
+                        StockQuantity = 75,
+                        IsFeatured = true,
                         Image = "/images/home/anh.jpg"
                     },
                     new Product
                     {
-                        Name = "Stadium",
-                        Description = "Flat-packed 35,000-seat stadium",
-                        Category = "Soccer",
-                        Price = 79500,
+                        Name = "Laptop Ultra",
+                        Description = "High-performance laptop for professionals",
+                        CategoryId = electronicsCategory.CategoryId,
+                        Price = 1999.99m,
+                        StockQuantity = 20,
                         Image = "/images/home/anh.jpg"
                     },
                     new Product
                     {
-                        Name = "Thinking Cap",
-                        Description = "Improve brain efficiency by 75%",
-                        Category = "Chess",
-                        Price = 16,
-                        Image = "/images/home/anh.jpg"
-                    },
-                    new Product
-                    {
-                        Name = "Unsteady Chair",
-                        Description =
-                          "Secretly give your opponent a disadvantage",
-                        Category = "Chess",
-                        Price = 29.95m,
-                        Image = "/images/home/anh.jpg"
-                    },
-                    new Product
-                    {
-                        Name = "Human Chess Board",
-                        Description = "A fun game for the family",
-                        Category = "Chess",
-                        Price = 75,
-                        Image = "/images/home/anh.jpg"
-                    },
-                    new Product
-                    {
-                        Name = "Bling-Bling King",
-                        Description = "Gold-plated, diamond-studded King",
-                        Category = "Chess",
-                        Price = 1200,
+                        Name = "Yoga Mat",
+                        Description = "Non-slip yoga mat for home workouts",
+                        CategoryId = sportsCategory.CategoryId,
+                        Price = 39.99m,
+                        StockQuantity = 60,
                         Image = "/images/home/anh.jpg"
                     }
                 );

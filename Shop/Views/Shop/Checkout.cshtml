@@ -1,0 +1,141 @@
+@model List<Shop.Models.CartItem>
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<section id="cart_items">
+    <div class="container">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li class="active">Check out</li>
+            </ol>
+        </div>
+        <!--/breadcrumbs-->
+
+        <div class="step-one">
+            <h2 class="heading">Step1</h2>
+        </div>
+        <div class="checkout-options">
+            <h3>New User</h3>
+            <p>Checkout options</p>
+            <ul class="nav">
+                <li>
+                    <label><input type="radio"> Register Account</label>
+                </li>
+                <li>
+                    <label><input type="radio"> Guest Checkout</label>
+                </li>
+                <li>
+                    <a href=""><i class="fa fa-times"></i>Cancel</a>
+                </li>
+            </ul>
+        </div>
+        <!--/checkout-options-->
+
+        <div class="register-req">
+            <p>Please use Register And Checkout to easily get access to your order history, or use Checkout as Guest</p>
+        </div>
+        <!--/register-req-->
+
+        <div class="shopper-informations">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="shopper-info">
+                        <p>Shopper Information</p>
+                        <form>
+                            <input type="text" placeholder="Display Name">
+                            <input type="text" placeholder="User Name">
+                            <input type="password" placeholder="Password">
+                            <input type="password" placeholder="Confirm Password">
+                        </form>
+                        <a class="btn btn-primary" href="">Get Quotes</a>
+                        <a class="btn btn-primary" href="">Continue</a>
+                    </div>
+                </div>
+                <div class="col-sm-5 clearfix">
+                    <div class="bill-to">
+                        <p>Bill To</p>
+                        <div class="form-one">
+                            <form asp-controller="Shop" asp-action="PlaceOrder" method="post">
+                                <input type="text" name="CustomerName" placeholder="Name *" required>
+                                <input type="email" name="CustomerEmail" placeholder="Email*" required>
+                                <input type="text" name="CustomerPhone" placeholder="Phone *" required>
+                                <input type="text" name="ShippingAddress" placeholder="Address 1 *" required>
+                                <input type="text" name="BillingAddress" placeholder="Address 2">
+                                <input type="text" name="Notes" placeholder="Additional Notes">
+                                <input type="hidden" name="SubTotal" value="@Model.Sum(x => x.TotalPrice)">
+                                <input type="hidden" name="TaxAmount" value="2">
+                                <input type="hidden" name="ShippingAmount" value="0">
+                                <input type="hidden" name="TotalAmount" value="@(Model.Sum(x => x.TotalPrice) + 2)">
+                                <button type="submit" class="btn btn-default">Place Order</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="order-message">
+                        <p>Shipping Order</p>
+                        <textarea name="message" placeholder="Notes about your order, Special Notes for Delivery" rows="16"></textarea>
+                        <label><input type="checkbox"> Shipping to bill address</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="review-payment">
+            <h2>Review & Payment</h2>
+        </div>
+
+        <div class="table-responsive cart_info">
+            <table class="table table-condensed">
+                <thead>
+                    <tr class="cart_menu">
+                        <td class="image">Item</td>
+                        <td class="description"></td>
+                        <td class="price">Price</td>
+                        <td class="quantity">Quantity</td>
+                        <td class="total">Total</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="cart_product">
+                                    <a href=""><img src="@(item.ProductImage ?? "/images/home/anh.jpg")" alt="" style="width: 100px; height: 100px;"></a>
+                                </td>
+                                <td class="cart_description">
+                                    <h4><a href="">@item.ProductName</a></h4>
+                                    <p>Web ID: @item.ProductId</p>
+                                </td>
+                                <td class="cart_price">
+                                    <p>$@item.UnitPrice</p>
+                                </td>
+                                <td class="cart_quantity">
+                                    <p>@item.Quantity</p>
+                                </td>
+                                <td class="cart_total">
+                                    <p class="cart_total_price">$@item.TotalPrice</p>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="payment-options">
+            <span>
+                <label><input type="checkbox"> Direct Bank Transfer</label>
+            </span>
+            <span>
+                <label><input type="checkbox"> Check Payment</label>
+            </span>
+            <span>
+                <label><input type="checkbox"> Paypal</label>
+            </span>
+        </div>
+    </div>
+</section>
+<!--/#cart_items-->

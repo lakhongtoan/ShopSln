@@ -31,8 +31,15 @@
 								<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
 								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
 								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
-								<li><a href="login.html"><i class="fa fa-lock"></i> Login</a></li>
+								<li><a asp-controller="Shop" asp-action="Cart"><i class="fa fa-shopping-cart"></i> Cart <span class="cart-count">0</span></a></li>
+								@if (User.Identity.IsAuthenticated)
+								{
+									<li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-sign-out"></i> Logout (@User.Identity.Name)</a></li>
+								}
+								else
+								{
+									<li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Login</a></li>
+								}
 							</ul>
 						</div>
 					</div>
@@ -55,26 +62,20 @@
 						</div>
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a asp-controller="Home" asp-action="Index" class="active">Home</a></li>
+								<li><a asp-controller="Shop" asp-action="Index" class="active">Home</a></li>
 								<li class="dropdown">
-									<a asp-controller="Home" asp-action="Products">Shop<i class="fa fa-angle-down"></i></a>
+									<a asp-controller="Shop" asp-action="Shop">Shop<i class="fa fa-angle-down"></i></a>
 									<ul role="menu" class="sub-menu">
-										<li><a asp-controller="Home" asp-action="Products">Products</a></li>
-										<li><a asp-controller="Home" asp-action="ProductDetails">Product Details</a></li>
-										<li><a asp-controller="Home" asp-action="Checkout">Checkout</a></li>
-										<li><a asp-controller="Home" asp-action="Cart">Cart</a></li>
-										<li><a asp-controller="Home" asp-action="Login">Login</a></li>
+										<li><a asp-controller="Shop" asp-action="Shop">Products</a></li>
+										<li><a asp-controller="Shop" asp-action="Cart">Cart</a></li>
+										<li><a asp-controller="Shop" asp-action="Checkout">Checkout</a></li>
 									</ul>
 								</li>
-								<li class="dropdown">
-									<a href="#">Blog<i class="fa fa-angle-down"></i></a>
-									<ul role="menu" class="sub-menu">
-										<li><a href="blog.html">Blog List</a></li>
-										<li><a href="blog-single.html">Blog Single</a></li>
-									</ul>
-								</li>
-								<li><a href="404.html">404</a></li>
-								<li><a href="contact-us.html">Contact</a></li>
+								<li><a asp-controller="Shop" asp-action="Contact">Contact</a></li>
+								@if (User.IsInRole("Admin"))
+								{
+									<li><a asp-controller="Admin" asp-action="Index">Admin</a></li>
+								}
 							</ul>
 						</div>
 					</div>
