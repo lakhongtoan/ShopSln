@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UOx/YslCqCIyxzIAUMnhM2ntn0VDnOS6WyvPfWCdFOViSvmtwnQPxGnMT+bsX+0Dg1LAmSXAnjn+uIVBUKz8bQ==",
+  "dgSpecHash": "63Z77+g3zcLdW0i17RMwZNwk9SYZR+293qyunJF6Tsa33mxPXzhRT0MxfQkSJsGTYVbwJuH/qCTmvrwqnISwDw==",
   "success": true,
-  "projectFilePath": "F:\\F8\\ShopSln\\Shop.csproj",
+  "projectFilePath": "F:\\F8\\Project\\ShopSln\\Shop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\trung\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\trung\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

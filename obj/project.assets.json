@@ -3640,11 +3640,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\F8\\ShopSln\\Shop.csproj",
+      "projectUniqueName": "F:\\F8\\Project\\ShopSln\\Shop.csproj",
       "projectName": "Shop",
-      "projectPath": "F:\\F8\\ShopSln\\Shop.csproj",
+      "projectPath": "F:\\F8\\Project\\ShopSln\\Shop.csproj",
       "packagesPath": "C:\\Users\\trung\\.nuget\\packages\\",
-      "outputPath": "F:\\F8\\ShopSln\\obj\\",
+      "outputPath": "F:\\F8\\Project\\ShopSln\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\trung\\AppData\\Roaming\\NuGet\\NuGet.Config"
