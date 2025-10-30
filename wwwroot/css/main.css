@@ -580,14 +580,39 @@ ul.sub-menu {
 
 #slider {
   padding-bottom: 45px;
+  margin-top: 20px; /* space between header and slider */
 }
 
 #slider .carousel-inner .item img {
     width: 100%;
+    height: 520px;
     object-fit: cover;
     display: block;
     margin: 0 auto;
 }
+
+/* Remove side padding for banner slides only */
+#slider .item {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Caption styles to match screenshot */
+.banner-hero .carousel-inner .item { position: relative; }
+.banner-caption {
+  position: absolute;
+  left: 60px;
+  bottom: 120px;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.35);
+  max-width: 520px;
+}
+.banner-caption h2 { margin: 0 0 6px 0; font-size: 28px; font-weight: 400; }
+.banner-caption h1 { margin: 0 0 16px 0; font-size: 44px; font-weight: 700; }
+.banner-caption .get { background:#fff; color:#333; }
+
+/* Place indicators on image, centered */
+.banner-hero .carousel-indicators { bottom: 20px; }
 
 .carousel-indicators li {
   background: #C4C4BE;

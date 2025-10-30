@@ -1,0 +1,59 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container" style="margin-top:20px;">
+    <h2 class="title">Dashboard</h2>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="well text-center">
+                <h4>Tổng sản phẩm</h4>
+                <strong>@Model?.TotalProducts</strong>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="well text-center">
+                <h4>Tổng đơn hàng</h4>
+                <strong>@Model?.TotalOrders</strong>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="well text-center">
+                <h4>Danh mục</h4>
+                <strong>@Model?.TotalCategories</strong>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="well text-center">
+                <h4>Liên hệ</h4>
+                <strong>@Model?.TotalContacts</strong>
+            </div>
+        </div>
+    </div>
+
+    <h3>Đơn hàng gần đây</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Ngày đặt</th>
+                <th>Trạng thái</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model?.RecentOrders ?? new List<object>())
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.OrderDate</td>
+                <td>@order.Status</td>
+                <td>@order.TotalAmount</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+

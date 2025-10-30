@@ -5,64 +5,48 @@
     var categories = ViewBag.Categories as List<Shop.Models.Category>;
 }
 
-<section id="slider">
+<section id="slider" class="banner-hero">
     <!--slider-->
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
-                <div id="slider-carousel" class="carousel slide" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
-                        <li data-target="#slider-carousel" data-slide-to="1"></li>
-                        <li data-target="#slider-carousel" data-slide-to="2"></li>
-                    </ol>
+    <div id="slider-carousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+        <ol class="carousel-indicators">
+            <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
+            <li data-target="#slider-carousel" data-slide-to="1"></li>
+            <li data-target="#slider-carousel" data-slide-to="2"></li>
+        </ol>
 
-                    <div class="carousel-inner">
-                        <div class="item active">
-                            <div class="col-sm-6">
-                                <h1><span>E</span>-SHOPPER</h1>
-                                <h2>Free E-Commerce Template</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                                <button type="button" class="btn btn-default get">Get it now</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <img src="images/home/slider_1.webp" class="girl img-responsive" alt="" />
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="col-sm-6">
-                                <h1><span>E</span>-SHOPPER</h1>
-                                <h2>100% Responsive Design</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                                <button type="button" class="btn btn-default get">Get it now</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <img src="images/home/slider_1.webp" class="girl img-responsive" alt="" />
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="col-sm-6">
-                                <h1><span>E</span>-SHOPPER</h1>
-                                <h2>Free Ecommerce Template</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                                <button type="button" class="btn btn-default get">Get it now</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <img src="images/home/slider_1.webp" class="girl img-responsive" alt="" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-                    <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
+        <div class="carousel-inner">
+            <div class="item active">
+                <img src="images/home/slider_1.webp" alt="Sudes Camping banner" />
+                <div class="banner-caption">
+                    <h2>Chào mừng đến với</h2>
+                    <h1>Sudes Camping</h1>
+                    <a href="#" class="btn btn-default get">Xem chi tiết</a>
                 </div>
-
+            </div>
+            <div class="item">
+                <img src="images/home/slider_1.webp" alt="Sudes Camping banner" />
+                <div class="banner-caption">
+                    <h2>Khám phá thiên nhiên</h2>
+                    <h1>Trải nghiệm dã ngoại</h1>
+                    <a href="#" class="btn btn-default get">Mua sắm ngay</a>
+                </div>
+            </div>
+            <div class="item">
+                <img src="images/home/slider_1.webp" alt="Sudes Camping banner" />
+                <div class="banner-caption">
+                    <h2>Ưu đãi hấp dẫn</h2>
+                    <h1>Đồ cắm trại mới</h1>
+                    <a href="#" class="btn btn-default get">Xem sản phẩm</a>
+                </div>
             </div>
         </div>
+
+        <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
+            <i class="fa fa-angle-right"></i>
+        </a>
     </div>
 </section>
 <!--/slider-->
