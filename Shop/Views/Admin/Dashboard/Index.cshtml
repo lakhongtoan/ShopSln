@@ -1,5 +1,6 @@
-@model dynamic
+﻿@model dynamic
 @{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Admin Dashboard";
 }
 
@@ -43,15 +44,15 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var order in Model?.RecentOrders ?? new List<object>())
-        {
-            <tr>
-                <td>@order.OrderId</td>
-                <td>@order.OrderDate</td>
-                <td>@order.Status</td>
-                <td>@order.TotalAmount</td>
-            </tr>
-        }
+            @foreach (var order in Model?.RecentOrders ?? new List<object>())
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.OrderDate</td>
+                    <td>@order.Status</td>
+                    <td>@order.TotalAmount</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

@@ -1,10 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@{
+	var searchTerm = ViewBag.SearchTerm as string;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Shop</title>
-    <!--<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />-->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 	<link href="~/css/bootstrap.min.css" rel="stylesheet">
 	<link href="~/css/font-awesome.min.css" rel="stylesheet">
 	<link href="~/css/prettyPhoto.css" rel="stylesheet">
@@ -32,7 +35,7 @@
 								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
 								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
 								<li><a asp-controller="Shop" asp-action="Cart"><i class="fa fa-shopping-cart"></i> Cart <span class="cart-count">0</span></a></li>
-								@if (User.Identity.IsAuthenticated)
+								@if (User?.Identity?.IsAuthenticated == true)
 								{
 									<li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-sign-out"></i> Logout (@User.Identity.Name)</a></li>
 								}
@@ -72,16 +75,23 @@
 									</ul>
 								</li>
 								<li><a asp-controller="Shop" asp-action="Contact">Contact</a></li>
-								@if (User.IsInRole("Admin"))
+								@if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
 								{
-									<li><a asp-controller="Admin" asp-action="Index">Admin</a></li>
+									<li class="dropdown">
+										<a asp-controller="Dashboard" asp-action="Index">Admin<i class="fa fa-angle-down"></i></a>
+										<ul role="menu" class="sub-menu">
+											<li><a asp-controller="Products" asp-action="Index">Products</a></li>
+										</ul>
+									</li>
 								}
 							</ul>
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="search_box pull-right">
-							<input type="text" placeholder="Search" />
+							<form asp-controller="Shop" asp-action="Shop" method="get" class="search-form">
+								<input type="text" name="search" placeholder="Search products..." value="@searchTerm" />
+							</form>
 						</div>
 					</div>
 				</div>
