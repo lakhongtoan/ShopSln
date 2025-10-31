@@ -82,19 +82,6 @@
                 <div class="features_items">
                     <!--features_items-->
                     <h2 class="title text-center">Shop Items</h2>
-                    
-                    <!-- Search form -->
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <form asp-controller="Shop" asp-action="Shop" method="get" class="search-form">
-                                <input type="text" name="search" placeholder="Search products..." value="@searchTerm" />
-                                <button type="submit"><i class="fa fa-search"></i></button>
-                            </form>
-                        </div>
-                        <div class="col-sm-6">
-                            <p>Showing @Model.Count of @totalProducts products</p>
-                        </div>
-                    </div>
 
                     @if (Model != null && Model.Any())
                     {
@@ -122,7 +109,7 @@
                                         </div>
                                     </div>
                                     <div class="choose">
-                                        <ul class="nav nav-pills nav-justified">
+                                        <ul class="nav-pills nav-justified">
                                             <li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
                                             <li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
                                         </ul>

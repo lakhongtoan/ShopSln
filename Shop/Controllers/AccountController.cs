@@ -27,10 +27,12 @@ namespace Shop.Controllers
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(username);
-                if (await _userManager.IsInRoleAsync(user, "Admin"))
-                    return RedirectToAction("Index", "Admin");
-
-                return RedirectToAction("Index", "Home");
+                if (user != null) 
+                {
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                        return RedirectToAction("Index", "Dashboard");
+                    return RedirectToAction("Index", "Shop");
+                }
             }
 
             ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng!";
@@ -59,7 +61,7 @@ namespace Shop.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return Redirect("/");
         }
     }
 }

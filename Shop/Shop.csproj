@@ -11,10 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Shop\**\*.cs" />
-    <Content Remove="Shop\**\*" />
-    <None Remove="Shop\**\*" />
-    <EmbeddedResource Remove="Shop\**\*" />
+    <Compile Include="Shop\**\*.cs" />
+	  <Content Include="Shop\**\*" />
   </ItemGroup>
 
   <ItemGroup>
