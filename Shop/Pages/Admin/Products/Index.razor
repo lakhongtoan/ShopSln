@@ -1,0 +1,89 @@
+﻿@page "/admin/products"
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.JSInterop
+@using Shop.Models
+@inject AppDbContext Db
+@inject IJSRuntime JsRuntime
+
+<PageTitle>Quản lý sản phẩm</PageTitle>
+@if (ProductData == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <table class="table table-bordered table-hover text-center ">
+    <thead class="table-success">
+        <tr>
+            <th>ID</th>
+            <th>Hình ảnh sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Người tạo</th>
+            <th>Ngày tạo</th>
+            <th>Người cập nhật</th>
+            <th>Ngày cập nhật</th>
+            <th style="width:20%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in ProductData)
+        {
+            <tr>
+                <td>@p.ProductID</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(p.Image))
+                    {
+                        <img src="@p.Image" alt="@p.Name" style="max-width:100px; max-height:100px;" />
+                    }
+                </td>
+                <td>@p.Name</td>
+                <td>@p.Category?.Name</td>
+                <td>@string.Format("{0:N0} ₫", p.Price)</td>
+                <td>@p.CreatedBy</td>
+                <td>@p.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@p.UpdatedBy</td>
+                <td>@p.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                        <NavLink class="btn btn-warning btn-sm me-2" href="@($"/admin/products/edit/{p.ProductID}")">
+                        <i class="fa-solid fa-pen"></i> Sửa
+                    </NavLink>
+                    <button class="btn btn-danger btn-sm" @onclick="async () => await DeleteProduct(p)">
+                        <i class="fa-solid fa-trash"></i> Xóa
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<NavLink class="btn btn-primary" href="/admin/products/create">
+    <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+</NavLink>
+}
+@code {
+    private List<Product>? ProductData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+
+    private async Task UpdateData()
+    {
+        ProductData = await Db.Products.Include(p => p.Category).ToListAsync();
+    }
+
+    private async Task DeleteProduct(Product p)
+    {
+        if (await JsRuntime.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa sản phẩm {p.Name}?"))
+        {
+            Db.Products.Remove(p);
+            await Db.SaveChangesAsync();
+            await UpdateData();
+        }
+    }
+}

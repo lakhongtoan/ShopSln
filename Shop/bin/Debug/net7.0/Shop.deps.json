@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v7.0": {
       "Shop/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Components.WebAssembly.Server": "9.0.10",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "7.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.0",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.0"
@@ -58,6 +59,7 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Components.WebAssembly.Server/9.0.10": {},
       "Microsoft.AspNetCore.Cryptography.Internal/7.0.0": {},
       "Microsoft.AspNetCore.Cryptography.KeyDerivation/7.0.0": {
         "dependencies": {
@@ -673,6 +675,13 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.WebAssembly.Server/9.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Lm2v3FZTs4BFVHlhI96NER1xQexyjVrTYfe6zeISgvWOlJt6JsBLFKM+L4u3GxE92VXDL9+dkIvTpoCvYUFUeA==",
+      "path": "microsoft.aspnetcore.components.webassembly.server/9.0.10",
+      "hashPath": "microsoft.aspnetcore.components.webassembly.server.9.0.10.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/7.0.0": {
       "type": "package",

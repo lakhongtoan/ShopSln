@@ -41,8 +41,8 @@ namespace Shop.Models
 
         public bool IsFeatured { get; set; } = false;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
 
         [StringLength(100)]
         public string? CreatedBy { get; set; }

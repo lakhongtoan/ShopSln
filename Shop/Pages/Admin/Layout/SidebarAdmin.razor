@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager Navigation
+
+<nav class="sidebar border-end">
+    <ul class="nav flex-column list-unstyled mt-3">
+        <li class="nav-item">
+            <NavLink class="nav-link fw-semibold" href="/admin" Match="NavLinkMatch.All">
+                <i class="fa-solid fa-gauge me-2"></i> Bảng điều khiển
+            </NavLink>
+        </li>
+
+        <li class="nav-item">
+            <NavLink class="nav-link fw-semibold" href="/admin/orders" Match="NavLinkMatch.All">
+                <i class="fa-solid fa-envelope-open-text me-2"></i> Đơn hàng
+            </NavLink>
+        </li>
+
+        <li class="nav-item">
+            <NavLink class="nav-link fw-semibold" href="/admin/products" Match="NavLinkMatch.All">
+                <i class="fa-brands fa-product-hunt me-2"></i> Sản phẩm
+            </NavLink>
+        </li>
+
+        <li class="nav-item">
+            <NavLink class="nav-link fw-semibold" href="/admin/slider" Match="NavLinkMatch.All">
+                <i class="fa-solid fa-sliders me-2"></i> Slider
+            </NavLink>
+        </li>
+    </ul>
+    <hr />
+</nav>
