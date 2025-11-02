@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "EGbV9O17uns=",
+  "dgSpecHash": "sqhxblQPXCU=",
   "success": true,
   "projectFilePath": "C:\\Users\\USER369\\source\\repos\\lakhongtoan\\ShopSln\\Shop\\Shop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\USER369\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\USER369\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\USER369\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\USER369\\.nuget\\packages\\microsoft.aspnetcore.components.webassembly.server\\9.0.10\\microsoft.aspnetcore.components.webassembly.server.9.0.10.nupkg.sha512",
     "C:\\Users\\USER369\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\7.0.0\\microsoft.aspnetcore.cryptography.internal.7.0.0.nupkg.sha512",
     "C:\\Users\\USER369\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\7.0.0\\microsoft.aspnetcore.cryptography.keyderivation.7.0.0.nupkg.sha512",
     "C:\\Users\\USER369\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\7.0.0\\microsoft.aspnetcore.identity.entityframeworkcore.7.0.0.nupkg.sha512",

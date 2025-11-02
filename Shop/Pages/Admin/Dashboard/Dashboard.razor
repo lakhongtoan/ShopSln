@@ -1,0 +1,93 @@
+﻿@page "/admin"
+@using System.Globalization
+@layout AdminLayout
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Web
+
+<PageTitle>Bảng điều khiển</PageTitle>
+
+<div class="row gy-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card bg-white p-3 h-100 border-0 shadow-sm">
+            <h6 class="text-muted">TỔNG SẢN PHẨM</h6>
+            <h4 class="fw-bold text-success">@TotalProducts</h4>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card bg-white p-3 h-100 border-0 shadow-sm">
+            <h6 class="text-muted">TỔNG ĐƠN HÀNG</h6>
+            <h4 class="fw-bold text-primary">@TotalOrders</h4>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card bg-white p-3 h-100 border-0 shadow-sm">
+            <h6 class="text-muted">DANH MỤC</h6>
+            <h4 class="fw-bold text-warning">@TotalCategories</h4>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card bg-white p-3 h-100 border-0 shadow-sm">
+            <h6 class="text-muted">LIÊN HỆ</h6>
+            <h4 class="fw-bold text-danger">@TotalContacts</h4>
+        </div>
+    </div>
+</div>
+
+<h4 class="mt-5 fw-bold">Đơn hàng gần đây</h4>
+<table class="table table-striped table-hover mt-3">
+    <thead class="table-success">
+        <tr>
+            <th>Mã đơn</th>
+            <th>Ngày đặt</th>
+            <th>Trạng thái</th>
+            <th>Tổng tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (RecentOrders != null && RecentOrders.Any())
+        {
+            @foreach (var order in RecentOrders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                    <td>@order.Status</td>
+                    <td>@string.Format(CultureInfo.InvariantCulture, "{0:N0} ₫", order.TotalAmount)</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-muted text-center">Không có đơn hàng nào gần đây</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private int TotalProducts { get; set; } = 12;
+    private int TotalOrders { get; set; } = 34;
+    private int TotalCategories { get; set; } = 5;
+    private int TotalContacts { get; set; } = 7;
+
+    private List<Order> RecentOrders { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Fake dữ liệu
+        RecentOrders = new List<Order>
+        {
+            new Order{ Id=1, OrderDate=DateTime.Now.AddDays(-1), Status="Đã giao", TotalAmount=120000 },
+            new Order{ Id=2, OrderDate=DateTime.Now.AddDays(-2), Status="Đang xử lý", TotalAmount=450000 },
+        };
+    }
+
+    private class Order
+    {
+        public int Id { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string Status { get; set; }
+        public decimal TotalAmount { get; set; }
+    }
+}
