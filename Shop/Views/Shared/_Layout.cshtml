@@ -31,7 +31,15 @@
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
+								
+								@if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+								{
+                                    <li><a href="/admin"><i class="fa fa-user"></i> Admin</a></li>
+								}
+								else
+								{
+									<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
+								}
 								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
 								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
 								<li><a asp-controller="Shop" asp-action="Cart"><i class="fa fa-shopping-cart"></i> Cart <span class="cart-count">0</span></a></li>
@@ -75,15 +83,6 @@
 									</ul>
 								</li>
 								<li><a asp-controller="Shop" asp-action="Contact">Contact</a></li>
-								@if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
-								{
-									<li class="dropdown">
-										<a asp-controller="Dashboard" asp-action="Index">Admin<i class="fa fa-angle-down"></i></a>
-										<ul role="menu" class="sub-menu">
-											<li><a asp-controller="Products" asp-action="Index">Products</a></li>
-										</ul>
-									</li>
-								}
 							</ul>
 						</div>
 					</div>

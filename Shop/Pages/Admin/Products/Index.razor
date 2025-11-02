@@ -4,10 +4,11 @@
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.JSInterop
 @using Shop.Models
+
 @inject AppDbContext Db
 @inject IJSRuntime JsRuntime
 
-<PageTitle>Quản lý sản phẩm</PageTitle>
+<h4>Quản lý sản phẩm</h4>
 @if (ProductData == null)
 {
     <p><em>Đang tải...</em></p>
@@ -48,7 +49,7 @@ else
                 <td>@p.UpdatedBy</td>
                 <td>@p.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
-                        <NavLink class="btn btn-warning btn-sm me-2" href="@($"/admin/products/edit/{p.ProductID}")">
+                    <NavLink class="btn btn-warning btn-sm me-2" href="@($"/admin/products/edit/{p.ProductID}")">
                         <i class="fa-solid fa-pen"></i> Sửa
                     </NavLink>
                     <button class="btn btn-danger btn-sm" @onclick="async () => await DeleteProduct(p)">
@@ -58,18 +59,28 @@ else
             </tr>
         }
     </tbody>
-</table>
+    </table>
 
-<NavLink class="btn btn-primary" href="/admin/products/create">
-    <i class="fa-solid fa-plus"></i> Thêm sản phẩm
-</NavLink>
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@(_pageNumber == 1)">« Trước</button>
+        <span>Trang @_pageNumber / @_totalPages</span>
+        <button class="btn btn-secondary" @onclick="NextPage" disabled="@(_pageNumber == _totalPages)">Tiếp »</button>
+    </div>
+
+    <NavLink class="btn btn-primary" href="/admin/products/create">
+        <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+    </NavLink>
 }
 @code {
     private List<Product>? ProductData;
+    private int _pageNumber = 1;
+    private int _pageSize = 5;
+    private int _totalPages = 1;
 
     protected override async Task OnInitializedAsync()
     {
         await UpdateData();
+        await LoadPage();
     }
 
     private async Task UpdateData()
@@ -77,13 +88,56 @@ else
         ProductData = await Db.Products.Include(p => p.Category).ToListAsync();
     }
 
+    private async Task LoadPage()
+    {
+        var totalProducts = await Db.Products.CountAsync();
+        _totalPages = (int)Math.Ceiling(totalProducts / (double)_pageSize);
+
+        ProductData = await Db.Products
+            .Include(p => p.Category)
+            .OrderBy(p => p.ProductID)
+            .Skip((_pageNumber - 1) * _pageSize)
+            .Take(_pageSize)
+            .ToListAsync();
+    }
+
+    private async Task NextPage()
+    {
+        if (_pageNumber < _totalPages)
+        {
+            _pageNumber++;
+            await LoadPage();
+        }
+    }
+
+    private async Task PreviousPage()
+    {
+        if (_pageNumber > 1)
+        {
+            _pageNumber--;
+            await LoadPage();
+        }  
+    }
+
     private async Task DeleteProduct(Product p)
     {
         if (await JsRuntime.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa sản phẩm {p.Name}?"))
         {
+            var cartItems = Db.CartItems.Where(ci => ci.ProductId == p.ProductID);
+            Db.CartItems.RemoveRange(cartItems);
+
             Db.Products.Remove(p);
+
             await Db.SaveChangesAsync();
+
+            // Nếu xóa hết trang hiện tại, quay về trang trước
+            if (!(ProductData?.Any() ?? false) && _pageNumber > 1)
+            {
+                _pageNumber--;
+            }
+
             await UpdateData();
+            await LoadPage();
         }
     }
 }

@@ -16,65 +16,6 @@ namespace Shop.Controllers
             _context = context;
         }
 
-        #region Categories Management
-        public IActionResult Categories()
-        {
-            var categories = _context.Categories
-                .OrderBy(c => c.Name)
-                .ToList();
-            return View(categories);
-        }
-
-        public IActionResult CreateCategory()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult CreateCategory(Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                category.CreatedAt = DateTime.Now;
-                _context.Categories.Add(category);
-                _context.SaveChanges();
-                return RedirectToAction("Categories");
-            }
-            return View(category);
-        }
-
-        public IActionResult EditCategory(int id)
-        {
-            var category = _context.Categories.Find(id);
-            if (category == null) return NotFound();
-            return View(category);
-        }
-
-        [HttpPost]
-        public IActionResult EditCategory(Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Categories.Update(category);
-                _context.SaveChanges();
-                return RedirectToAction("Categories");
-            }
-            return View(category);
-        }
-
-        [HttpPost]
-        public IActionResult DeleteCategory(int id)
-        {
-            var category = _context.Categories.Find(id);
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
-                _context.SaveChanges();
-            }
-            return RedirectToAction("Categories");
-        }
-        #endregion
-
         #region Orders Management
         public IActionResult Orders()
         {

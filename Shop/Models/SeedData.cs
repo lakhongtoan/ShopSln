@@ -16,15 +16,18 @@ namespace Shop.Models
                 context.Database.Migrate();
             }
 
+            var now = DateTime.Now;
+            var defaultUser = "System";
+
             // Seed Categories first
             if (!context.Categories.Any())
             {
                 context.Categories.AddRange(
-                    new Category { Name = "Electronics", Description = "Electronic devices and gadgets", IsActive = true },
-                    new Category { Name = "Clothing", Description = "Fashion and apparel", IsActive = true },
-                    new Category { Name = "Home & Garden", Description = "Home improvement and garden supplies", IsActive = true },
-                    new Category { Name = "Sports", Description = "Sports and fitness equipment", IsActive = true },
-                    new Category { Name = "Books", Description = "Books and educational materials", IsActive = true }
+                    new Category { Name = "Electronics", IsActive = true, CreatedAt = now, CreatedBy = defaultUser, UpdatedAt = now, UpdatedBy = defaultUser },
+                    new Category { Name = "Clothing", IsActive = true, CreatedAt = now, CreatedBy = defaultUser, UpdatedAt = now, UpdatedBy = defaultUser },
+                    new Category { Name = "Home & Garden", IsActive = true, CreatedAt = now, CreatedBy = defaultUser, UpdatedAt = now, UpdatedBy = defaultUser },
+                    new Category { Name = "Sports", IsActive = true, CreatedAt = now, CreatedBy = defaultUser, UpdatedAt = now, UpdatedBy = defaultUser },
+                    new Category { Name = "Books", IsActive = true, CreatedAt = now, CreatedBy = defaultUser, UpdatedAt = now, UpdatedBy = defaultUser }
                 );
                 context.SaveChanges();
             }
@@ -46,7 +49,11 @@ namespace Shop.Models
                         SalePrice = 899.99m,
                         StockQuantity = 50,
                         IsFeatured = true,
-                        Image = "/images/home/anh.jpg"
+                        Image = "/images/home/anh.jpg",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
                     },
                     new Product
                     {
@@ -56,7 +63,11 @@ namespace Shop.Models
                         Price = 299.99m,
                         StockQuantity = 30,
                         IsFeatured = true,
-                        Image = "/images/home/anh.jpg"
+                        Image = "/images/home/anh.jpg",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
                     },
                     new Product
                     {
@@ -66,7 +77,11 @@ namespace Shop.Models
                         Price = 49.99m,
                         StockQuantity = 100,
                         IsFeatured = true,
-                        Image = "/images/home/anh.jpg"
+                        Image = "/images/home/anh.jpg",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
                     },
                     new Product
                     {
@@ -76,7 +91,11 @@ namespace Shop.Models
                         Price = 129.99m,
                         StockQuantity = 75,
                         IsFeatured = true,
-                        Image = "/images/home/anh.jpg"
+                        Image = "/images/home/anh.jpg",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
                     },
                     new Product
                     {
@@ -85,7 +104,11 @@ namespace Shop.Models
                         CategoryId = electronicsCategory.CategoryId,
                         Price = 1999.99m,
                         StockQuantity = 20,
-                        Image = "/images/home/anh.jpg"
+                        Image = "/images/home/anh.jpg",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
                     },
                     new Product
                     {
@@ -94,7 +117,11 @@ namespace Shop.Models
                         CategoryId = sportsCategory.CategoryId,
                         Price = 39.99m,
                         StockQuantity = 60,
-                        Image = "/images/home/anh.jpg"
+                        Image = "/images/home/anh.jpg",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
                     }
                 );
                 context.SaveChanges();

@@ -19,9 +19,7 @@ a {
 .nav-link {
     color: rgb(71, 71, 71);
 }
-
-.nav .nav-link.active,
-.nav .nav-link.show {
+.nav .nav-link.active, .nav .nav-link.show, .nav .nav-link:hover {
     color: #ffb299;
 }
 /* ========== Admin Login ========== */

@@ -1,0 +1,123 @@
+﻿@page "/admin/slider"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.JSInterop
+@using Shop.Models
+
+@inject AppDbContext Db
+@inject IJSRuntime JsRuntime
+
+<h4>Quản lý Baner</h4>
+
+@if (SliderData == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <table class="table table-bordered table-hover text-center ">
+        <thead class="table-success">
+            <tr>
+                <th>ID</th>
+                <th>Hình ảnh baner</th>
+                <th>Tiêu Đề</th>
+                <th>Người tạo</th>
+                <th>Ngày tạo</th>
+                <th>Người cập nhật</th>
+                <th>Ngày cập nhật</th>
+                <th style="width:20%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in SliderData)
+            {
+                <tr>
+                    <td>@s.SliderID</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(s.Image))
+                        {
+                            <img src="@s.Image" alt="@s.Title" style="max-width:100px; max-height:100px;" />
+                        }
+                    </td>
+                    <td>@s.Title</td>
+                    <td>@s.CreatedBy</td>
+                    <td>@s.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@s.UpdatedBy</td>
+                    <td>@s.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                         <NavLink class="btn btn-warning btn-sm me-2" href="@($"/admin/slider/edit/{s.SliderID}")">
+                            <i class="fa-solid fa-pen"></i> Sửa
+                        </NavLink>
+                        <button class="btn btn-danger btn-sm" @onclick="async () => await DeleteSlider(s)">
+                            <i class="fa-solid fa-trash"></i> Xóa
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@(_pageNumber == 1)">« Trước</button>
+        <span>Trang @_pageNumber / @_totalPages</span>
+        <button class="btn btn-secondary" @onclick="NextPage" disabled="@(_pageNumber == _totalPages)">Tiếp »</button>
+    </div>
+
+    <NavLink class="btn btn-primary" href="/admin/slider/create">
+        <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+    </NavLink>
+}
+@code {
+    private List<Slider>? SliderData;
+    private int _pageNumber = 1;
+    private int _pageSize = 5;
+    private int _totalPages = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPage();
+    }
+
+    private async Task LoadPage()
+    {
+        var totalSlider = await Db.Sliders.CountAsync();
+        _totalPages = (int)Math.Ceiling(totalSlider / (double)_pageSize);
+
+        SliderData = await Db.Sliders
+            .OrderBy(p => p.SliderID)
+            .Skip((_pageNumber - 1) * _pageSize)
+            .Take(_pageSize)
+            .ToListAsync();
+    }
+
+    private async Task NextPage()
+    {
+        if (_pageNumber < _totalPages)
+        {
+            _pageNumber++;
+            await LoadPage();
+        }
+    }
+
+    private async Task PreviousPage()
+    {
+        if (_pageNumber > 1)
+        {
+            _pageNumber--;
+            await LoadPage();
+        }
+    }
+    private async Task DeleteSlider(Slider s)
+    {
+        if (await JsRuntime.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa banner {s.Title}?"))
+        {
+            Db.Sliders.Remove(s);
+            await Db.SaveChangesAsync();
+
+            // Nếu xóa hết trang hiện tại, quay về trang trước
+            if (!(SliderData?.Any() ?? false) && _pageNumber > 1)
+                _pageNumber--;
+
+            await LoadPage();
+        }
+    }
+}

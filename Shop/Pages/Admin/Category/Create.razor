@@ -1,48 +1,41 @@
 ﻿@page "/admin/categories/create"
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
 @using Shop.Models
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.EntityFrameworkCore
+
 @inject AppDbContext Db
 @inject NavigationManager Nav
 
-<h3 class="fw-bold mb-4">Thêm danh mục mới</h3>
+<h4>Thêm danh mục mới</h4>
 
-<EditForm Model="Category" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+@if (Category == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <EditForm Model="Category" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div class="form-group mb-3">
-        <label>Tên danh mục</label>
-        <InputText class="form-control" @bind-Value="Category.Name" />
-    </div>
+        <div class="form-group mb-3">
+            <label>Tên danh mục</label>
+            <InputText class="form-control" @bind-Value="Category.Name" />
+        </div>
 
-    <div class="form-group mb-3">
-        <label>Mô tả</label>
-        <InputTextArea class="form-control" @bind-Value="Category.Description" Rows="3" />
-    </div>
+        <div class="form-check mb-3">
+            <InputCheckbox class="form-check-input" @bind-Value="Category.IsActive" />
+            <label class="form-check-label">Kích hoạt</label>
+        </div>
 
-    <div class="form-group mb-3">
-        <label>Ảnh danh mục</label>
-        <InputFile OnChange="HandleFileSelected" />
-        @if (!string.IsNullOrEmpty(Category.ImageUrl))
-        {
-            <div class="mt-2">
-                <img src="@Category.ImageUrl" alt="Category Image" width="150" class="rounded border" />
-            </div>
-        }
-    </div>
-
-    <div class="form-check mb-3">
-        <InputCheckbox class="form-check-input" @bind-Value="Category.IsActive" />
-        <label class="form-check-label">Kích hoạt</label>
-    </div>
-
-    <div class="mt-3">
-        <button type="submit" class="btn btn-primary">💾 Lưu</button>
-        <button type="button" class="btn btn-secondary" @onclick="OnCancel">Quay lại</button>
-    </div>
-</EditForm>
-
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">💾 Lưu</button>
+            <NavLink class="btn btn-secondary" href="/admin/categories">Quay lại</NavLink>
+        </div>
+    </EditForm>
+}
 @code {
     private Category Category = new();
     private IBrowserFile? selectedFile;
@@ -54,29 +47,11 @@
 
     private async Task HandleSubmit()
     {
-        // Lưu ảnh
-        if (selectedFile != null)
-        {
-            var fileName = Path.GetFileName(selectedFile.Name);
-            var folderPath = Path.Combine("wwwroot", "images", "categories");
-            Directory.CreateDirectory(folderPath);
-
-            var filePath = Path.Combine(folderPath, fileName);
-            await using var stream = new FileStream(filePath, FileMode.Create);
-            await selectedFile.OpenReadStream().CopyToAsync(stream);
-
-            Category.ImageUrl = $"/images/categories/{fileName}";
-        }
 
         Category.CreatedAt = DateTime.Now;
         Db.Categories.Add(Category);
         await Db.SaveChangesAsync();
 
-        Nav.NavigateTo("/admin/categories");
-    }
-
-    private void OnCancel()
-    {
         Nav.NavigateTo("/admin/categories");
     }
 }
