@@ -6,7 +6,7 @@
     <div class="row align-items-center bg-info bg-opacity-10">
         <div class="col-12 col-md-2">
             <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                <h2 class="mb-0 mt-2 me-2">ADMIN</h2>
+                <a class="h2 mb-0 mt-2 me-2" href="/" style="text-decoration: none;">Shop Camping</a>
             </div>
         </div>
 
@@ -16,7 +16,7 @@
                 <i class="fa fa-bars"></i>
             </button>
 
-            <h4 class="mb-0 me-auto">@PageTitle</h4>
+            <h4 class="mb-0 me-auto">Admin Manager</h4>
 
             <form class="flex-grow-1 mx-3 position-relative" style="max-width:300px;">
                 <input type="search" class="form-control ps-5 rounded-pill border-0 shadow-sm"
@@ -36,14 +36,16 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <button class="dropdown-item fw-bold text-muted" @onclick="GoToProfile">
+                        <a class="dropdown-item fw-bold text-muted" @onclick="GoToProfile">
                             <i class="fa-solid fa-id-card me-2"></i> Thông tin Admin
-                        </button>
+                        </a>
                     </li>
                     <li>
-                        <button class="dropdown-item fw-bold text-muted" @onclick="Logout">
+                        <a href="#" class="dropdown-item fw-bold text-muted"
+                           @onclick="Logout"
+                           @onclick:preventDefault>
                             <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất
-                        </button>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -70,6 +72,6 @@
 
     private async Task Logout()
     {
-        Navigation.NavigateTo("/account/logout", forceLoad: true);
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }

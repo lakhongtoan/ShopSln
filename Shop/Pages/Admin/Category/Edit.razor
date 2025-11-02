@@ -1,11 +1,14 @@
 ﻿@page "/admin/categories/edit/{id:int}"
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
 @using Shop.Models
 @using Microsoft.EntityFrameworkCore
+
 @inject AppDbContext Db
 @inject NavigationManager Nav
 
-<h3 class="fw-bold mb-4">Chỉnh sửa danh mục</h3>
+<h4>Chỉnh sửa danh mục</h4>
 
 @if (Category == null)
 {
@@ -22,18 +25,13 @@ else
             <InputText class="form-control" @bind-Value="Category.Name" />
         </div>
 
-        <div class="mb-3">
-            <label>Mô tả</label>
-            <InputTextArea class="form-control" @bind-Value="Category.Description" Rows="3" />
-        </div>
-
         <div class="form-check mb-3">
             <InputCheckbox class="form-check-input" @bind-Value="Category.IsActive" />
             <label class="form-check-label">Kích hoạt</label>
         </div>
 
         <button type="submit" class="btn btn-primary">💾 Cập nhật</button>
-        <button type="button" class="btn btn-secondary" @onclick="OnCancel">Quay lại</button>
+        <NavLink class="btn btn-secondary" href="/admin/categories">Quay lại</NavLink>
     </EditForm>
 }
 
@@ -54,6 +52,4 @@ else
         await Db.SaveChangesAsync();
         Nav.NavigateTo("/admin/categories");
     }
-
-    private void OnCancel() => Nav.NavigateTo("/admin/categories");
 }

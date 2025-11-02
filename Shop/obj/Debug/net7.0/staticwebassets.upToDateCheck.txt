@@ -20,6 +20,8 @@ wwwroot\images\home\searchicon.png
 wwwroot\images\home\slider_1.webp
 wwwroot\images\products\anh.jpg
 wwwroot\images\products\Screenshot (4).png
+wwwroot\images\products\Screenshot (6).png
+wwwroot\images\products\Screenshot (7).png
 wwwroot\js\bootstrap.min.js
 wwwroot\js\contact.js
 wwwroot\js\gmaps.js
@@ -86,5 +88,3 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
-wwwroot\images\products\Screenshot (6).png
-wwwroot\images\products\Screenshot (7).png

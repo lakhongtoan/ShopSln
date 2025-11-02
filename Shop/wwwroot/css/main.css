@@ -8,9 +8,8 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  background:;
   position: relative;
-  font-weight:400px;
+  font-weight: 400;
 }
 
 ul li {
@@ -291,7 +290,7 @@ a#scrollUp i{
   display: block;
   -webkit-animation: fadeInUp 400ms;
   -moz-animation: fadeInUp 400ms;
-  -ms-animation: fadeInUp 400ms;
+  animation: fadeInUp 400ms;
   -o-animation: fadeInUp 400ms;
   animation: fadeInUp 400ms;
 }
@@ -940,7 +939,6 @@ h2.title {
   transition: height 500ms ease 0s;
   width: 100%;
   display: block;
-  opacity:;
 }
 
 .single-products:hover .product-overlay {
@@ -2181,9 +2179,9 @@ h2.title {
 }
 
 .rating-area {
-  border: 1px solid #F7F7F0;
-  direction: block;
-  overflow: hidden;
+	border: 1px solid #F7F7F0;
+	display: block;
+	overflow: hidden;
 }
 
 .rating-area ul li {
