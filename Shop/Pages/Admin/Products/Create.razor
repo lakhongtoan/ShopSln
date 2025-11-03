@@ -1,0 +1,132 @@
+﻿@page "/admin/products/create"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
+@using Shop.Models
+
+@inject AppDbContext Db
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthStateProvider
+
+<h4>Thêm Sản phẩm</h4>
+
+@if (Product == null || categories == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+<EditForm Model="Product" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group mb-3">
+        <label>Tên sản phẩm</label>
+        <InputText class="form-control" @bind-Value="Product.Name" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Mô tả</label>
+        <InputTextArea class="form-control" @bind-Value="Product.Description" Rows="3" />
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Giá</label>
+            <InputNumber class="form-control" @bind-Value="Product.Price" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Giá KM (nếu có)</label>
+            <InputNumber class="form-control" @bind-Value="Product.SalePrice" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Ảnh sản phẩm</label>
+        <InputFile OnChange="HandleFileSelected" />
+    </div>
+
+    <div class="mb-3">
+        <label>Số lượng tồn kho</label>
+        <InputNumber class="form-control" @bind-Value="Product.StockQuantity" />
+    </div>
+
+    <div class="mb-3">
+        <label>Danh mục</label>
+        @if (categories != null)
+        {
+            <InputSelect class="form-select" @bind-Value="Product.CategoryId">
+                <option value="">-- Chọn danh mục --</option>
+                @foreach (var c in categories)
+                {
+                    <option value="@c.CategoryId">@c.Name</option>
+                }
+            </InputSelect>
+        }
+        else
+        {
+            <p>Đang tải danh mục...</p>
+        }
+    </div>
+
+    <div class="form-check mb-2">
+        <InputCheckbox class="form-check-input" @bind-Value="Product.IsActive" />
+        <label class="form-check-label">Kích hoạt</label>
+    </div>
+
+    <div class="form-check mb-3">
+        <InputCheckbox class="form-check-input" @bind-Value="Product.IsFeatured" />
+        <label class="form-check-label">Sản phẩm nổi bật</label>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <NavLink class="btn btn-secondary" href="/admin/products">Quay lại</NavLink>
+    </div>
+</EditForm>
+}
+@code {
+    private Product Product = new();
+    private List<Category>? categories;
+    private IBrowserFile? selectedFile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await Db.Categories.ToListAsync();
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task HandleSubmit()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        // Xử lý ảnh
+        if (selectedFile != null)
+        {
+            var fileName = Path.GetFileName(selectedFile.Name);
+            var folderPath = Path.Combine("wwwroot", "images", "products");
+            Directory.CreateDirectory(folderPath);
+
+            var filePath = Path.Combine(folderPath, fileName);
+            await using var stream = new FileStream(filePath, FileMode.Create);
+            await selectedFile.OpenReadStream().CopyToAsync(stream);
+
+            Product.Image = $"/images/products/{fileName}";
+        }
+
+        Product.CreatedAt = DateTime.Now;
+        Product.CreatedBy = user.Identity?.Name ?? "Anonymous";
+        Db.Products.Add(Product);
+        await Db.SaveChangesAsync();
+
+        Nav.NavigateTo("/admin/products");
+    }
+}
+

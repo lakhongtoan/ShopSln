@@ -13,7 +13,7 @@ namespace Shop.Models
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Brand> Brands { get; set; }
-
+        public DbSet<Slider> Sliders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,10 +50,10 @@ namespace Shop.Models
             // Configure indexes
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.CategoryId);
-            
+
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.IsActive);
-            
+
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.IsFeatured);
 

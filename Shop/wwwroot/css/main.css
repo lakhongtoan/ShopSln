@@ -8,9 +8,8 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  background:;
   position: relative;
-  font-weight:400px;
+  font-weight: 400;
 }
 
 ul li {
@@ -631,7 +630,7 @@ a#scrollUp i{
   display: block;
   -webkit-animation: fadeInUp 400ms;
   -moz-animation: fadeInUp 400ms;
-  -ms-animation: fadeInUp 400ms;
+  animation: fadeInUp 400ms;
   -o-animation: fadeInUp 400ms;
   animation: fadeInUp 400ms;
 }
@@ -1280,7 +1279,6 @@ h2.title {
   transition: height 500ms ease 0s;
   width: 100%;
   display: block;
-  opacity:;
 }
 
 .single-products:hover .product-overlay {
@@ -1378,13 +1376,76 @@ h2.title {
 }
 
 .category-tab ul {
-  background: #40403E;
   border-bottom: 1px solid #607E3A;
   list-style: none outside none;
   margin: 0 0 30px;
   padding: 0;
   width: 100%;
 }
+/* ==== SHOP ITEMS SECTION ==== */
+.shop-items-section {
+    margin-top: 50px;
+}
+
+.shop-items-section .title {
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #333;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.shop-items-section .title::after {
+    content: "";
+    width: 80px;
+    height: 3px;
+    background: #fe980f;
+    display: block;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Tabs container */
+.shop-items-section .nav-tabs {
+    border: none;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+/* Each tab */
+.shop-items-section .nav-tabs > li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.shop-items-section .nav-tabs > li > a {
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 2px solid transparent;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.shop-items-section .nav-tabs > li > a:hover {
+    border-color: #fe980f;
+    color: #fe980f;
+    background-color: #fff;
+}
+
+/* Active tab */
+.shop-items-section .nav-tabs > li.active > a,
+.shop-items-section .nav-tabs > li.active > a:focus,
+.shop-items-section .nav-tabs > li.active > a:hover {
+    color: #fff;
+    background-color: #fe980f;
+    border-color: #fe980f;
+    box-shadow: 0 3px 10px rgba(254, 152, 15, 0.3);
+}
+
 
 .category-tab ul li a {
   border: 0 none;
@@ -2521,9 +2582,9 @@ h2.title {
 }
 
 .rating-area {
-  border: 1px solid #F7F7F0;
-  direction: block;
-  overflow: hidden;
+	border: 1px solid #F7F7F0;
+	display: block;
+	overflow: hidden;
 }
 
 .rating-area ul li {

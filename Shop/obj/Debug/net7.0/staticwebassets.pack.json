@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\Shop.bundle.scp.css"
     },
     {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\admin.css",
+      "PackagePath": "staticwebassets\\css\\admin.css"
+    },
+    {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\animate.css",
       "PackagePath": "staticwebassets\\css\\animate.css"
     },
@@ -109,6 +113,10 @@
       "PackagePath": "staticwebassets\\images\\home\\iframe4.png"
     },
     {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\logo.jpg",
+      "PackagePath": "staticwebassets\\images\\home\\logo.jpg"
+    },
+    {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\logo.png",
       "PackagePath": "staticwebassets\\images\\home\\logo.png"
     },
@@ -151,6 +159,18 @@
     {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\7e4a0c27-0f0e-4f82-8a95-b51b369e11af.jfif",
       "PackagePath": "staticwebassets\\images\\products\\7e4a0c27-0f0e-4f82-8a95-b51b369e11af.jfif"
+    },
+    {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (4).png",
+      "PackagePath": "staticwebassets\\images\\products\\Screenshot (4).png"
+    },
+    {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (6).png",
+      "PackagePath": "staticwebassets\\images\\products\\Screenshot (6).png"
+    },
+    {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (7).png",
+      "PackagePath": "staticwebassets\\images\\products\\Screenshot (7).png"
     },
     {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\anh.jpg",

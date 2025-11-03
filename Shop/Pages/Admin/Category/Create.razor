@@ -1,0 +1,57 @@
+﻿@page "/admin/categories/create"
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Shop.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
+
+@inject AppDbContext Db
+@inject NavigationManager Nav
+
+<h4>Thêm danh mục mới</h4>
+
+@if (Category == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <EditForm Model="Category" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group mb-3">
+            <label>Tên danh mục</label>
+            <InputText class="form-control" @bind-Value="Category.Name" />
+        </div>
+
+        <div class="form-check mb-3">
+            <InputCheckbox class="form-check-input" @bind-Value="Category.IsActive" />
+            <label class="form-check-label">Kích hoạt</label>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">💾 Lưu</button>
+            <NavLink class="btn btn-secondary" href="/admin/categories">Quay lại</NavLink>
+        </div>
+    </EditForm>
+}
+@code {
+    private Category Category = new();
+    private IBrowserFile? selectedFile;
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task HandleSubmit()
+    {
+
+        Category.CreatedAt = DateTime.Now;
+        Db.Categories.Add(Category);
+        await Db.SaveChangesAsync();
+
+        Nav.NavigateTo("/admin/categories");
+    }
+}

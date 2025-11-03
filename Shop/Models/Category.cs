@@ -10,16 +10,17 @@ namespace Shop.Models
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
         
-        [StringLength(500)]
-        public string? Description { get; set; }
-        
-        [StringLength(200)]
-        public string? ImageUrl { get; set; }
-        
         public bool IsActive { get; set; } = true;
         
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+
+        [StringLength(100)]
+        public string? CreatedBy { get; set; }
+
+        [StringLength(100)]
+        public string? UpdatedBy { get; set; }
+
         // Navigation properties
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
