@@ -110,8 +110,14 @@
                                     </div>
                                     <div class="choose">
                                         <ul class="nav-pills nav-justified">
-                                            <li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-                                            <li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+                                        <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
+                                                <i class="fa fa-shopping-cart"></i>Buy
+                                            </a>
+                                            <li>
+                                                <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.ProductID">
+                                                    <i class="fa fa-plus-square"></i> see details
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

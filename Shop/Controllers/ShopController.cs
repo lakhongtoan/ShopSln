@@ -14,6 +14,7 @@ namespace Shop.Controllers
             _context = context;
         }
 
+        // ========== TRANG CHỦ ==========
         public IActionResult Index()
         {
             var featuredProducts = _context.Products
@@ -32,6 +33,7 @@ namespace Shop.Controllers
             return View();
         }
 
+        // ========== DANH SÁCH SẢN PHẨM ==========
         public IActionResult Shop(int? categoryId, string? search, int page = 1, int pageSize = 12)
         {
             var query = _context.Products
@@ -69,7 +71,9 @@ namespace Shop.Controllers
             return View(products);
         }
 
-        public IActionResult ProductDetails(long id)
+        // ========== TRANG CHI TIẾT SẢN PHẨM ==========
+        // View: Views/Shop/Details.cshtml
+        public IActionResult Details(long id)
         {
             var product = _context.Products
                 .Include(p => p.Category)
@@ -78,7 +82,7 @@ namespace Shop.Controllers
             if (product == null || !product.IsActive)
                 return NotFound();
 
-            // Get related products
+            // Lấy sản phẩm liên quan
             var relatedProducts = _context.Products
                 .Include(p => p.Category)
                 .Where(p => p.CategoryId == product.CategoryId && p.ProductID != id && p.IsActive)
@@ -89,6 +93,13 @@ namespace Shop.Controllers
             return View(product);
         }
 
+        // Redirect từ đường dẫn cũ (nếu còn link ProductDetails)
+        public IActionResult ProductDetails(long id)
+        {
+            return RedirectToAction("Details", new { id });
+        }
+
+        // ========== GIỎ HÀNG ==========
         public IActionResult Cart()
         {
             var sessionId = GetSessionId();
@@ -118,17 +129,17 @@ namespace Shop.Controllers
             }
             else
             {
-            var cartItem = new CartItem
-            {
-                ProductId = productId,
-                ProductName = product.Name,
-                ProductImage = product.Image ?? "",
-                UnitPrice = product.SalePrice ?? product.Price,
-                Quantity = quantity,
-                TotalPrice = (product.SalePrice ?? product.Price) * quantity,
-                SessionId = sessionId,
-                CreatedAt = DateTime.Now
-            };
+                var cartItem = new CartItem
+                {
+                    ProductId = productId,
+                    ProductName = product.Name,
+                    ProductImage = product.Image ?? "",
+                    UnitPrice = product.SalePrice ?? product.Price,
+                    Quantity = quantity,
+                    TotalPrice = (product.SalePrice ?? product.Price) * quantity,
+                    SessionId = sessionId,
+                    CreatedAt = DateTime.Now
+                };
                 _context.CartItems.Add(cartItem);
             }
 
@@ -190,6 +201,7 @@ namespace Shop.Controllers
             return Json(new { success = true, cartCount = cartCount });
         }
 
+        // ========== CHECKOUT ==========
         public IActionResult Checkout()
         {
             var sessionId = GetSessionId();
@@ -216,7 +228,7 @@ namespace Shop.Controllers
             if (!cartItems.Any())
                 return RedirectToAction("Cart");
 
-            // Generate order number
+            // Tạo đơn hàng
             order.OrderNumber = "ORD" + DateTime.Now.ToString("yyyyMMddHHmmss");
             order.OrderDate = DateTime.Now;
             order.Status = "Pending";
@@ -225,7 +237,7 @@ namespace Shop.Controllers
 
             _context.Orders.Add(order);
 
-            // Create order items
+            // Thêm chi tiết đơn hàng
             foreach (var cartItem in cartItems)
             {
                 var orderItem = new OrderItem
@@ -241,7 +253,7 @@ namespace Shop.Controllers
                 _context.OrderItems.Add(orderItem);
             }
 
-            // Clear cart
+            // Xóa giỏ hàng
             _context.CartItems.RemoveRange(cartItems);
 
             _context.SaveChanges();
@@ -261,6 +273,7 @@ namespace Shop.Controllers
             return View(order);
         }
 
+        // ========== LIÊN HỆ ==========
         [HttpPost]
         public IActionResult Contact(Contact contact)
         {
@@ -280,6 +293,7 @@ namespace Shop.Controllers
             return View();
         }
 
+        // ========== TIỆN ÍCH ==========
         private string GetSessionId()
         {
             var sessionId = HttpContext.Session.GetString("SessionId");

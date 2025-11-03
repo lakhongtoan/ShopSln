@@ -5,10 +5,15 @@ namespace Shop.Models
 {
     public class Product
     {
+        [Key]
         public long ProductID { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn danh mục")]
+        [ForeignKey("Category")]
         public int CategoryId { get; set; }
+
+        [ForeignKey("Brand")]
+        public int? BrandId { get; set; }   // Khóa ngoại đến bảng Brand (có thể null)
 
         [Required(ErrorMessage = "Vui lòng nhập tên sản phẩm")]
         [StringLength(200)]
@@ -38,7 +43,6 @@ namespace Shop.Models
         public int StockQuantity { get; set; } = 0;
 
         public bool IsActive { get; set; } = true;
-
         public bool IsFeatured { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -50,8 +54,14 @@ namespace Shop.Models
         [StringLength(100)]
         public string? UpdatedBy { get; set; }
 
+        // ==================== LIÊN KẾT ====================
+
         public virtual Category? Category { get; set; }
+
+        public virtual Brand? Brand { get; set; }
+
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
     }
 }
