@@ -5,37 +5,8 @@
     var categories = ViewBag.Categories as List<Shop.Models.Category>;
 }
 
-<section id="slider" class="banner-hero">
-    <div id="slider-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#slider-carousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-            <button type="button" data-bs-target="#slider-carousel" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#slider-carousel" data-bs-slide-to="2"></button>
-        </div>
+<!-- ✅ Gọi file banner riêng -->
 
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="~/images/home/slider_1.webp" class="d-block w-100" alt="Banner 1">
-            </div>
-            <div class="carousel-item">
-                <img src="~/images/home/slider_2.webp" class="d-block w-100" alt="Banner 2">
-            </div>
-            <div class="carousel-item">
-                <img src="~/images/home/slider_3.webp" class="d-block w-100" alt="Banner 3">
-            </div>
-        </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#slider-carousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#slider-carousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-</section>
-<!--/slider-->
 <section>
     <div class="container">
         <div class="row">
@@ -60,11 +31,26 @@
                         }
                     </div>
                 </div>
+             <div class="brands_products">
+                        <!--brands_products-->
+                        <h2>Brands</h2>
+                        <div class="brands-name">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="#"> <span class="pull-right">(50)</span>Acne</a></li>
+                                <li><a href="#"> <span class="pull-right">(56)</span>Grüne Erde</a></li>
+                                <li><a href="#"> <span class="pull-right">(27)</span>Albiro</a></li>
+                                <li><a href="#"> <span class="pull-right">(32)</span>Ronhill</a></li>
+                                <li><a href="#"> <span class="pull-right">(5)</span>Oddmolly</a></li>
+                                <li><a href="#"> <span class="pull-right">(9)</span>Boudestijn</a></li>
+                                <li><a href="#"> <span class="pull-right">(4)</span>Rösch creative culture</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--/brands_products-->
             </div>
-
+            
             <div class="col-sm-9 padding-right">
                 <div class="features_items">
-                    <!--features_items-->
                     <h2 class="title text-center">Features Items</h2>
                     @if (featuredProducts != null)
                     {
@@ -93,110 +79,104 @@
                                     </div>
                                     <div class="choose">
                                         <ul class="nav-pills nav-justified">
-                                        <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
+                                            <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
                                                 <i class="fa fa-shopping-cart"></i>Buy
                                             </a>
                                             <li>
                                                 <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.ProductID">
-                                                    <i class="fa fa-plus-square"></i>                                             
-                                                    see details
+                                                    <i class="fa fa-plus-square"></i> see details
                                                 </a>
                                             </li>
                                         </ul>
                                     </div>
-
                                 </div>
                             </div>
                         }
                     }
                 </div>
-                <!--features_items-->
-
-                <div class="category-tab">
-                    <!--category-tab-->
-                    <div class="col-sm-12">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tshirt" data-toggle="tab">T-Shirt</a></li>
-                            <li><a href="#blazers" data-toggle="tab">Blazers</a></li>
-                            <li><a href="#sunglass" data-toggle="tab">Sunglass</a></li>
-                            <li><a href="#kids" data-toggle="tab">Kids</a></li>
-                            <li><a href="#poloshirt" data-toggle="tab">Polo shirt</a></li>
-                        </ul>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade active in" id="tshirt">
-                            <div class="col-sm-3">
-                                <div class="product-image-wrapper">
-                                    <div class="single-products">
-                                        <div class="productinfo text-center">
-                                            <img src="images/home/slider_3.webp" alt="" />
-                                            <h2>$56</h2>
-                                            <p>Easy Polo Black Edition</p>
-                                            <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            </div><!-- ✅ đóng col-sm-9 -->
+        </div><!-- ✅ đóng row -->
+    </div><!-- ✅ đóng container -->
+</section>
+<!-- ================== KINH NGHIỆM CẮM TRẠI ================== -->
+        <h2 class="section-title text-center mb-5">Kinh Nghiệm Cắm Trại</h2>
+<section class="blog-section py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <!-- Bài viết 1 -->
+            <div class="col-md-4">
+                <div class="blog-card card border-0 shadow-sm h-100">
+                    <div class="position-relative overflow-hidden">
+                        <img src="~/images/home/tent.jpg" class="card-img-top" alt="Lều trại">
+                        <div class="blog-date bg-primary text-white text-center">
+                            <span>22</span><small>May</small>
+                        </div>
+                        <div class="blog-overlay d-flex align-items-center justify-content-center">
+                            <a href="#" class="btn btn-light btn-sm">Xem chi tiết</a>
                         </div>
                     </div>
-                </div>
-                <!--/category-tab-->
-
-                <div class="recommended_items">
-                    <!--recommended_items-->
-                    <h2 class="title text-center">recommended items</h2>
-
-                    <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                @if (featuredProducts != null)
-                                {
-                                    @foreach (var product in featuredProducts.Take(3))
-                                    {
-                                        <div class="col-sm-4">
-                                            <div class="product-image-wrapper">
-                                                <div class="single-products">
-                                                    <div class="productinfo text-center">
-                                                        <img src="@(product.Image ?? "/images/home/anh.jpg")" alt="" />
-                                                        <h2>$@product.Price</h2>
-                                                        <p>@product.Name</p>
-                                                        <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
-                                                            <i class="fa fa-shopping-cart"></i>Add to cart
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                        </div>
-                        <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
-                            <i class="fa fa-angle-left"></i>
-                        </a>
-                        <a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
-                            <i class="fa fa-angle-right"></i>
-                        </a>
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Hướng dẫn bảo quản lều trại</h5>
+                        <p class="card-text text-muted">
+                            Việc chăm sóc đúng cách cho chiếc lều của bạn sẽ giúp kéo dài tuổi thọ và đồng hành trong nhiều chuyến đi...
+                        </p>
+                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">XEM THÊM</a>
                     </div>
                 </div>
-                <!--/recommended_items-->
+            </div>
 
+            <!-- Bài viết 2 -->
+            <div class="col-md-4">
+                <div class="blog-card card border-0 shadow-sm h-100">
+                    <div class="position-relative overflow-hidden">
+                        <img src="~/images/home/pump.jpg" class="card-img-top" alt="Máy bơm du lịch">
+                        <div class="blog-date bg-primary text-white text-center">
+                            <span>31</span><small>Dec</small>
+                        </div>
+                        <div class="blog-overlay d-flex align-items-center justify-content-center">
+                            <a href="#" class="btn btn-light btn-sm">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Khám phá máy bơm mini</h5>
+                        <p class="card-text text-muted">
+                            Bắt đầu hành trình cắm trại với trải nghiệm tiện ích nhỏ gọn, tiết kiệm năng lượng và bền bỉ...
+                        </p>
+                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">XEM THÊM</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bài viết 3 -->
+            <div class="col-md-4">
+                <div class="blog-card card border-0 shadow-sm h-100">
+                    <div class="position-relative overflow-hidden">
+                        <img src="~/images/home/sleep.jpg" class="card-img-top" alt="Giường hơi cắm trại">
+                        <div class="blog-date bg-primary text-white text-center">
+                            <span>28</span><small>Dec</small>
+                        </div>
+                        <div class="blog-overlay d-flex align-items-center justify-content-center">
+                            <a href="#" class="btn btn-light btn-sm">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Giường hơi phát tiếng ồn – cách khắc phục</h5>
+                        <p class="card-text text-muted">
+                            Nếu bạn từng nghe âm thanh lạ khi nằm trên giường hơi, bài viết này sẽ giúp bạn hiểu rõ nguyên nhân và cách xử lý...
+                        </p>
+                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">XEM THÊM</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+<!-- ================== /KINH NGHIỆM CẮM TRẠI ================== -->
+
 
 @section Scripts {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // ✅ Kích hoạt carousel thủ công (tuỳ chọn)
-            var myCarousel = document.querySelector('#slider-carousel');
-            var carousel = new bootstrap.Carousel(myCarousel, {
-                interval: 2000, // 2s đổi ảnh
-                pause: false
-            });
-
-            // ✅ AJAX thêm giỏ hàng
+        $(document).ready(function () {
             $('.add-to-cart').click(function (e) {
                 e.preventDefault();
                 var productId = $(this).data('product-id');

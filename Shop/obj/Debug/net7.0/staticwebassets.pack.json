@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets\\css\\font-awesome.min.css"
     },
     {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\header.css",
+      "PackagePath": "staticwebassets\\css\\header.css"
+    },
+    {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\main.css",
       "PackagePath": "staticwebassets\\css\\main.css"
     },
@@ -113,20 +117,28 @@
       "PackagePath": "staticwebassets\\images\\home\\iframe4.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\logo.jpg",
-      "PackagePath": "staticwebassets\\images\\home\\logo.jpg"
-    },
-    {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\logo.png",
       "PackagePath": "staticwebassets\\images\\home\\logo.png"
+    },
+    {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\logo1.png",
+      "PackagePath": "staticwebassets\\images\\home\\logo1.png"
     },
     {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\map.png",
       "PackagePath": "staticwebassets\\images\\home\\map.png"
     },
     {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\pump.jpg",
+      "PackagePath": "staticwebassets\\images\\home\\pump.jpg"
+    },
+    {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\searchicon.png",
       "PackagePath": "staticwebassets\\images\\home\\searchicon.png"
+    },
+    {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\sleep.jpg",
+      "PackagePath": "staticwebassets\\images\\home\\sleep.jpg"
     },
     {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_1.webp",
@@ -143,6 +155,10 @@
     {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_4.webp",
       "PackagePath": "staticwebassets\\images\\home\\slider_4.webp"
+    },
+    {
+      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\tent.jpg",
+      "PackagePath": "staticwebassets\\images\\home\\tent.jpg"
     },
     {
       "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\35cb6007-c12c-42dd-b998-4c4629794956.jfif",

@@ -76,14 +76,7 @@ a#scrollUp i{
 }
 
 
-/*************************
-*******Header CSS******
-**************************/
-
-.header_top {
-  background: none repeat scroll 0 0 #F0F0E9;
-}
-
+ 
 .contactinfo ul li:first-child{
     margin-left: -15px;
 }
@@ -107,31 +100,69 @@ a#scrollUp i{
   padding:0px;
 }
 
-/* ✅ Giữ slider cố định không trượt layout */
-        #slider-carousel {
-            width: 100%;
-            max-height: 500px;
-            overflow: hidden;
-        }
+//* --- Reset khoảng hở toàn trang --- */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-        #slider-carousel img {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-        }
+/* --- Header dính sát trên cùng, không chiếm khoảng trống --- */
+#header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
 
-        .banner-hero {
-            position: relative;
-            overflow: hidden;
-        }
+/* Khi cuộn xuống thì header cố định */
+#header.scrolled {
+    position: fixed;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
 
-        /* Bo tròn nút indicator thành hình tròn */
-.carousel-indicators [data-bs-target],
-.carousel-indicators li {
+/* --- Container header không có padding dọc --- */
+#header .container {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* --- Slider dính sát header --- */
+.banner-hero {
+    position: relative;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+#slider-carousel {
+    width: 100%;
+    max-height: 500px;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#slider-carousel img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Indicator tròn nhỏ */
+.carousel-indicators {
+    bottom: 20px;
+}
+.carousel-indicators [data-bs-target] {
     width: 12px;
     height: 12px;
-    border-radius: 50%;     /* Bo tròn */
-    background-color: #ffffff; /* Màu trắng (có thể đổi) */
+    border-radius: 50%;
+    background-color: #fff;
     opacity: 0.6;
     border: none;
 }
@@ -475,21 +506,7 @@ a#scrollUp i{
 	background:#607E3A;
 }
 
-.header-middle .container .row {
-  border-bottom: 1px solid #f5f5f5;
-  margin-left: 0;
-  margin-right: 0;
-  padding-bottom: 20px;
-  padding-top: 20px;
-}
-
-.header-middle .container .row .col-sm-4{
-  padding-left: 0;
-}
-
-.header-middle .container .row .col-sm-8 {
-	padding-right:0;
-}
+ 
 
 .usa {
   border-radius: 0;
@@ -563,14 +580,7 @@ a#scrollUp i{
 
 
 
-.header-bottom {
-  background-color: #607e3a;
-  padding-bottom: 20px;
-  padding-top: 20px;
-}
-.header-bottom .navbar-nav > li {
-    position: relative;
-}
+ 
 
 .navbar-collapse.collapse{
   padding-left: 0;
@@ -620,10 +630,7 @@ a#scrollUp i{
 
 /*  Dropdown menu*/
 
-.navbar-header 
-.navbar-toggle .icon-bar {
-    background-color: #fff;
-}
+ 
 
 
 .nav.navbar-nav > li:hover > ul.sub-menu{
@@ -1271,7 +1278,7 @@ h2.title {
 }
 
 .product-overlay {
-  background:#607E3A;
+  background: rgba(235, 238, 230, 0.6);
   top: 0;
   display: none;
   height: 0;
@@ -1828,8 +1835,233 @@ h2.title {
 *******404 CSS******
 **************************/
 
-.logo-404 {
-  margin-top: 60px;
+.logo {
+    background: transparent;
+}
+
+.logo a {
+    display: inline-block;
+    background: transparent;
+}
+
+.logo-img {
+    height: 75px;
+
+    object-fit: contain;
+    /* Loại bỏ màu trắng khỏi ảnh */
+    mix-blend-mode: multiply;
+    /* Hoặc thử darken nếu multiply không hiệu quả */
+    /* mix-blend-mode: darken; */
+}
+
+/* Đảm bảo header cũng trong suốt */
+#header {
+    background: transparent !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+/* === MAIN MENU === */
+.mainmenu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
+}
+
+.mainmenu .nav {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mainmenu .nav li {
+    position: relative;
+}
+
+
+.mainmenu .nav li a {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-decoration: none;
+    padding: 10px 0;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng khi hover */
+.mainmenu .nav li a:hover,
+.mainmenu .nav li a.active {
+    color: #fe980f; /* Màu cam vàng chủ đạo */
+}
+
+/* Gạch chân khi hover */
+.mainmenu .nav li a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: #fe980f;
+    transition: width 0.3s ease;
+}
+
+.mainmenu .nav li a:hover::after,
+.mainmenu .nav li a.active::after {
+    width: 100%;
+}
+
+/* === BLOG SECTION === */
+.blog-section {
+    background: #f9f9f9;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #222;
+    position: relative;
+}
+
+.blog-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 30px;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.blog-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-image img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.blog-card:hover .blog-image img {
+    transform: scale(1.05);
+}
+
+.blog-date {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: #fe980f;
+    color: #fff;
+    border-radius: 4px;
+    text-align: center;
+    padding: 6px 10px;
+    line-height: 1;
+}
+.blog-date span {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+}
+.blog-date small {
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.blog-content {
+    padding: 20px;
+}
+
+.blog-content h5 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.blog-content p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 70px;
+}
+
+.btn-readmore {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #fe980f;
+    color: #fe980f;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-readmore:hover {
+    background: #fe980f;
+    color: #fff;
+}
+
+/* === DROPDOWN MENU === */
+.dropdown .sub-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 10px 0;
+    list-style: none;
+    min-width: 160px;
+    z-index: 999;
+}
+
+.dropdown .sub-menu li {
+    padding: 0;
+}
+
+.dropdown .sub-menu li a {
+    color: #1f2d3d;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 20px;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.dropdown .sub-menu li a:hover {
+    background: #fe980f;
+    color: #fff;
+}
+
+/* Hiển thị khi hover */
+.dropdown:hover .sub-menu {
+    display: block;
+}
+
+/* Khi header đã scroll (nền sáng) */
+#header.scrolled .mainmenu .nav li a {
+    color: #1f2d3d;
+}
+#header.scrolled .mainmenu .nav li a:hover {
+    color: #fe980f;
 }
 
 .content-404 h1 {
