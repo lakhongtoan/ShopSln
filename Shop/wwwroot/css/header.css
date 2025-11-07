@@ -129,6 +129,21 @@
     background: #fe980f;
 }
 
+/* --- Cart Icon --- */
+.cart-icon a {
+    color: #fff !important;
+    transition: all 0.3s ease;
+}
+.cart-icon a:hover {
+    color: #fe980f !important;
+}
+#header.scrolled .cart-icon a {
+    color: #fff !important;
+}
+#header.scrolled .cart-icon a:hover {
+    color: #fe980f !important;
+}
+
 /* --- Căn chỉnh tổng thể --- */
  
 .header-right {

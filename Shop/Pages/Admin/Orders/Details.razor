@@ -1,0 +1,260 @@
+@page "/admin/orders/details/{id:int}"
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.EntityFrameworkCore
+@using Shop.Models
+
+@inject AppDbContext Db
+@inject NavigationManager Nav
+
+<h4>Chi tiết đơn hàng</h4>
+
+@if (order == null)
+{
+    <p><em>Đang tải thông tin đơn hàng...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Mã đơn hàng:</strong></div>
+                        <div class="col-md-8">@order.OrderNumber</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Ngày đặt hàng:</strong></div>
+                        <div class="col-md-8">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Trạng thái:</strong></div>
+                        <div class="col-md-8">
+                            <span class="badge @GetStatusBadgeClass(order.Status)">@GetStatusText(order.Status)</span>
+                        </div>
+                    </div>
+                    @if (order.ShippedDate.HasValue)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Ngày giao hàng:</strong></div>
+                            <div class="col-md-8">@order.ShippedDate.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                    }
+                    @if (order.DeliveredDate.HasValue)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Ngày nhận hàng:</strong></div>
+                            <div class="col-md-8">@order.DeliveredDate.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(order.Notes))
+                    {
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Ghi chú:</strong></div>
+                            <div class="col-md-8">@order.Notes</div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Thông tin khách hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Họ tên:</strong></div>
+                        <div class="col-md-8">@order.CustomerName</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Email:</strong></div>
+                        <div class="col-md-8">@order.CustomerEmail</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Số điện thoại:</strong></div>
+                        <div class="col-md-8">@order.CustomerPhone</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Địa chỉ giao hàng:</strong></div>
+                        <div class="col-md-8">@order.ShippingAddress</div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(order.BillingAddress))
+                    {
+                        <div class="row mb-2">
+                            <div class="col-md-4"><strong>Địa chỉ thanh toán:</strong></div>
+                            <div class="col-md-8">@order.BillingAddress</div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Chi tiết sản phẩm</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in orderItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ProductImage))
+                                        {
+                                            <img src="@item.ProductImage" alt="@item.ProductName" style="max-width:80px; max-height:80px;" />
+                                        }
+                                    </td>
+                                    <td>@item.ProductName</td>
+                                    <td>@string.Format("{0:N0} ₫", item.UnitPrice)</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@string.Format("{0:N0} ₫", item.TotalPrice)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Tổng thanh toán</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tạm tính:</span>
+                        <strong>@string.Format("{0:N0} ₫", order.SubTotal)</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Thuế:</span>
+                        <strong>@string.Format("{0:N0} ₫", order.TaxAmount)</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Phí vận chuyển:</span>
+                        <strong>@string.Format("{0:N0} ₫", order.ShippingAmount)</strong>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between">
+                        <span><strong>Tổng cộng:</strong></span>
+                        <strong class="text-danger fs-5">@string.Format("{0:N0} ₫", order.TotalAmount)</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Cập nhật trạng thái</h5>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="order" OnValidSubmit="HandleUpdateStatus">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái đơn hàng</label>
+                            <InputSelect class="form-select" @bind-Value="order.Status">
+                                <option value="Pending">Chờ xử lý</option>
+                                <option value="Processing">Đang xử lý</option>
+                                <option value="Shipped">Đã giao hàng</option>
+                                <option value="Delivered">Đã nhận hàng</option>
+                                <option value="Cancelled">Đã hủy</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <InputTextArea class="form-control" @bind-Value="order.Notes" Rows="3" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="submit">Cập nhật trạng thái</button>
+                            <NavLink class="btn btn-secondary" href="/admin/orders">Quay lại danh sách</NavLink>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Order? order;
+    private List<OrderItem> orderItems = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        order = await Db.Orders.FindAsync(id);
+        if (order != null)
+        {
+            orderItems = await Db.OrderItems
+                .Where(oi => oi.OrderId == id)
+                .ToListAsync();
+        }
+    }
+
+    private async Task HandleUpdateStatus()
+    {
+        if (order == null) return;
+
+        // Cập nhật ngày giao hàng và nhận hàng dựa trên trạng thái
+        if (order.Status == "Shipped" && !order.ShippedDate.HasValue)
+        {
+            order.ShippedDate = DateTime.Now;
+        }
+        else if (order.Status == "Delivered" && !order.DeliveredDate.HasValue)
+        {
+            order.DeliveredDate = DateTime.Now;
+            if (!order.ShippedDate.HasValue)
+            {
+                order.ShippedDate = DateTime.Now;
+            }
+        }
+
+        Db.Orders.Update(order);
+        await Db.SaveChangesAsync();
+
+        Nav.NavigateTo("/admin/orders");
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning",
+            "Processing" => "bg-info",
+            "Shipped" => "bg-primary",
+            "Delivered" => "bg-success",
+            "Cancelled" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusText(string status)
+    {
+        return status switch
+        {
+            "Pending" => "Chờ xử lý",
+            "Processing" => "Đang xử lý",
+            "Shipped" => "Đã giao hàng",
+            "Delivered" => "Đã nhận hàng",
+            "Cancelled" => "Đã hủy",
+            _ => status
+        };
+    }
+}
+

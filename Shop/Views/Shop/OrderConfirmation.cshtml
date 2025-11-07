@@ -8,47 +8,47 @@
         <div class="breadcrumbs">
             <ol class="breadcrumb">
                 <li><a href="#">Home</a></li>
-                <li class="active">Order Confirmation</li>
+                <li class="active">Xác nhận đơn hàng</li>
             </ol>
         </div>
         
         <div class="row">
             <div class="col-sm-12">
                 <div class="alert alert-success">
-                    <h2>Thank you for your order!</h2>
-                    <p>Your order has been placed successfully.</p>
+                    <h2>Cảm ơn bạn đã đặt hàng!</h2>
+                    <p>Đơn hàng của bạn đã được đặt thành công.</p>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-6">
-                <h3>Order Information</h3>
+                <h3>Thông tin đơn hàng</h3>
                 <table class="table table-bordered">
                     <tr>
-                        <td><strong>Order Number:</strong></td>
+                        <td><strong>Mã đơn hàng:</strong></td>
                         <td>@Model.OrderNumber</td>
                     </tr>
                     <tr>
-                        <td><strong>Order Date:</strong></td>
+                        <td><strong>Ngày đặt:</strong></td>
                         <td>@Model.OrderDate.ToString("MMM dd, yyyy")</td>
                     </tr>
                     <tr>
-                        <td><strong>Status:</strong></td>
+                        <td><strong>Trạng thái:</strong></td>
                         <td><span class="label label-info">@Model.Status</span></td>
                     </tr>
                     <tr>
-                        <td><strong>Total Amount:</strong></td>
+                        <td><strong>Tổng tiền:</strong></td>
                         <td><strong>$@Model.TotalAmount</strong></td>
                     </tr>
                 </table>
             </div>
             
             <div class="col-sm-6">
-                <h3>Customer Information</h3>
+                <h3>Thông tin khách hàng</h3>
                 <table class="table table-bordered">
                     <tr>
-                        <td><strong>Name:</strong></td>
+                        <td><strong>Họ tên:</strong></td>
                         <td>@Model.CustomerName</td>
                     </tr>
                     <tr>
@@ -56,11 +56,11 @@
                         <td>@Model.CustomerEmail</td>
                     </tr>
                     <tr>
-                        <td><strong>Phone:</strong></td>
+                        <td><strong>Số điện thoại:</strong></td>
                         <td>@Model.CustomerPhone</td>
                     </tr>
                     <tr>
-                        <td><strong>Shipping Address:</strong></td>
+                        <td><strong>Địa chỉ giao hàng:</strong></td>
                         <td>@Model.ShippingAddress</td>
                     </tr>
                 </table>
@@ -69,15 +69,15 @@
 
         <div class="row">
             <div class="col-sm-12">
-                <h3>Order Items</h3>
+                <h3>Chi tiết đơn hàng</h3>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,19 +96,19 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3"><strong>Subtotal:</strong></td>
+                                <td colspan="3"><strong>Tạm tính:</strong></td>
                                 <td><strong>$@Model.SubTotal</strong></td>
                             </tr>
                             <tr>
-                                <td colspan="3"><strong>Tax:</strong></td>
+                                <td colspan="3"><strong>Thuế:</strong></td>
                                 <td><strong>$@Model.TaxAmount</strong></td>
                             </tr>
                             <tr>
-                                <td colspan="3"><strong>Shipping:</strong></td>
+                                <td colspan="3"><strong>Phí vận chuyển:</strong></td>
                                 <td><strong>$@Model.ShippingAmount</strong></td>
                             </tr>
                             <tr>
-                                <td colspan="3"><strong>Total:</strong></td>
+                                <td colspan="3"><strong>Tổng cộng:</strong></td>
                                 <td><strong>$@Model.TotalAmount</strong></td>
                             </tr>
                         </tfoot>
@@ -119,8 +119,8 @@
 
         <div class="row">
             <div class="col-sm-12 text-center">
-                <a href="@Url.Action("Index", "Shop")" class="btn btn-primary">Continue Shopping</a>
-                <a href="@Url.Action("Shop", "Shop")" class="btn btn-default">View All Products</a>
+                <a href="@Url.Action("Index", "Shop")" class="btn btn-primary">Tiếp tục mua sắm</a>
+                <a href="@Url.Action("Shop", "Shop")" class="btn btn-default">Xem tất cả sản phẩm</a>
             </div>
         </div>
     </div>

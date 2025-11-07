@@ -8,13 +8,13 @@
         <div class="breadcrumbs">
             <ol class="breadcrumb">
                 <li><a href="#">Home</a></li>
-                <li class="active">Contact</li>
+                <li class="active">Liên hệ</li>
             </ol>
         </div>
         <div class="bg">
             <div class="row">
                 <div class="col-sm-12">
-                    <h2 class="title text-center">Contact <strong>Us</strong></h2>
+                    <h2 class="title text-center">Liên hệ <strong>với chúng tôi</strong></h2>
                     <div id="gmap" class="contact-map">
                     </div>
                 </div>
@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-sm-8">
                     <div class="contact-form">
-                        <h2>Send Message</h2>
+                        <h2>Gửi tin nhắn</h2>
                         @if (TempData["Message"] != null)
                         {
                             <div class="alert alert-success">
@@ -31,7 +31,7 @@
                         }
                         <form asp-controller="Shop" asp-action="Contact" method="post">
                             <div class="form-group col-md-6">
-                                <input type="text" asp-for="Name" class="form-control" placeholder="Name" required="required">
+                                <input type="text" asp-for="Name" class="form-control" placeholder="Họ tên" required="required">
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-6">
@@ -39,22 +39,22 @@
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-12">
-                                <input type="text" asp-for="Subject" class="form-control" placeholder="Subject" required="required">
+                                <input type="text" asp-for="Subject" class="form-control" placeholder="Chủ đề" required="required">
                                 <span asp-validation-for="Subject" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-12">
-                                <textarea asp-for="Message" class="form-control" rows="8" placeholder="Your Message Here" required="required"></textarea>
+                                <textarea asp-for="Message" class="form-control" rows="8" placeholder="Nội dung tin nhắn của bạn" required="required"></textarea>
                                 <span asp-validation-for="Message" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-12">
-                                <input type="submit" name="submit" class="btn btn-primary pull-right" value="Submit">
+                                <input type="submit" name="submit" class="btn btn-primary pull-right" value="Gửi">
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="contact-info">
-                        <h2 class="title text-center">Contact Info</h2>
+                        <h2 class="title text-center">Thông tin liên hệ</h2>
                         <address>
                             <p>E-Shopper Inc.</p>
                             <p>935 W. Webster Ave New Streets Chicago, IL 60614, NY</p>
@@ -64,7 +64,7 @@
                             <p>Email: info@e-shopper.com</p>
                         </address>
                         <div class="social-networks">
-                            <h2 class="title text-center">Social Networking</h2>
+                            <h2 class="title text-center">Mạng xã hội</h2>
                             <ul>
                                 <li>
                                     <a href="#"><i class="fa fa-facebook"></i></a>

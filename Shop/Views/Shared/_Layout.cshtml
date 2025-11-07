@@ -34,16 +34,16 @@
         <!-- NAVIGATION -->
         <nav class="mainmenu">
             <ul class="nav">
-                <li><a asp-controller="Shop" asp-action="Index" class="active">Home</a></li>
+                <li><a asp-controller="Shop" asp-action="Index" class="active">Trang chủ</a></li>
                 <li class="dropdown">
-                    <a asp-controller="Shop" asp-action="Shop">Shop <i class="fa fa-angle-down"></i></a>
+                    <a asp-controller="Shop" asp-action="Shop">Cửa hàng <i class="fa fa-angle-down"></i></a>
                     <ul role="menu" class="sub-menu">
-                        <li><a asp-controller="Shop" asp-action="Shop">Products</a></li>
-                        <li><a asp-controller="Shop" asp-action="Cart">Cart</a></li>
-                        <li><a asp-controller="Shop" asp-action="Checkout">Checkout</a></li>
+                        <li><a asp-controller="Shop" asp-action="Shop">Sản phẩm</a></li>
+                        <li><a asp-controller="Shop" asp-action="Cart">Giỏ hàng</a></li>
+                        <li><a asp-controller="Shop" asp-action="Checkout">Thanh toán</a></li>
                     </ul>
                 </li>
-                <li><a asp-controller="Shop" asp-action="Contact">Contact</a></li>
+                <li><a asp-controller="Shop" asp-action="Contact">Liên hệ</a></li>
             </ul>
         </nav>
 
@@ -52,14 +52,14 @@
             <!-- SEARCH -->
             <div class="search_box">
                 <form asp-controller="Shop" asp-action="Shop" method="get" class="search-form">
-                    <input type="text" name="search" placeholder="Search products..." value="@searchTerm" />
+                    <input type="text" name="search" placeholder="Tìm kiếm sản phẩm..." value="@searchTerm" />
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>
 
             <!-- CART ICON -->
             <div class="cart-icon position-relative">
-                <a asp-controller="Shop" asp-action="Checkout" class="text-dark position-relative">
+                <a asp-controller="Shop" asp-action="Checkout" class="text-white position-relative">
                     <i class="fa fa-shopping-cart fa-lg"></i>
                     <span class="cart-count badge bg-warning text-dark position-absolute top-0 start-100 translate-middle rounded-pill" style="font-size:0.7rem;">
                         0
@@ -71,13 +71,13 @@
             @if (User?.Identity?.IsAuthenticated == true)
             {
                 <a asp-controller="Account" asp-action="Logout" class="btn-login">
-                    <i class="fa fa-sign-out"></i> Logout (@User.Identity.Name)
+                    <i class="fa fa-sign-out"></i> Đăng xuất (@User.Identity.Name)
                 </a>
             }
             else
             {
                 <a asp-controller="Account" asp-action="Login" class="btn-login">
-                    <i class="fa fa-lock"></i> Sign In / Sign Up
+                    <i class="fa fa-lock"></i> Đăng nhập / Đăng ký
                 </a>
             }
         </div>
@@ -110,11 +110,11 @@
 
             <button class="carousel-control-prev" type="button" data-bs-target="#slider-carousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+                <span class="visually-hidden">Trước</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#slider-carousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+                <span class="visually-hidden">Sau</span>
             </button>
         </div>
     </section>

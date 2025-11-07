@@ -1,467 +1,467 @@
 {
   "Files": [
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\Shop.bundle.scp.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\Shop.bundle.scp.css",
       "PackagePath": "staticwebassets\\Shop.bundle.scp.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\admin.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\admin.css",
       "PackagePath": "staticwebassets\\css\\admin.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\animate.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\animate.css",
       "PackagePath": "staticwebassets\\css\\animate.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\bootstrap.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\css\\bootstrap.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\font-awesome.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\font-awesome.min.css",
       "PackagePath": "staticwebassets\\css\\font-awesome.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\header.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\header.css",
       "PackagePath": "staticwebassets\\css\\header.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\main.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\main.css",
       "PackagePath": "staticwebassets\\css\\main.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\prettyPhoto.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\prettyPhoto.css",
       "PackagePath": "staticwebassets\\css\\prettyPhoto.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\price-range.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\price-range.css",
       "PackagePath": "staticwebassets\\css\\price-range.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\css\\responsive.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\css\\responsive.css",
       "PackagePath": "staticwebassets\\css\\responsive.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\favicon.ico",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\fonts\\FontAwesome.otf",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\fonts\\FontAwesome.otf",
       "PackagePath": "staticwebassets\\fonts\\FontAwesome.otf"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\fonts\\fontawesome-webfont.svg",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\fonts\\fontawesome-webfont.svg",
       "PackagePath": "staticwebassets\\fonts\\fontawesome-webfont.svg"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\fonts\\fontawesome-webfont.woff",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\fonts\\fontawesome-webfont.woff",
       "PackagePath": "staticwebassets\\fonts\\fontawesome-webfont.woff"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\fonts\\glyphicons-halflings-regular.svg",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\fonts\\glyphicons-halflings-regular.svg",
       "PackagePath": "staticwebassets\\fonts\\glyphicons-halflings-regular.svg"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\fonts\\glyphicons-halflings-regular.woff",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\fonts\\glyphicons-halflings-regular.woff",
       "PackagePath": "staticwebassets\\fonts\\glyphicons-halflings-regular.woff"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\1.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\1.jfif",
       "PackagePath": "staticwebassets\\images\\home\\1.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\2.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\2.jfif",
       "PackagePath": "staticwebassets\\images\\home\\2.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\3.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\3.jfif",
       "PackagePath": "staticwebassets\\images\\home\\3.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\4.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\4.jfif",
       "PackagePath": "staticwebassets\\images\\home\\4.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\5.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\5.jfif",
       "PackagePath": "staticwebassets\\images\\home\\5.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\6.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\6.jfif",
       "PackagePath": "staticwebassets\\images\\home\\6.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\7.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\7.jfif",
       "PackagePath": "staticwebassets\\images\\home\\7.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\anh.jpg",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\anh.jpg",
       "PackagePath": "staticwebassets\\images\\home\\anh.jpg"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\bg_border.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\bg_border.png",
       "PackagePath": "staticwebassets\\images\\home\\bg_border.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe1.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe1.png",
       "PackagePath": "staticwebassets\\images\\home\\iframe1.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe2.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe2.png",
       "PackagePath": "staticwebassets\\images\\home\\iframe2.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe3.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe3.png",
       "PackagePath": "staticwebassets\\images\\home\\iframe3.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe4.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\iframe4.png",
       "PackagePath": "staticwebassets\\images\\home\\iframe4.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\logo.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\logo.png",
       "PackagePath": "staticwebassets\\images\\home\\logo.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\logo1.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\logo1.png",
       "PackagePath": "staticwebassets\\images\\home\\logo1.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\map.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\map.png",
       "PackagePath": "staticwebassets\\images\\home\\map.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\pump.jpg",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\pump.jpg",
       "PackagePath": "staticwebassets\\images\\home\\pump.jpg"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\searchicon.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\searchicon.png",
       "PackagePath": "staticwebassets\\images\\home\\searchicon.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\sleep.jpg",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\sleep.jpg",
       "PackagePath": "staticwebassets\\images\\home\\sleep.jpg"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_1.webp",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_1.webp",
       "PackagePath": "staticwebassets\\images\\home\\slider_1.webp"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_2.webp",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_2.webp",
       "PackagePath": "staticwebassets\\images\\home\\slider_2.webp"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_3.webp",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_3.webp",
       "PackagePath": "staticwebassets\\images\\home\\slider_3.webp"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_4.webp",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\slider_4.webp",
       "PackagePath": "staticwebassets\\images\\home\\slider_4.webp"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\home\\tent.jpg",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\home\\tent.jpg",
       "PackagePath": "staticwebassets\\images\\home\\tent.jpg"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\35cb6007-c12c-42dd-b998-4c4629794956.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\35cb6007-c12c-42dd-b998-4c4629794956.jfif",
       "PackagePath": "staticwebassets\\images\\products\\35cb6007-c12c-42dd-b998-4c4629794956.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\675af2b3-2da3-4cfc-a9f8-fc509b95ae5b.png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\675af2b3-2da3-4cfc-a9f8-fc509b95ae5b.png",
       "PackagePath": "staticwebassets\\images\\products\\675af2b3-2da3-4cfc-a9f8-fc509b95ae5b.png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\792084a1-ac10-4e22-bb4d-39816f480b1a.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\792084a1-ac10-4e22-bb4d-39816f480b1a.jfif",
       "PackagePath": "staticwebassets\\images\\products\\792084a1-ac10-4e22-bb4d-39816f480b1a.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\7e4a0c27-0f0e-4f82-8a95-b51b369e11af.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\7e4a0c27-0f0e-4f82-8a95-b51b369e11af.jfif",
       "PackagePath": "staticwebassets\\images\\products\\7e4a0c27-0f0e-4f82-8a95-b51b369e11af.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (4).png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (4).png",
       "PackagePath": "staticwebassets\\images\\products\\Screenshot (4).png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (6).png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (6).png",
       "PackagePath": "staticwebassets\\images\\products\\Screenshot (6).png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (7).png",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\Screenshot (7).png",
       "PackagePath": "staticwebassets\\images\\products\\Screenshot (7).png"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\anh.jpg",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\anh.jpg",
       "PackagePath": "staticwebassets\\images\\products\\anh.jpg"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\cc5f373d-11d6-46e1-9535-7e1aa580c439.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\cc5f373d-11d6-46e1-9535-7e1aa580c439.jfif",
       "PackagePath": "staticwebassets\\images\\products\\cc5f373d-11d6-46e1-9535-7e1aa580c439.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\images\\products\\efda411c-1b7c-4063-beb2-640df76ed53a.jfif",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\images\\products\\efda411c-1b7c-4063-beb2-640df76ed53a.jfif",
       "PackagePath": "staticwebassets\\images\\products\\efda411c-1b7c-4063-beb2-640df76ed53a.jfif"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\bootstrap.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\bootstrap.min.js",
       "PackagePath": "staticwebassets\\js\\bootstrap.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\contact.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\contact.js",
       "PackagePath": "staticwebassets\\js\\contact.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\gmaps.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\gmaps.js",
       "PackagePath": "staticwebassets\\js\\gmaps.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\html5shiv.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\html5shiv.js",
       "PackagePath": "staticwebassets\\js\\html5shiv.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\jquery.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\jquery.js",
       "PackagePath": "staticwebassets\\js\\jquery.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\jquery.prettyPhoto.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\jquery.prettyPhoto.js",
       "PackagePath": "staticwebassets\\js\\jquery.prettyPhoto.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\jquery.scrollUp.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\jquery.scrollUp.min.js",
       "PackagePath": "staticwebassets\\js\\jquery.scrollUp.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\main.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\main.js",
       "PackagePath": "staticwebassets\\js\\main.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\js\\price-range.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\js\\price-range.js",
       "PackagePath": "staticwebassets\\js\\price-range.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\LICENSE",
       "PackagePath": "staticwebassets\\lib\\bootstrap"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\dist\\jquery.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
     },
     {
-      "Id": "D:\\Backend\\New folder\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "Id": "F:\\F8\\test\\ShopSln\\Shop\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {

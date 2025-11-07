@@ -8,18 +8,18 @@
         <div class="breadcrumbs">
             <ol class="breadcrumb">
                 <li><a href="#">Home</a></li>
-                <li class="active">Shopping Cart</li>
+                <li class="active">Giỏ hàng</li>
             </ol>
         </div>
         <div class="table-responsive cart_info">
             <table class="table table-condensed">
                 <thead>
                     <tr class="cart_menu">
-                        <td class="image">Item</td>
+                        <td class="image">Sản phẩm</td>
                         <td class="description"></td>
-                        <td class="price">Price</td>
-                        <td class="quantity">Quantity</td>
-                        <td class="total">Total</td>
+                        <td class="price">Giá</td>
+                        <td class="quantity">Số lượng</td>
+                        <td class="total">Thành tiền</td>
                         <td></td>
                     </tr>
                 </thead>
@@ -34,7 +34,7 @@
                                 </td>
                                 <td class="cart_description">
                                     <h4><a href="">@item.ProductName</a></h4>
-                                    <p>Web ID: @item.ProductId</p>
+                                    <p>Mã SP: @item.ProductId</p>
                                 </td>
                                 <td class="cart_price">
                                     <p>$@item.UnitPrice</p>
@@ -59,8 +59,8 @@
                     {
                         <tr>
                             <td colspan="6" class="text-center">
-                                <p>Your cart is empty</p>
-                                <a href="@Url.Action("Shop", "Shop")" class="btn btn-default">Continue Shopping</a>
+                                <p>Giỏ hàng của bạn đang trống</p>
+                                <a href="@Url.Action("Shop", "Shop")" class="btn btn-default">Tiếp tục mua sắm</a>
                             </td>
                         </tr>
                     }
@@ -76,8 +76,8 @@
     <section id="do_action">
         <div class="container">
             <div class="heading">
-                <h3>What would you like to do next?</h3>
-                <p>Choose if you have a discount code or reward points you want to use or would like to estimate your delivery cost.</p>
+                <h3>Bạn muốn làm gì tiếp theo?</h3>
+                <p>Chọn nếu bạn có mã giảm giá hoặc điểm thưởng muốn sử dụng hoặc muốn ước tính chi phí vận chuyển.</p>
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -85,20 +85,20 @@
                         <ul class="user_option">
                             <li>
                                 <input type="checkbox">
-                                <label>Use Coupon Code</label>
+                                <label>Sử dụng mã giảm giá</label>
                             </li>
                             <li>
                                 <input type="checkbox">
-                                <label>Use Gift Voucher</label>
+                                <label>Sử dụng phiếu quà tặng</label>
                             </li>
                             <li>
                                 <input type="checkbox">
-                                <label>Estimate Shipping & Taxes</label>
+                                <label>Ước tính phí vận chuyển & thuế</label>
                             </li>
                         </ul>
                         <ul class="user_info">
                             <li class="single_field">
-                                <label>Country:</label>
+                                <label>Quốc gia:</label>
                                 <select>
                                     <option>United States</option>
                                     <option>Bangladesh</option>
@@ -112,7 +112,7 @@
 
                             </li>
                             <li class="single_field">
-                                <label>Region / State:</label>
+                                <label>Tỉnh / Thành phố:</label>
                                 <select>
                                     <option>Select</option>
                                     <option>Dhaka</option>
@@ -126,24 +126,24 @@
 
                             </li>
                             <li class="single_field zip-field">
-                                <label>Zip Code:</label>
+                                <label>Mã bưu điện:</label>
                                 <input type="text">
                             </li>
                         </ul>
-                        <a class="btn btn-default update" href="">Get Quotes</a>
-                        <a class="btn btn-default check_out" href="">Continue</a>
+                        <a class="btn btn-default update" href="">Lấy báo giá</a>
+                        <a class="btn btn-default check_out" href="">Tiếp tục</a>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="total_area">
                         <ul>
-                            <li>Cart Sub Total <span>$@Model.Sum(x => x.TotalPrice)</span></li>
-                            <li>Eco Tax <span>$2</span></li>
-                            <li>Shipping Cost <span>Free</span></li>
-                            <li>Total <span>$@(Model.Sum(x => x.TotalPrice) + 2)</span></li>
+                            <li>Tạm tính <span>$@Model.Sum(x => x.TotalPrice)</span></li>
+                            <li>Thuế <span>$2</span></li>
+                            <li>Phí vận chuyển <span>Miễn phí</span></li>
+                            <li>Tổng cộng <span>$@(Model.Sum(x => x.TotalPrice) + 2)</span></li>
                         </ul>
-                        <a class="btn btn-default update" href="">Update</a>
-                        <a class="btn btn-default check_out" href="@Url.Action("Checkout", "Shop")">Check Out</a>
+                        <a class="btn btn-default update" href="">Cập nhật</a>
+                        <a class="btn btn-default check_out" href="@Url.Action("Checkout", "Shop")">Thanh toán</a>
                     </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                         if (response.success) {
                             location.reload();
                         } else {
-                            alert('Error updating cart');
+                            alert('Lỗi khi cập nhật giỏ hàng');
                         }
                     },
                     error: function() {
@@ -204,7 +204,7 @@
                         if (response.success) {
                             location.reload();
                         } else {
-                            alert('Error removing item from cart');
+                            alert('Lỗi khi xóa sản phẩm khỏi giỏ hàng');
                         }
                     },
                     error: function() {

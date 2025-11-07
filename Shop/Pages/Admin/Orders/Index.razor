@@ -1,0 +1,191 @@
+@page "/admin/orders"
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.JSInterop
+@using Shop.Models
+
+@inject AppDbContext Db
+@inject IJSRuntime JsRuntime
+
+<h4>Quản lý đơn hàng</h4>
+
+@if (OrderData == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <div class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <select class="form-select" value="@selectedStatus" @onchange="HandleStatusChange">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Pending">Chờ xử lý</option>
+                    <option value="Processing">Đang xử lý</option>
+                    <option value="Shipped">Đã giao hàng</option>
+                    <option value="Delivered">Đã nhận hàng</option>
+                    <option value="Cancelled">Đã hủy</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng..." value="@searchTerm" @oninput="HandleSearchInput" />
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-success">
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Khách hàng</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th style="width:15%">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!OrderData.Any())
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Không có đơn hàng nào</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var order in OrderData)
+                {
+                    <tr>
+                        <td>@order.OrderNumber</td>
+                        <td>@order.CustomerName</td>
+                        <td>@order.CustomerEmail</td>
+                        <td>@order.CustomerPhone</td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@string.Format("{0:N0} ₫", order.TotalAmount)</td>
+                        <td>
+                            <span class="badge @GetStatusBadgeClass(order.Status)">@GetStatusText(order.Status)</span>
+                        </td>
+                        <td>
+                            <NavLink class="btn btn-info btn-sm me-2" href="@($"/admin/orders/details/{order.OrderId}")">
+                                <i class="fa-solid fa-eye"></i> Chi tiết
+                            </NavLink>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@(_pageNumber == 1)">« Trước</button>
+        <span>Trang @_pageNumber / @_totalPages</span>
+        <button class="btn btn-secondary" @onclick="NextPage" disabled="@(_pageNumber == _totalPages)">Tiếp »</button>
+    </div>
+}
+
+@code {
+    private List<Order>? OrderData;
+    private int _pageNumber = 1;
+    private int _pageSize = 10;
+    private int _totalPages = 1;
+    private string selectedStatus = "";
+    private string searchTerm = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPage();
+    }
+
+    private async Task LoadPage()
+    {
+        var query = Db.Orders.AsQueryable();
+
+        // Lọc theo trạng thái
+        if (!string.IsNullOrEmpty(selectedStatus))
+        {
+            query = query.Where(o => o.Status == selectedStatus);
+        }
+
+        // Tìm kiếm
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            query = query.Where(o => 
+                o.OrderNumber.Contains(searchTerm) || 
+                o.CustomerName.Contains(searchTerm) ||
+                o.CustomerEmail.Contains(searchTerm) ||
+                o.CustomerPhone.Contains(searchTerm));
+        }
+
+        var totalOrders = await query.CountAsync();
+        _totalPages = (int)Math.Ceiling(totalOrders / (double)_pageSize);
+        if (_totalPages == 0) _totalPages = 1;
+
+        OrderData = await query
+            .OrderByDescending(o => o.OrderDate)
+            .Skip((_pageNumber - 1) * _pageSize)
+            .Take(_pageSize)
+            .ToListAsync();
+    }
+
+    private async Task HandleStatusChange(ChangeEventArgs e)
+    {
+        selectedStatus = e.Value?.ToString() ?? "";
+        _pageNumber = 1;
+        await LoadPage();
+    }
+
+    private async Task HandleSearchInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString() ?? "";
+        _pageNumber = 1;
+        await LoadPage();
+    }
+
+    private async Task NextPage()
+    {
+        if (_pageNumber < _totalPages)
+        {
+            _pageNumber++;
+            await LoadPage();
+        }
+    }
+
+    private async Task PreviousPage()
+    {
+        if (_pageNumber > 1)
+        {
+            _pageNumber--;
+            await LoadPage();
+        }
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning",
+            "Processing" => "bg-info",
+            "Shipped" => "bg-primary",
+            "Delivered" => "bg-success",
+            "Cancelled" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusText(string status)
+    {
+        return status switch
+        {
+            "Pending" => "Chờ xử lý",
+            "Processing" => "Đang xử lý",
+            "Shipped" => "Đã giao hàng",
+            "Delivered" => "Đã nhận hàng",
+            "Cancelled" => "Đã hủy",
+            _ => status
+        };
+    }
+}
+

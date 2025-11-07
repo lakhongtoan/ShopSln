@@ -14,13 +14,13 @@
         <div class="row">
             <div class="col-sm-3">
                 <div class="left-sidebar">
-                    <h2>Category</h2>
+                    <h2>Danh mục</h2>
                     <div class="panel-group category-products" id="accordian">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a asp-controller="Shop" asp-action="Shop">
-                                        All Products
+                                        Tất cả sản phẩm
                                     </a>
                                 </h4>
                             </div>
@@ -44,7 +44,7 @@
 
                     <div class="brands_products">
                         <!--brands_products-->
-                        <h2>Brands</h2>
+                        <h2>Thương hiệu</h2>
                         <div class="brands-name">
                             <ul class="nav nav-pills nav-stacked">
                                 <li><a href="#"> <span class="pull-right">(50)</span>Acne</a></li>
@@ -61,7 +61,7 @@
 
                     <div class="price-range">
                         <!--price-range-->
-                        <h2>Price Range</h2>
+                        <h2>Khoảng giá</h2>
                         <div class="well text-center">
                             <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2"><br />
                             <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
@@ -86,7 +86,7 @@
                     <!--features_items-->
 
                                     <section class="shop-items-section">
-                        <h2 class="title text-center">Shop Items</h2>
+                        <h2 class="title text-center">Sản phẩm</h2>
                         <div class="col-sm-12">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tshirt" data-toggle="tab">T-Shirt</a></li>
@@ -110,7 +110,7 @@
                                             <h2>$@product.Price</h2>
                                             <p>@product.Name</p>
                                             <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
-                                                <i class="fa fa-shopping-cart"></i>Add to cart
+                                                <i class="fa fa-shopping-cart"></i>Thêm vào giỏ
                                             </a>
                                         </div>
                                         <div class="product-overlay">
@@ -118,7 +118,7 @@
                                                 <h2>$@product.Price</h2>
                                                 <p>@product.Name</p>
                                                 <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
-                                                    <i class="fa fa-shopping-cart"></i>Add to cart
+                                                    <i class="fa fa-shopping-cart"></i>Thêm vào giỏ
                                                 </a>
                                             </div>
                                         </div>
@@ -126,11 +126,11 @@
                                     <div class="choose">
                                         <ul class="nav-pills nav-justified">
                                         <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
-                                                <i class="fa fa-shopping-cart"></i>Buy
+                                                <i class="fa fa-shopping-cart"></i>Mua ngay
                                             </a>
                                             <li>
                                                 <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.ProductID">
-                                                    <i class="fa fa-plus-square"></i> see details
+                                                    <i class="fa fa-plus-square"></i> Xem chi tiết
                                                 </a>
                                             </li>
                                         </ul>
@@ -142,7 +142,7 @@
                     else
                     {
                         <div class="col-sm-12">
-                            <p class="text-center">No products found.</p>
+                            <p class="text-center">Không tìm thấy sản phẩm.</p>
                         </div>
                     }
                 </div>
@@ -188,13 +188,13 @@
                     success: function(response) {
                         if (response.success) {
                             $('.cart-count').text(response.cartCount);
-                            alert('Product added to cart!');
+                            alert('Đã thêm sản phẩm vào giỏ hàng!');
                         } else {
                             alert(response.message);
                         }
                     },
                     error: function() {
-                        alert('Error adding product to cart');
+                        alert('Lỗi khi thêm sản phẩm vào giỏ hàng');
                     }
                 });
             });
