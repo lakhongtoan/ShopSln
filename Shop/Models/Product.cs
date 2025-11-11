@@ -11,8 +11,9 @@ namespace Shop.Models
         [Required(ErrorMessage = "Vui lòng chọn danh mục")]
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
+
         [ForeignKey("Brand")]
-        public int? BrandId { get; set; }   // Khóa ngoại đến bảng Brand (có thể null)
+        public int? BrandId { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập tên sản phẩm")]
         [StringLength(200)]

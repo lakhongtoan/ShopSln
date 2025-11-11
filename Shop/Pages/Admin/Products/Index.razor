@@ -1,10 +1,4 @@
 ﻿@page "/admin/products"
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.EntityFrameworkCore
-@using Microsoft.JSInterop
-@using Shop.Models
-
 @inject AppDbContext Db
 @inject IJSRuntime JsRuntime
 
@@ -27,7 +21,7 @@ else
             <th>Ngày tạo</th>
             <th>Người cập nhật</th>
             <th>Ngày cập nhật</th>
-            <th style="width:20%"></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -79,13 +73,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await UpdateData();
         await LoadPage();
-    }
-
-    private async Task UpdateData()
-    {
-        ProductData = await Db.Products.Include(p => p.Category).ToListAsync();
     }
 
     private async Task LoadPage()
@@ -136,7 +124,6 @@ else
                 _pageNumber--;
             }
 
-            await UpdateData();
             await LoadPage();
         }
     }

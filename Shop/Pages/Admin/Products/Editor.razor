@@ -1,0 +1,169 @@
+﻿@page "/admin/products/edit/{Id:long}"
+@page "/admin/products/create"
+@inject AppDbContext Db
+@inject AuthenticationStateProvider Auth
+@inject NavigationManager Nav
+
+<h3 class="text-center p-2 rounded">
+    @TitleText Sản phẩm
+</h3>
+
+<EditForm Model="Product" OnValidSubmit="SaveProduct">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    @if (Product.ProductID != 0)
+    {
+        <div class="form-group">
+            <label>ID</label>
+            <input class="form-control" disabled value="@Product.ProductID" />
+        </div>
+    }
+
+    <div class="form-group">
+        <label>Tên sản phẩm</label>
+        <ValidationMessage For="@(() => Product.Name)" />
+        <InputText class="form-control" @bind-Value="Product.Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Mô tả</label>
+        <InputTextArea class="form-control" @bind-Value="Product.Description" Rows="3" />
+    </div>
+
+    <div class="form-group">
+        <label>Giá</label>
+        <InputNumber class="form-control" @bind-Value="Product.Price" />
+    </div>
+
+    <div class="form-group">
+        <label>Giá KM (nếu có)</label>
+        <InputNumber class="form-control" @bind-Value="Product.SalePrice" />
+    </div>
+
+    <div class="form-group">
+        <label>Ảnh sản phẩm</label>
+        <InputFile OnChange="HandleFileSelected" />
+        @if (!string.IsNullOrEmpty(Product.Image))
+        {
+            <div class="mt-2">
+                <img src="@Product.Image" alt="Ảnh sản phẩm" style="max-width:100px; max-height:100px;" />
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(UploadError))
+        {
+            <div class="text-danger mt-1">@UploadError</div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label>Danh mục</label>
+        @if (Categories != null)
+        {
+            <InputSelect class="form-select" @bind-Value="Product.CategoryId">
+                <option value="">-- Chọn danh mục --</option>
+                @foreach (var c in Categories)
+                {
+                    <option value="@c.CategoryId">@c.Name</option>
+                }
+            </InputSelect>
+        }
+        else
+        {
+            <p><em>Đang tải...</em></p>
+        }
+    </div>
+
+    <div class="form-check">
+        <InputCheckbox class="form-check-input" @bind-Value="Product.IsActive" />
+        <label class="form-check-label">Kích hoạt</label>
+    </div>
+
+    <div class="form-check">
+        <InputCheckbox class="form-check-input" @bind-Value="Product.IsFeatured" />
+        <label class="form-check-label">Sản phẩm nổi bật</label>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-@ThemeColor">Lưu</button>
+        <NavLink class="btn btn-secondary ms-2" href="/admin/products">Hủy</NavLink>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public long Id { get; set; }
+    private Product Product { get; set; } = new();
+    private List<Category>? Categories;
+    private IBrowserFile? SelectedFile;
+    private string? UploadError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await Db.Categories.ToListAsync();
+
+        if (Id != 0)
+            Product = await Db.Products.FirstOrDefaultAsync(p => p.ProductID == Id) ?? new();
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        SelectedFile = e.File;
+    }
+
+    private async Task SaveProduct()
+    {
+        var user = (await Auth.GetAuthenticationStateAsync()).User;
+        string userName = user.Identity?.Name ?? "Anonymous";
+
+        // ✅ upload ảnh nếu có
+        if (SelectedFile != null)
+        {
+            try
+            {
+                const long maxFileSize = 10_000_000; // 10MB
+                if (SelectedFile.Size > maxFileSize)
+                {
+                    UploadError = "File quá lớn (≤10MB)";
+                    return;
+                }
+
+                var fileName = Path.GetFileName(SelectedFile.Name);
+                var folder = Path.Combine("wwwroot", "images", "products");
+                Directory.CreateDirectory(folder);
+
+                var filePath = Path.Combine(folder, fileName);
+                await using var fs = new FileStream(filePath, FileMode.Create);
+                await SelectedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+
+                Product.Image = $"/images/products/{fileName}";
+                UploadError = null;
+            }
+            catch (Exception ex)
+            {
+                UploadError = "Lỗi upload: " + ex.Message;
+                return;
+            }
+        }
+
+        if (Id == 0)
+        {
+            // ✅ thêm mới
+            Product.CreatedAt = DateTime.Now;
+            Product.CreatedBy = userName;
+            await Db.Products.AddAsync(Product);
+        }
+        else
+        {
+            // ✅ cập nhật
+            Product.UpdatedAt = DateTime.Now;
+            Product.UpdatedBy = userName;
+            Db.Products.Update(Product);
+        }
+
+        await Db.SaveChangesAsync();
+        Nav.NavigateTo("/admin/products");
+    }
+
+    private string ThemeColor => Id == 0 ? "primary" : "warning";
+    private string TitleText => Id == 0 ? "Thêm" : "Chỉnh Sửa";
+}

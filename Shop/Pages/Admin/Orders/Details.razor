@@ -1,7 +1,4 @@
 @page "/admin/orders/details/{id:int}"
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.EntityFrameworkCore
 @using Shop.Models
 
@@ -17,7 +14,9 @@
 else
 {
     <div class="row">
+        <!-- Cột trái -->
         <div class="col-md-8">
+            <!-- Thông tin đơn hàng -->
             <div class="card mb-3">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Thông tin đơn hàng</h5>
@@ -34,7 +33,9 @@ else
                     <div class="row mb-2">
                         <div class="col-md-4"><strong>Trạng thái:</strong></div>
                         <div class="col-md-8">
-                            <span class="badge @GetStatusBadgeClass(order.Status)">@GetStatusText(order.Status)</span>
+                            <span class="badge @GetStatusBadgeClass(order.Status)">
+                                @GetStatusText(order.Status)
+                            </span>
                         </div>
                     </div>
                     @if (order.ShippedDate.HasValue)
@@ -61,6 +62,7 @@ else
                 </div>
             </div>
 
+            <!-- Thông tin khách hàng -->
             <div class="card mb-3">
                 <div class="card-header bg-info text-white">
                     <h5 class="mb-0">Thông tin khách hàng</h5>
@@ -92,6 +94,7 @@ else
                 </div>
             </div>
 
+            <!-- Chi tiết sản phẩm -->
             <div class="card mb-3">
                 <div class="card-header bg-success text-white">
                     <h5 class="mb-0">Chi tiết sản phẩm</h5>
@@ -129,7 +132,9 @@ else
             </div>
         </div>
 
+        <!-- Cột phải -->
         <div class="col-md-4">
+            <!-- Tổng tiền -->
             <div class="card mb-3">
                 <div class="card-header bg-warning text-dark">
                     <h5 class="mb-0">Tổng thanh toán</h5>
@@ -155,6 +160,7 @@ else
                 </div>
             </div>
 
+            <!-- Form cập nhật trạng thái -->
             <div class="card">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0">Cập nhật trạng thái</h5>
@@ -198,63 +204,53 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        order = await Db.Orders.FindAsync(id);
+        // 👉 Load đầy đủ cả Order + OrderItems trong 1 query để tránh null
+        order = await Db.Orders
+            .Include(o => o.OrderItems)
+            .FirstOrDefaultAsync(o => o.OrderId == id);
+
         if (order != null)
-        {
-            orderItems = await Db.OrderItems
-                .Where(oi => oi.OrderId == id)
-                .ToListAsync();
-        }
+            orderItems = order.OrderItems.ToList();
     }
 
     private async Task HandleUpdateStatus()
     {
         if (order == null) return;
 
-        // Cập nhật ngày giao hàng và nhận hàng dựa trên trạng thái
+        // 👉 Logic tự động set ngày
         if (order.Status == "Shipped" && !order.ShippedDate.HasValue)
-        {
             order.ShippedDate = DateTime.Now;
-        }
         else if (order.Status == "Delivered" && !order.DeliveredDate.HasValue)
         {
             order.DeliveredDate = DateTime.Now;
             if (!order.ShippedDate.HasValue)
-            {
                 order.ShippedDate = DateTime.Now;
-            }
         }
 
         Db.Orders.Update(order);
         await Db.SaveChangesAsync();
 
+        // 👉 Sau khi cập nhật, quay lại danh sách đơn hàng
         Nav.NavigateTo("/admin/orders");
     }
 
-    private string GetStatusBadgeClass(string status)
+    private string GetStatusBadgeClass(string status) => status switch
     {
-        return status switch
-        {
-            "Pending" => "bg-warning",
-            "Processing" => "bg-info",
-            "Shipped" => "bg-primary",
-            "Delivered" => "bg-success",
-            "Cancelled" => "bg-danger",
-            _ => "bg-secondary"
-        };
-    }
+        "Pending" => "bg-warning",
+        "Processing" => "bg-info",
+        "Shipped" => "bg-primary",
+        "Delivered" => "bg-success",
+        "Cancelled" => "bg-danger",
+        _ => "bg-secondary"
+    };
 
-    private string GetStatusText(string status)
+    private string GetStatusText(string status) => status switch
     {
-        return status switch
-        {
-            "Pending" => "Chờ xử lý",
-            "Processing" => "Đang xử lý",
-            "Shipped" => "Đã giao hàng",
-            "Delivered" => "Đã nhận hàng",
-            "Cancelled" => "Đã hủy",
-            _ => status
-        };
-    }
+        "Pending" => "Chờ xử lý",
+        "Processing" => "Đang xử lý",
+        "Shipped" => "Đã giao hàng",
+        "Delivered" => "Đã nhận hàng",
+        "Cancelled" => "Đã hủy",
+        _ => status
+    };
 }
-

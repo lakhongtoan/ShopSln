@@ -2,140 +2,65 @@
 @{
     ViewData["Title"] = "Checkout";
 }
+<h3>Thanh toán</h3>
 
-<section id="cart_items">
-    <div class="container">
-        <div class="breadcrumbs">
-            <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li class="active">Thanh toán</li>
-            </ol>
-        </div>
-        <!--/breadcrumbs-->
+<form asp-action="Checkout" method="post">
+    <label>Tên</label>
+    <input name="name" required />
+    <label>Email</label>
+    <input name="email" required />
+    <label>Điện thoại</label>
+    <input name="phone" required />
+    <label>Địa chỉ</label>
+    <input name="address" required />
 
-        <div class="step-one">
-            <h2 class="heading">Bước 1</h2>
-        </div>
-        <div class="checkout-options">
-            <h3>Người dùng mới</h3>
-            <p>Tùy chọn thanh toán</p>
-            <ul class="nav">
-                <li>
-                    <label><input type="radio"> Đăng ký tài khoản</label>
-                </li>
-                <li>
-                    <label><input type="radio"> Thanh toán không cần đăng ký</label>
-                </li>
-                <li>
-                    <a href=""><i class="fa fa-times"></i>Hủy</a>
-                </li>
-            </ul>
-        </div>
-        <!--/checkout-options-->
+    <h4>Đơn hàng của bạn</h4>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>@item.ProductName x @item.Quantity - $@item.TotalPrice</li>
+        }
+    </ul>
 
-        <div class="register-req">
-            <p>Vui lòng sử dụng Đăng ký và Thanh toán để dễ dàng truy cập lịch sử đơn hàng của bạn, hoặc sử dụng Thanh toán không cần đăng ký</p>
-        </div>
-        <!--/register-req-->
+    <table class="table table-condensed">
+        <thead>
+            <tr class="cart_menu">
+                <td class="image">Sản phẩm</td>
+                <td class="description"></td>
+                <td class="price">Giá</td>
+                <td class="quantity">Số lượng</td>
+                <td class="total">Thành tiền</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="cart_product">
+                        <img src="@item.ProductImage" alt="" style="width: 100px; height: 100px;">
+                    </td>
+                    <td class="cart_description">
+                        <h4><a href="">@item.ProductName</a></h4>
+                    </td>
+                    <td class="cart_price">
+                        <p>$@item.UnitPrice</p>
+                    </td>
+                    <td class="cart_quantity">
+                        <h4><a href="">@item.Quantity</a></h4>
+                    </td>
+                    <td class="cart_total">
+                        <p class="cart_total_price">$@item.TotalPrice</p>
+                    </td>
+                    <td class="cart_delete">
+                        <a class="cart_quantity_delete" href="#" data-cart-item-id="@item.CartItemId"><i class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-        <div class="shopper-informations">
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="shopper-info">
-                        <p>Thông tin người mua</p>
-                        <form>
-                            <input type="text" placeholder="Tên hiển thị">
-                            <input type="text" placeholder="Tên đăng nhập">
-                            <input type="password" placeholder="Mật khẩu">
-                            <input type="password" placeholder="Xác nhận mật khẩu">
-                        </form>
-                        <a class="btn btn-primary" href="">Lấy báo giá</a>
-                        <a class="btn btn-primary" href="">Tiếp tục</a>
-                    </div>
-                </div>
-                <div class="col-sm-5 clearfix">
-                    <div class="bill-to">
-                        <p>Hóa đơn gửi đến</p>
-                        <div class="form-one">
-                            <form asp-controller="Shop" asp-action="PlaceOrder" method="post">
-                                <input type="text" name="CustomerName" placeholder="Họ tên *" required>
-                                <input type="email" name="CustomerEmail" placeholder="Email *" required>
-                                <input type="text" name="CustomerPhone" placeholder="Số điện thoại *" required>
-                                <input type="text" name="ShippingAddress" placeholder="Địa chỉ giao hàng *" required>
-                                <input type="text" name="BillingAddress" placeholder="Địa chỉ thanh toán">
-                                <input type="text" name="Notes" placeholder="Ghi chú thêm">
-                                <input type="hidden" name="SubTotal" value="@Model.Sum(x => x.TotalPrice)">
-                                <input type="hidden" name="TaxAmount" value="2">
-                                <input type="hidden" name="ShippingAmount" value="0">
-                                <input type="hidden" name="TotalAmount" value="@(Model.Sum(x => x.TotalPrice) + 2)">
-                                <button type="submit" class="btn btn-default">Đặt hàng</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="order-message">
-                        <p>Đơn hàng vận chuyển</p>
-                        <textarea name="message" placeholder="Ghi chú về đơn hàng của bạn, Ghi chú đặc biệt cho việc giao hàng" rows="16"></textarea>
-                        <label><input type="checkbox"> Giao hàng đến địa chỉ hóa đơn</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="review-payment">
-            <h2>Đơn hàng của bạn</h2>
-        </div>
-
-        <div class="table-responsive cart_info">
-            <table class="table table-condensed">
-                <thead>
-                    <tr class="cart_menu">
-                        <td class="image">Sản phẩm</td>
-                        <td class="description"></td>
-                        <td class="price">Giá</td>
-                        <td class="quantity">Số lượng</td>
-                        <td class="total">Thành tiền</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="cart_product">
-                                    <a href=""><img src="@(item.ProductImage ?? "/images/home/anh.jpg")" alt="" style="width: 100px; height: 100px;"></a>
-                                </td>
-                                <td class="cart_description">
-                                    <h4><a href="">@item.ProductName</a></h4>
-                                    <p>Mã SP: @item.ProductId</p>
-                                </td>
-                                <td class="cart_price">
-                                    <p>$@item.UnitPrice</p>
-                                </td>
-                                <td class="cart_quantity">
-                                    <p>@item.Quantity</p>
-                                </td>
-                                <td class="cart_total">
-                                    <p class="cart_total_price">$@item.TotalPrice</p>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="payment-options">
-            <span>
-                <label><input type="checkbox"> Chuyển khoản trực tiếp</label>
-            </span>
-            <span>
-                <label><input type="checkbox"> Thanh toán bằng séc</label>
-            </span>
-            <span>
-                <label><input type="checkbox"> PayPal</label>
-            </span>
-        </div>
-    </div>
-</section>
+    <p>Tổng cộng: $@Model.Sum(x => x.TotalPrice)</p>
+    <button type="submit">Đặt hàng</button>
+</form>
 <!--/#cart_items-->

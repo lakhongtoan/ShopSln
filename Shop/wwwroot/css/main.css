@@ -925,7 +925,7 @@ ul.sub-menu {
 
 
 #slider {
-  padding-bottom: 45px;
+  padding-bottom: 15px;
   margin-top: 20px; /* space between header and slider */
 }
 
@@ -1235,7 +1235,6 @@ h2.title {
 .product-image-wrapper{
 	border:1px solid #080807;
 	overflow: hidden;
-	margin-bottom:30px;
 }
 
 .single-products {
@@ -1254,11 +1253,11 @@ h2.title {
 	font-size: 24px;
 	font-weight: 700;
 }
-.product-overlay h2{
-	color: #fff;
-	font-family: 'Roboto', sans-serif;
-	font-size: 24px;
-	font-weight: 700;
+.product-overlay h2 {
+    color: #080807;
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
 }
 
 
@@ -1318,11 +1317,12 @@ h2.title {
 }
 
 
-.product-overlay p{
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: #fff;
+.product-overlay p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #080807;
+    min-height: 35px;
 }
 
 
@@ -2242,7 +2242,7 @@ h2.title {
 #cart_items .cart_info .cart_menu {
   background: #607E3A;
   color: #fff;
-  font-size: 16px;
+  font-size: 12px;
   font-family: 'Roboto', sans-serif;
   font-weight: normal;
 }
@@ -2267,7 +2267,7 @@ h2.title {
 
 
 #cart_items .cart_info .image {
-  padding-left: 30px;
+  padding-left: 0px;
 }
 
 
@@ -2301,7 +2301,6 @@ h2.title {
 
 .cart_product {
   display: block;
-  margin: 15px -70px 10px 25px;
 }
 
 .cart_quantity_button a {
@@ -2329,7 +2328,6 @@ h2.title {
 
 .cart_delete  {
   display: block;
-  margin-right: -12px;
   overflow: hidden;
 }
 

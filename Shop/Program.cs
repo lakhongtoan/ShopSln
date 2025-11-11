@@ -1,6 +1,8 @@
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shop.Models;
+using Shop.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -29,6 +31,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddScoped<CartService>();
 
 var app = builder.Build();
 
@@ -40,10 +43,13 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Quan trọng: session -> authentication -> authorization
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Định tuyến
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Shop}/{action=Index}/{id?}");

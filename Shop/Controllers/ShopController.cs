@@ -71,7 +71,7 @@ namespace Shop.Controllers
             return View(products);
         }
 
-        // ========== TRANG CHI TIẾT SẢN PHẨM ==========
+        // ==================================== TRANG CHI TIẾT SẢN PHẨM ====================================
         // View: Views/Shop/Details.cshtml
         public IActionResult Details(long id)
         {
@@ -99,10 +99,13 @@ namespace Shop.Controllers
             return RedirectToAction("Details", new { id });
         }
 
-        // ========== GIỎ HÀNG ==========
+        // ==================================== GIỎ HÀNG ====================================
         public IActionResult Cart()
         {
+            // Lấy sessionId để xác định giỏ hàng của người dùng hiện tại
             var sessionId = GetSessionId();
+
+            // Include Product để có dữ liệu sản phẩm đầy đủ trong view
             var cartItems = _context.CartItems
                 .Include(ci => ci.Product)
                 .Where(ci => ci.SessionId == sessionId)
@@ -114,21 +117,26 @@ namespace Shop.Controllers
         [HttpPost]
         public IActionResult AddToCart(long productId, int quantity = 1)
         {
+            // Kiểm tra sản phẩm tồn tại và đang active
             var product = _context.Products.Find(productId);
             if (product == null || !product.IsActive)
                 return Json(new { success = false, message = "Product not found" });
 
             var sessionId = GetSessionId();
+
+            // Kiểm tra sản phẩm đã có trong giỏ chưa
             var existingItem = _context.CartItems
                 .FirstOrDefault(ci => ci.SessionId == sessionId && ci.ProductId == productId);
 
             if (existingItem != null)
             {
+                // Nếu có rồi, cộng dồn số lượng
                 existingItem.Quantity += quantity;
                 existingItem.TotalPrice = existingItem.Quantity * existingItem.UnitPrice;
             }
             else
             {
+                // Nếu chưa có, tạo mới
                 var cartItem = new CartItem
                 {
                     ProductId = productId,
@@ -138,6 +146,7 @@ namespace Shop.Controllers
                     Quantity = quantity,
                     TotalPrice = (product.SalePrice ?? product.Price) * quantity,
                     SessionId = sessionId,
+                    UserId = User.Identity.IsAuthenticated ? User.Identity.Name : "guest",
                     CreatedAt = DateTime.Now
                 };
                 _context.CartItems.Add(cartItem);
@@ -145,6 +154,7 @@ namespace Shop.Controllers
 
             _context.SaveChanges();
 
+            // Lấy tổng số lượng sản phẩm trong giỏ hàng để update badge/cart icon
             var cartCount = _context.CartItems
                 .Where(ci => ci.SessionId == sessionId)
                 .Sum(ci => ci.Quantity);
@@ -161,10 +171,12 @@ namespace Shop.Controllers
 
             if (quantity <= 0)
             {
+                // Xóa sản phẩm nếu số lượng <= 0
                 _context.CartItems.Remove(cartItem);
             }
             else
             {
+                // Cập nhật số lượng và tính lại total
                 cartItem.Quantity = quantity;
                 cartItem.TotalPrice = cartItem.Quantity * cartItem.UnitPrice;
             }
@@ -180,6 +192,7 @@ namespace Shop.Controllers
                 .Where(ci => ci.SessionId == sessionId)
                 .Sum(ci => ci.TotalPrice);
 
+            // Trả về JSON bao gồm tổng số lượng và tổng tiền
             return Json(new { success = true, cartCount = cartCount, cartTotal = cartTotal });
         }
 
@@ -201,7 +214,7 @@ namespace Shop.Controllers
             return Json(new { success = true, cartCount = cartCount });
         }
 
-        // ========== CHECKOUT ==========
+        // ================================ CHECKOUT ================================
         public IActionResult Checkout()
         {
             var sessionId = GetSessionId();
@@ -236,13 +249,14 @@ namespace Shop.Controllers
             order.TotalAmount = order.SubTotal + order.TaxAmount + order.ShippingAmount;
 
             _context.Orders.Add(order);
+            _context.SaveChanges(); // Lưu trước để order.OrderId có giá trị (quan trọng!)
 
             // Thêm chi tiết đơn hàng
             foreach (var cartItem in cartItems)
             {
                 var orderItem = new OrderItem
                 {
-                    OrderId = order.OrderId,
+                    OrderId = order.OrderId, // Lấy ID vừa lưu
                     ProductId = cartItem.ProductId,
                     ProductName = cartItem.ProductName,
                     ProductImage = cartItem.ProductImage,
@@ -256,10 +270,11 @@ namespace Shop.Controllers
             // Xóa giỏ hàng
             _context.CartItems.RemoveRange(cartItems);
 
-            _context.SaveChanges();
+            _context.SaveChanges(); // Lưu toàn bộ OrderItems + remove CartItems
 
             return RedirectToAction("OrderConfirmation", new { orderId = order.OrderId });
         }
+
 
         public IActionResult OrderConfirmation(int orderId)
         {
