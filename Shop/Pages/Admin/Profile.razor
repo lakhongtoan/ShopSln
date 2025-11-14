@@ -1,0 +1,291 @@
+@page "/admin/profile"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@inject AuthenticationStateProvider AuthStateProvider
+@inject UserManager<IdentityUser> UserManager
+@inject NavigationManager Navigation
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" @onclick="() => successMessage = null" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errorMessage
+        <button type="button" class="btn-close" @onclick="() => errorMessage = null" aria-label="Close"></button>
+    </div>
+}
+
+@if (user == null)
+{
+    <p><em>Đang tải thông tin...</em></p>
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-sm" style="width: 100%; max-width: 800px;">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4 fw-bold">Thông tin quản trị viên</h4>
+
+                @if (isEditing)
+                {
+                    <!-- Form chỉnh sửa -->
+                    <EditForm Model="editModel" OnValidSubmit="SaveProfile">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tên hiển thị</label>
+                            <InputText class="form-control" @bind-Value="editModel.DisplayName" placeholder="Nhập tên hiển thị" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email</label>
+                            <InputText type="email" class="form-control" @bind-Value="editModel.Email" placeholder="Nhập email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Số điện thoại</label>
+                            <InputText type="tel" class="form-control" @bind-Value="editModel.PhoneNumber" placeholder="Nhập số điện thoại" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Địa chỉ</label>
+                            <InputTextArea class="form-control" @bind-Value="editModel.Address" Rows="2" placeholder="Nhập địa chỉ" />
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" @onclick="CancelEdit" disabled="@isProcessing">
+                                Hủy
+                            </button>
+                            <button type="submit" class="btn btn-primary" disabled="@isProcessing">
+                                @if (isProcessing)
+                                {
+                                    <span>Đang lưu...</span>
+                                }
+                                else
+                                {
+                                    <span><i class="fa-solid fa-save me-1"></i>Lưu</span>
+                                }
+                            </button>
+                        </div>
+                    </EditForm>
+                }
+                else
+                {
+                    <!-- Hiển thị thông tin (read-only) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tên hiển thị</label>
+                        <input type="text" class="form-control bg-light" value="@displayName" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email" class="form-control bg-light" value="@(user.Email ?? "")" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Số điện thoại</label>
+                        <input type="tel" class="form-control bg-light" value="@(user.PhoneNumber ?? "")" readonly />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Địa chỉ</label>
+                        <input type="text" class="form-control bg-light" value="@userAddress" readonly />
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary" @onclick="StartEdit">
+                            <i class="fa-solid fa-pencil me-1"></i>Chỉnh sửa
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private IdentityUser? user;
+    private string? errorMessage;
+    private string? successMessage;
+    private bool isEditing = false;
+    private bool isProcessing = false;
+    private string displayName = "";
+    private string? userAddress;
+
+    // Model cho form chỉnh sửa
+    private EditProfileModel editModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserInfo();
+    }
+
+    private async Task LoadUserInfo()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var authUser = authState.User;
+
+            if (authUser.Identity != null && authUser.Identity.IsAuthenticated && !string.IsNullOrEmpty(authUser.Identity.Name))
+            {
+                user = await UserManager.FindByNameAsync(authUser.Identity.Name);
+                if (user != null)
+                {
+                    // Load claims
+                    var claims = await UserManager.GetClaimsAsync(user);
+                    
+                    // Load DisplayName từ claims, nếu không có thì dùng UserName
+                    var displayNameClaim = claims.FirstOrDefault(c => c.Type == "DisplayName");
+                    displayName = displayNameClaim?.Value ?? user.UserName ?? "";
+                    
+                    // Load address từ claims (nếu có)
+                    var addressClaim = claims.FirstOrDefault(c => c.Type == "Address");
+                    userAddress = addressClaim?.Value ?? "";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi tải thông tin: {ex.Message}";
+        }
+    }
+
+    private void StartEdit()
+    {
+        if (user != null)
+        {
+            editModel.DisplayName = displayName;
+            editModel.Email = user.Email ?? "";
+            editModel.PhoneNumber = user.PhoneNumber ?? "";
+            editModel.Address = userAddress ?? "";
+            isEditing = true;
+            errorMessage = null;
+            successMessage = null;
+        }
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+        editModel = new EditProfileModel();
+    }
+
+    private async Task SaveProfile()
+    {
+        if (user == null) return;
+
+        isProcessing = true;
+        errorMessage = null;
+        successMessage = null;
+
+        try
+        {
+            // Validate email
+            if (!string.IsNullOrWhiteSpace(editModel.Email) && !IsValidEmail(editModel.Email))
+            {
+                errorMessage = "Email không hợp lệ!";
+                isProcessing = false;
+                return;
+            }
+
+            // Kiểm tra email đã tồn tại chưa (nếu khác email hiện tại)
+            if (!string.IsNullOrWhiteSpace(editModel.Email) && user.Email != editModel.Email)
+            {
+                var existingUser = await UserManager.FindByEmailAsync(editModel.Email);
+                if (existingUser != null && existingUser.Id != user.Id)
+                {
+                    errorMessage = "Email này đã được sử dụng bởi tài khoản khác!";
+                    isProcessing = false;
+                    return;
+                }
+            }
+
+            // Cập nhật email
+            if (user.Email != editModel.Email)
+            {
+                user.Email = editModel.Email;
+                user.EmailConfirmed = false; // Đặt lại trạng thái xác nhận khi email thay đổi
+            }
+
+            // Cập nhật số điện thoại
+            user.PhoneNumber = editModel.PhoneNumber;
+
+            // Cập nhật tên hiển thị (lưu trong claims)
+            var claims = await UserManager.GetClaimsAsync(user);
+            var displayNameClaim = claims.FirstOrDefault(c => c.Type == "DisplayName");
+            
+            if (displayNameClaim != null)
+            {
+                await UserManager.ReplaceClaimAsync(user, displayNameClaim, new System.Security.Claims.Claim("DisplayName", editModel.DisplayName ?? ""));
+            }
+            else if (!string.IsNullOrWhiteSpace(editModel.DisplayName))
+            {
+                await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("DisplayName", editModel.DisplayName));
+            }
+
+            // Cập nhật địa chỉ trong claims
+            var addressClaim = claims.FirstOrDefault(c => c.Type == "Address");
+            
+            if (addressClaim != null)
+            {
+                await UserManager.ReplaceClaimAsync(user, addressClaim, new System.Security.Claims.Claim("Address", editModel.Address ?? ""));
+            }
+            else if (!string.IsNullOrWhiteSpace(editModel.Address))
+            {
+                await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("Address", editModel.Address));
+            }
+
+            // Lưu thay đổi
+            var result = await UserManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                successMessage = "Cập nhật thông tin thành công!";
+                isEditing = false;
+                await LoadUserInfo(); // Reload để hiển thị thông tin mới
+            }
+            else
+            {
+                errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi cập nhật thông tin: {ex.Message}";
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // Model class cho form chỉnh sửa
+    private class EditProfileModel
+    {
+        public string DisplayName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string PhoneNumber { get; set; } = "";
+        public string Address { get; set; } = "";
+    }
+}

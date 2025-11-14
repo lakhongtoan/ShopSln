@@ -36,7 +36,9 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item fw-bold text-muted" @onclick="GoToProfile">
+                        <a href="#" class="dropdown-item fw-bold text-muted"
+                           @onclick="GoToProfile"
+                           @onclick:preventDefault>
                             <i class="fa-solid fa-id-card me-2"></i> Thông tin Admin
                         </a>
                     </li>
@@ -70,8 +72,9 @@
 
     private void GoToProfile() => Navigation.NavigateTo("/admin/profile");
 
-    private async Task Logout()
+    private void Logout()
     {
-        Navigation.NavigateTo("/", forceLoad: true);
+        // Navigate đến endpoint logout của controller
+        Navigation.NavigateTo("/Account/Logout", forceLoad: true);
     }
 }

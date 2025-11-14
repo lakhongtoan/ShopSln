@@ -647,3 +647,14 @@ D:\Back-end\Project\ShopSln\Shop\obj\Debug\net7.0\refint\Shop.dll
 D:\Back-end\Project\ShopSln\Shop\obj\Debug\net7.0\Shop.pdb
 D:\Back-end\Project\ShopSln\Shop\obj\Debug\net7.0\Shop.genruntimeconfig.cache
 D:\Back-end\Project\ShopSln\Shop\obj\Debug\net7.0\ref\Shop.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\BrowserDebugHost.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\BrowserDebugHost.runtimeconfig.json
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\BrowserDebugProxy.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Microsoft.CodeAnalysis.CSharp.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Microsoft.CodeAnalysis.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Microsoft.CodeAnalysis.Scripting.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Microsoft.FileFormats.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Microsoft.NET.WebAssembly.Webcil.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Microsoft.SymbolStore.dll
+F:\F8\Project\ShopSln\Shop\bin\Debug\net7.0\BlazorDebugProxy\Newtonsoft.Json.dll

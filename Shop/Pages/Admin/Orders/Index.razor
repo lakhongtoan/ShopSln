@@ -7,83 +7,209 @@
 
 @inject AppDbContext Db
 @inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
 
-<h4>Quản lý đơn hàng</h4>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold">Quản lý đơn hàng</h4>
+    <div class="d-flex gap-2">
+        <select class="form-select" style="width: auto;" value="@selectedStatus" @onchange="HandleStatusChange">
+            <option value="">Tất cả trạng thái</option>
+            <option value="Pending">Chờ xử lý</option>
+            <option value="Processing">Đang xử lý</option>
+            <option value="Shipped">Đã giao hàng</option>
+            <option value="Delivered">Đã nhận hàng</option>
+            <option value="Cancelled">Đã hủy</option>
+        </select>
+        <input type="text" class="form-control" style="width: 300px;" 
+               placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng..." 
+               value="@searchTerm" @oninput="HandleSearchInput" />
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" @onclick="() => successMessage = null" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errorMessage
+        <button type="button" class="btn-close" @onclick="() => errorMessage = null" aria-label="Close"></button>
+    </div>
+}
 
 @if (OrderData == null)
 {
-    <p><em>Đang tải...</em></p>
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2 text-muted">Đang tải dữ liệu...</p>
+    </div>
 }
 else
 {
-    <div class="mb-3">
-        <div class="row">
-            <div class="col-md-4">
-                <select class="form-select" value="@selectedStatus" @onchange="HandleStatusChange">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="Pending">Chờ xử lý</option>
-                    <option value="Processing">Đang xử lý</option>
-                    <option value="Shipped">Đã giao hàng</option>
-                    <option value="Delivered">Đã nhận hàng</option>
-                    <option value="Cancelled">Đã hủy</option>
-                </select>
+    <!-- Thống kê nhanh -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Tổng đơn hàng</h6>
+                    <h4 class="mb-0">@totalOrders</h4>
+                </div>
             </div>
-            <div class="col-md-4">
-                <input type="text" class="form-control" placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng..." value="@searchTerm" @oninput="HandleSearchInput" />
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Chờ xử lý</h6>
+                    <h4 class="mb-0">@pendingCount</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Đang xử lý</h6>
+                    <h4 class="mb-0">@processingCount</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Đã hoàn thành</h6>
+                    <h4 class="mb-0">@deliveredCount</h4>
+                </div>
             </div>
         </div>
     </div>
 
-    <table class="table table-bordered table-hover text-center">
-        <thead class="table-success">
-            <tr>
-                <th>Mã đơn hàng</th>
-                <th>Khách hàng</th>
-                <th>Email</th>
-                <th>Số điện thoại</th>
-                <th>Ngày đặt</th>
-                <th>Tổng tiền</th>
-                <th>Trạng thái</th>
-                <th style="width:15%">Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!OrderData.Any())
-            {
-                <tr>
-                    <td colspan="8" class="text-center">Không có đơn hàng nào</td>
-                </tr>
-            }
-            else
-            {
-                @foreach (var order in OrderData)
-                {
-                    <tr>
-                        <td>@order.OrderNumber</td>
-                        <td>@order.CustomerName</td>
-                        <td>@order.CustomerEmail</td>
-                        <td>@order.CustomerPhone</td>
-                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@string.Format("{0:N0} ₫", order.TotalAmount)</td>
-                        <td>
-                            <span class="badge @GetStatusBadgeClass(order.Status)">@GetStatusText(order.Status)</span>
-                        </td>
-                        <td>
-                            <NavLink class="btn btn-info btn-sm me-2" href="@($"/admin/orders/details/{order.OrderId}")">
-                                <i class="fa-solid fa-eye"></i> Chi tiết
-                            </NavLink>
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-
-    <div class="d-flex justify-content-between mb-3">
-        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@(_pageNumber == 1)">« Trước</button>
-        <span>Trang @_pageNumber / @_totalPages</span>
-        <button class="btn btn-secondary" @onclick="NextPage" disabled="@(_pageNumber == _totalPages)">Tiếp »</button>
+    <!-- Bảng đơn hàng -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th class="text-center">Ngày đặt</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th class="text-center" style="width: 150px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!OrderData.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i>
+                                    Không có đơn hàng nào
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var order in OrderData)
+                            {
+                                <tr>
+                                    <td class="text-center fw-semibold">@order.OrderNumber</td>
+                                    <td>@order.CustomerName</td>
+                                    <td>@order.CustomerEmail</td>
+                                    <td>@order.CustomerPhone</td>
+                                    <td class="text-center">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-end fw-bold text-primary">@string.Format("{0:N0} ₫", order.TotalAmount)</td>
+                                    <td class="text-center">
+                                        <span class="badge @GetStatusBadgeClass(order.Status)">@GetStatusText(order.Status)</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <NavLink class="btn btn-sm btn-info" href="@($"/admin/orders/details/{order.OrderId}")" title="Xem chi tiết">
+                                                <i class="fa-solid fa-eye"></i> Chi tiết
+                                            </NavLink>
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" 
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="#" @onclick="@(() => QuickUpdateStatus(order.OrderId, "Processing"))" @onclick:preventDefault>
+                                                        <i class="fa-solid fa-spinner me-2"></i>Đang xử lý
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#" @onclick="@(() => QuickUpdateStatus(order.OrderId, "Shipped"))" @onclick:preventDefault>
+                                                        <i class="fa-solid fa-truck me-2"></i>Đã giao hàng
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#" @onclick="@(() => QuickUpdateStatus(order.OrderId, "Delivered"))" @onclick:preventDefault>
+                                                        <i class="fa-solid fa-check me-2"></i>Đã nhận hàng
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="#" @onclick="() => ConfirmDelete(order.OrderId)" @onclick:preventDefault>
+                                                        <i class="fa-solid fa-trash me-2"></i>Xóa đơn hàng
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
+    <!-- Pagination -->
+    @if (_totalPages > 1)
+    {
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="text-muted">
+                Hiển thị @((_pageNumber - 1) * _pageSize + 1) - @(Math.Min(_pageNumber * _pageSize, totalOrders)) trong tổng số @totalOrders đơn hàng
+            </div>
+            <nav>
+                <ul class="pagination mb-0">
+                    <li class="page-item @(_pageNumber == 1 ? "disabled" : "")">
+                        <button class="page-link" @onclick="PreviousPage" disabled="@(_pageNumber == 1)">« Trước</button>
+                    </li>
+                    @for (int i = Math.Max(1, _pageNumber - 2); i <= Math.Min(_totalPages, _pageNumber + 2); i++)
+                    {
+                        var pageNum = i;
+                        <li class="page-item @(_pageNumber == pageNum ? "active" : "")">
+                            <button class="page-link" @onclick="() => GoToPage(pageNum)">@pageNum</button>
+                        </li>
+                    }
+                    <li class="page-item @(_pageNumber == _totalPages ? "disabled" : "")">
+                        <button class="page-link" @onclick="NextPage" disabled="@(_pageNumber == _totalPages)">Tiếp »</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="text-muted">
+                Hiển thị @totalOrders đơn hàng
+            </div>
+            <div class="text-muted">
+                Trang @_pageNumber / @_totalPages
+            </div>
+        </div>
+    }
 }
 
 @code {
@@ -93,41 +219,77 @@ else
     private int _totalPages = 1;
     private string selectedStatus = "";
     private string searchTerm = "";
+    private string? successMessage;
+    private string? errorMessage;
+    
+    // Thống kê
+    private int totalOrders = 0;
+    private int pendingCount = 0;
+    private int processingCount = 0;
+    private int deliveredCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadPage();
+        await LoadStatistics();
+    }
+
+    private async Task LoadStatistics()
+    {
+        try
+        {
+            totalOrders = await Db.Orders.CountAsync();
+            pendingCount = await Db.Orders.CountAsync(o => o.Status == "Pending");
+            processingCount = await Db.Orders.CountAsync(o => o.Status == "Processing");
+            deliveredCount = await Db.Orders.CountAsync(o => o.Status == "Delivered");
+        }
+        catch
+        {
+            // Ignore errors in statistics
+        }
     }
 
     private async Task LoadPage()
     {
-        var query = Db.Orders.AsQueryable();
-
-        // Lọc theo trạng thái
-        if (!string.IsNullOrEmpty(selectedStatus))
+        try
         {
-            query = query.Where(o => o.Status == selectedStatus);
-        }
+            var query = Db.Orders.AsQueryable();
 
-        // Tìm kiếm
-        if (!string.IsNullOrEmpty(searchTerm))
+            // Lọc theo trạng thái
+            if (!string.IsNullOrEmpty(selectedStatus))
+            {
+                query = query.Where(o => o.Status == selectedStatus);
+            }
+
+            // Tìm kiếm
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var search = searchTerm.ToLower();
+                query = query.Where(o => 
+                    o.OrderNumber.ToLower().Contains(search) || 
+                    o.CustomerName.ToLower().Contains(search) ||
+                    o.CustomerEmail.ToLower().Contains(search) ||
+                    o.CustomerPhone.Contains(search));
+            }
+
+            var total = await query.CountAsync();
+            _totalPages = (int)Math.Ceiling(total / (double)_pageSize);
+            if (_totalPages == 0) _totalPages = 1;
+
+            OrderData = await query
+                .OrderByDescending(o => o.OrderDate)
+                .Skip((_pageNumber - 1) * _pageSize)
+                .Take(_pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+
+            totalOrders = total;
+        }
+        catch (Exception ex)
         {
-            query = query.Where(o => 
-                o.OrderNumber.Contains(searchTerm) || 
-                o.CustomerName.Contains(searchTerm) ||
-                o.CustomerEmail.Contains(searchTerm) ||
-                o.CustomerPhone.Contains(searchTerm));
+            errorMessage = $"Lỗi khi tải dữ liệu: {ex.Message}";
+            OrderData = new List<Order>();
         }
-
-        var totalOrders = await query.CountAsync();
-        _totalPages = (int)Math.Ceiling(totalOrders / (double)_pageSize);
-        if (_totalPages == 0) _totalPages = 1;
-
-        OrderData = await query
-            .OrderByDescending(o => o.OrderDate)
-            .Skip((_pageNumber - 1) * _pageSize)
-            .Take(_pageSize)
-            .ToListAsync();
     }
 
     private async Task HandleStatusChange(ChangeEventArgs e)
@@ -162,16 +324,104 @@ else
         }
     }
 
+    private async Task GoToPage(int page)
+    {
+        if (page >= 1 && page <= _totalPages)
+        {
+            _pageNumber = page;
+            await LoadPage();
+        }
+    }
+
+    private async Task QuickUpdateStatus(int orderId, string newStatus)
+    {
+        try
+        {
+            var order = await Db.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                errorMessage = "Không tìm thấy đơn hàng!";
+                return;
+            }
+
+            order.Status = newStatus;
+
+            // Tự động set ngày
+            if (newStatus == "Shipped" && !order.ShippedDate.HasValue)
+            {
+                order.ShippedDate = DateTime.Now;
+            }
+            else if (newStatus == "Delivered")
+            {
+                order.DeliveredDate = DateTime.Now;
+                if (!order.ShippedDate.HasValue)
+                    order.ShippedDate = DateTime.Now;
+            }
+
+            await Db.SaveChangesAsync();
+            successMessage = "Cập nhật trạng thái thành công!";
+            
+            await LoadPage();
+            await LoadStatistics();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi cập nhật: {ex.Message}";
+        }
+    }
+
+    private async Task ConfirmDelete(int orderId)
+    {
+        var confirmed = await JsRuntime.InvokeAsync<bool>("eval", "confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Hành động này không thể hoàn tác!')");
+        
+        if (confirmed)
+        {
+            await DeleteOrder(orderId);
+        }
+    }
+
+    private async Task DeleteOrder(int orderId)
+    {
+        try
+        {
+            var order = await Db.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                errorMessage = "Không tìm thấy đơn hàng!";
+                return;
+            }
+
+            // Xóa OrderItems trước
+            Db.OrderItems.RemoveRange(order.OrderItems);
+            
+            // Xóa Order
+            Db.Orders.Remove(order);
+            
+            await Db.SaveChangesAsync();
+            successMessage = "Xóa đơn hàng thành công!";
+            
+            await LoadPage();
+            await LoadStatistics();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi xóa đơn hàng: {ex.Message}";
+        }
+    }
+
     private string GetStatusBadgeClass(string status)
     {
         return status switch
         {
-            "Pending" => "bg-warning",
-            "Processing" => "bg-info",
-            "Shipped" => "bg-primary",
-            "Delivered" => "bg-success",
-            "Cancelled" => "bg-danger",
-            _ => "bg-secondary"
+            "Pending" => "bg-warning text-dark",
+            "Processing" => "bg-info text-white",
+            "Shipped" => "bg-primary text-white",
+            "Delivered" => "bg-success text-white",
+            "Cancelled" => "bg-danger text-white",
+            _ => "bg-secondary text-white"
         };
     }
 
@@ -188,4 +438,3 @@ else
         };
     }
 }
-
