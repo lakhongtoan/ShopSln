@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Shop.Api.Models;
 
@@ -19,5 +20,6 @@ public partial class Category
 
     public string? UpdatedBy { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Product> Products { get; } = new List<Product>();
 }

@@ -96,6 +96,8 @@
     private List<Category>? Categories;
     private IBrowserFile? SelectedFile;
     private string? UploadError;
+    private string ThemeColor => Id == 0 ? "primary" : "warning";
+    private string TitleText => Id == 0 ? "Thêm" : "Chỉnh Sửa";
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,6 +166,4 @@
         Nav.NavigateTo("/admin/products");
     }
 
-    private string ThemeColor => Id == 0 ? "primary" : "warning";
-    private string TitleText => Id == 0 ? "Thêm" : "Chỉnh Sửa";
 }

@@ -43,10 +43,10 @@ else
                 <td>@p.UpdatedBy</td>
                 <td>@p.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
-                    <NavLink class="btn btn-warning btn-sm me-2" href="@($"/admin/products/edit/{p.ProductID}")">
+                    <NavLink class="btn btn-warning btn-sm mb-2" href="@($"/admin/products/edit/{p.ProductID}")">
                         <i class="fa-solid fa-pen"></i> Sửa
                     </NavLink>
-                    <button class="btn btn-danger btn-sm" @onclick="async () => await DeleteProduct(p)">
+                    <button class="btn btn-danger btn-sm mb-2" @onclick="async () => await DeleteProduct(p)">
                         <i class="fa-solid fa-trash"></i> Xóa
                     </button>
                 </td>

@@ -26,7 +26,7 @@
     <div class="container d-flex justify-content-between align-items-center py-3">
         <!-- LOGO -->
         <div class="logo">
-            <a asp-controller="Home" asp-action="Index">
+            <a asp-controller="Shop" asp-action="Index">
                 <img src="~/images/home/logo.png" alt="Logo" class="logo-img" />
             </a>
         </div>
@@ -66,64 +66,68 @@
                     </span>
                 </a>
             </div>
+                <!-- USER MENU -->
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <div class="dropdown">
+                        <a class="btn btn-login dropdown-toggle d-flex align-items-center" href="#" role="button" id="Menu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user fa-lg me-1"></i> @User.Identity.Name
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="Menu">
+                            <li>
+                                <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                    <i class="fa-solid fa-id-card me-2"></i> Thông tin tài khoản
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Account" asp-action="MyOrders">
+                                    <i class="fa fa-list me-2"></i> Đơn hàng của tôi
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a href="/admin" class="dropdown-item">
+                                        <i class="fa fa-cogs me-2"></i> Quản trị
+                                    </a>
+                                </li>
+                            }
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Account" asp-action="Logout">
+                                    <i class="fa fa-sign-out-alt me-2"></i> Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn-login">
+                        <i class="fa fa-lock"></i> Đăng nhập / Đăng ký
+                    </a>
+                }
 
-            <!-- LOGIN / LOGOUT -->
-            @if (User?.Identity?.IsAuthenticated == true)
-            {
-                <a asp-controller="Account" asp-action="Logout" class="btn-login">
-                    <i class="fa fa-sign-out"></i> Đăng xuất (@User.Identity.Name)
-                </a>
-            }
-            else
-            {
-                <a asp-controller="Account" asp-action="Login" class="btn-login">
-                    <i class="fa fa-lock"></i> Đăng nhập / Đăng ký
-                </a>
-            }
         </div>
     </div>
 </header>
-
     <!-- ================= /HEADER ================= -->
 
 
-    <!-- ================= BANNER / SLIDER (nằm trong layout) ================= -->
+    <!-- ======= BANNER / SLIDER ======== -->
+
     <section id="slider" class="banner-hero">
-        <div id="slider-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#slider-carousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#slider-carousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#slider-carousel" data-bs-slide-to="2"></button>
-            </div>
-
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="~/images/home/slider_1.webp" class="d-block w-100 hero-img" alt="Banner 1">
-                </div>
-                <div class="carousel-item">
-                    <img src="~/images/home/slider_2.webp" class="d-block w-100 hero-img" alt="Banner 2">
-                </div>
-                <div class="carousel-item">
-                    <img src="~/images/home/slider_3.webp" class="d-block w-100 hero-img" alt="Banner 3">
-                </div>
-            </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#slider-carousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Trước</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#slider-carousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Sau</span>
-            </button>
-        </div>
+        <vc:slider />
     </section>
-    <!-- ================= /BANNER ================= -->
+    <!-- ======== /BANNER ======== -->
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
+
     <!-- ================= FOOTER ================= -->
                     <div class="footer-bottom">
                         <div class="container">
@@ -213,59 +217,60 @@
                             <div class="row">
                                 <div class="col-sm-2">
                                     <div class="single-widget">
-                                        <h2>Service</h2>
+                                        <h2>Dịch vụ</h2>
                                         <ul class="nav nav-pills nav-stacked">
-                                            <li><a href="#">Online Help</a></li>
-                                            <li><a href="#">Contact Us</a></li>
-                                            <li><a href="#">Order Status</a></li>
-                                            <li><a href="#">Change Location</a></li>
-                                            <li><a href="#">FAQ’s</a></li>
+                                            <li><a href="#">Trợ giúp trực tuyến</a></li>
+                                            <li><a href="#">Liên hệ chúng tôi</a></li>
+                                            <li><a href="#">Tình trạng đơn hàng</a></li>
+                                            <li><a href="#">Thay đổi địa điểm</a></li>
+                                            <li><a href="#">Câu hỏi thường gặp</a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="single-widget">
-                                        <h2>Quock Shop</h2>
+                                        <h2>Cửa hàng nhanh</h2>
                                         <ul class="nav nav-pills nav-stacked">
-                                            <li><a href="#">T-Shirt</a></li>
-                                            <li><a href="#">Mens</a></li>
-                                            <li><a href="#">Womens</a></li>
-                                            <li><a href="#">Gift Cards</a></li>
-                                            <li><a href="#">Shoes</a></li>
+                                            <li><a href="#">Lều trại</a></li>
+                                            <li><a href="#">Dụng cụ nấu ăn</a></li>
+                                            <li><a href="#">Thiết bị bảo vệ an toàn</a></li>
+                                            <li><a href="#">Phụ kiện dã ngoại</a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="single-widget">
-                                        <h2>Policies</h2>
+                                        <h2>Chính sách</h2>
                                         <ul class="nav nav-pills nav-stacked">
-                                            <li><a href="#">Terms of Use</a></li>
-                                            <li><a href="#">Privecy Policy</a></li>
-                                            <li><a href="#">Refund Policy</a></li>
-                                            <li><a href="#">Billing System</a></li>
-                                            <li><a href="#">Ticket System</a></li>
+                                            <li><a href="#">Điều khoản sử dụng</a></li>
+                                            <li><a href="#">Chính sách bảo mật</a></li>
+                                            <li><a href="#">Chính sách hoàn trả</a></li>
+                                            <li><a href="#">Hệ thống thanh toán</a></li>
+                                            <li><a href="#">Hệ thống vé</a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="single-widget">
-                                        <h2>About Shopper</h2>
+                                        <h2>Về Shopper</h2>
                                         <ul class="nav nav-pills nav-stacked">
-                                            <li><a href="#">Company Information</a></li>
-                                            <li><a href="#">Careers</a></li>
-                                            <li><a href="#">Store Location</a></li>
-                                            <li><a href="#">Affillate Program</a></li>
-                                            <li><a href="#">Copyright</a></li>
+                                            <li><a href="#">Thông tin công ty</a></li>
+                                            <li><a href="#">Tuyển dụng</a></li>
+                                            <li><a href="#">Địa chỉ cửa hàng</a></li>
+                                            <li><a href="#">Chương trình liên kết</a></li>
+                                            <li><a href="#">Bản quyền</a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-sm-3 col-sm-offset-1">
                                     <div class="single-widget">
-                                        <h2>About Shopper</h2>
+                                        <h2>Đăng ký nhận tin</h2>
                                         <form action="#" class="searchform">
-                                            <input type="text" placeholder="Your email address" />
-                                            <button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i></button>
-                                            <p>Get the most recent updates from <br />our site and be updated your self...</p>
+                                            <input type="text" placeholder="Địa chỉ email của bạn" />
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fa fa-arrow-circle-o-right"></i>
+                                            </button>
+                                            <p>Nhận các cập nhật mới nhất từ trang web của chúng tôi...</p>
                                         </form>
                                     </div>
                                 </div>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Shop.Api.Models;
 
@@ -15,5 +16,6 @@ public partial class Brand
 
     public bool IsActive { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Product> Products { get; } = new List<Product>();
 }

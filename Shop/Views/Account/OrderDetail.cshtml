@@ -1,6 +1,7 @@
-@model Shop.Models.Order
+﻿@model Shop.Models.Order
+
 @{
-    ViewData["Title"] = "Order Confirmation";
+    ViewData["Title"] = "Chi tiết đơn hàng";
 }
 
 <section id="cart_items">
@@ -8,17 +9,8 @@
         <div class="breadcrumbs">
             <ol class="breadcrumb">
                 <li><a href="#">Home</a></li>
-                <li class="active">Xác nhận đơn hàng</li>
+                <li class="active">Đơn hàng của bạn</li>
             </ol>
-        </div>
-        
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="alert alert-success">
-                    <h2>Cảm ơn bạn đã đặt hàng!</h2>
-                    <p>Đơn hàng của bạn đã được đặt thành công.</p>
-                </div>
-            </div>
         </div>
 
         <div class="row">
@@ -52,11 +44,11 @@
                     </tr>
                     <tr>
                         <td><strong>Tổng tiền:</strong></td>
-                        <td><strong>$@Model.TotalAmount.ToString("N0") ₫</strong></td>
+                        <td><strong>$@Model.TotalAmount</strong></td>
                     </tr>
                 </table>
             </div>
-            
+
             <div class="col-sm-6">
                 <h3>Thông tin khách hàng</h3>
                 <table class="table table-bordered">
@@ -98,27 +90,19 @@
                             {
                                 <tr>
                                     <td>
-                                        <img src="@(item.ProductImage ?? "/images/home/anh.jpg")" alt="" style="width: 50px; height: 50px; margin-right: 10px;">
+                                        <img src="@item.ProductImage" alt="" style="width: 50px; height: 50px; margin-right: 10px;">
                                         @item.ProductName
                                     </td>
-                                    <td>@item.UnitPrice.ToString("N0") ₫</td>
+                                    <td>$@item.UnitPrice</td>
                                     <td>@item.Quantity</td>
-                                    <td>@item.TotalPrice.ToString("N0") ₫</td>
+                                    <td>$@item.TotalPrice</td>
                                 </tr>
                             }
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3"><strong>Tạm tính:</strong></td>
-                                <td><strong>@Model.SubTotal.ToString("N0") ₫</strong></td>
-                            </tr>
-                            <tr>
                                 <td colspan="3"><strong>Phí vận chuyển:</strong></td>
-                                <td><strong>@Model.ShippingAmount.ToString("N0") ₫</strong></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3"><strong>Tổng cộng:</strong></td>
-                                <td><strong>@Model.TotalAmount.ToString("N0") ₫</strong></td>
+                                <td><strong>$@Model.ShippingAmount</strong></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -128,8 +112,8 @@
 
         <div class="row">
             <div class="col-sm-12 text-center">
-                <a href="@Url.Action("Index", "Shop")" class="btn btn-primary">Tiếp tục mua sắm</a>
-                <a href="@Url.Action("Shop", "Shop")" class="btn btn-primary">Xem tất cả sản phẩm</a>
+                <p class="text-end"><strong>Tổng cộng:</strong> $@Model.TotalAmount</p>
+                <a asp-controller="Account" asp-action="MyOrders" class="btn btn-primary mt-3">← Quay lại danh sách</a>
             </div>
         </div>
     </div>

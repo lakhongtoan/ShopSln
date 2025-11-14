@@ -1,0 +1,125 @@
+﻿@page "/admin/sliders/create"
+@page "/admin/sliders/edit/{Id:int}"
+
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
+@using Shop.Models
+
+@inject AppDbContext Db
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider Auth
+@inject IWebHostEnvironment Env
+
+<h3 class="text-center p-2 rounded">@TitleText Slider</h3>
+
+<EditForm Model="Slider" OnValidSubmit="SaveSlider">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group mb-3">
+        <label>Tiêu đề</label>
+        <InputText class="form-control" @bind-Value="Slider.Title" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Ảnh Slider</label>
+        <InputFile OnChange="HandleFileSelected" />
+        @if (!string.IsNullOrEmpty(Slider.Image))
+        {
+            <div class="mt-2">
+                <img src="@Slider.Image" style="max-height:100px; border-radius:6px;" />
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(UploadError))
+        {
+            <div class="text-danger mt-1">@UploadError</div>
+        }
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-@ThemeColor">Lưu</button>
+        <NavLink class="btn btn-secondary ms-2" href="/admin/sliders">Hủy</NavLink>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Slider Slider { get; set; } = new();
+    private IBrowserFile? SelectedFile;
+    private string? UploadError;
+
+    private bool IsEdit => Id != 0;
+    private string TitleText => IsEdit ? "Chỉnh sửa" : "Thêm";
+    private string ThemeColor => IsEdit ? "warning" : "primary";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEdit)
+            Slider = await Db.Sliders.FirstOrDefaultAsync(s => s.SliderID == Id) ?? new Slider();
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        SelectedFile = e.File;
+    }
+
+    private async Task SaveSlider()
+    {
+        var user = (await Auth.GetAuthenticationStateAsync()).User;
+        string userName = user.Identity?.Name ?? "Anonymous";
+
+        // ✅ Upload ảnh nếu có
+        if (SelectedFile != null)
+        {
+            try
+            {
+                const long maxFileSize = 10_000_000; // 10MB
+                if (SelectedFile.Size > maxFileSize)
+                {
+                    UploadError = "File quá lớn (≤10MB)";
+                    return;
+                }
+
+                var ext = Path.GetExtension(SelectedFile.Name).ToLower();
+                var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                if (!allowed.Contains(ext))
+                {
+                    UploadError = "Chỉ cho phép JPG, PNG, WEBP";
+                    return;
+                }
+
+                var fileName = Guid.NewGuid() + ext;
+                var folder = Path.Combine(Env.WebRootPath, "images", "sliders");
+                Directory.CreateDirectory(folder);
+
+                var filePath = Path.Combine(folder, fileName);
+                await using var fs = new FileStream(filePath, FileMode.Create);
+                await SelectedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+
+                Slider.Image = $"/images/sliders/{fileName}";
+                UploadError = null;
+            }
+            catch (Exception ex)
+            {
+                UploadError = "Lỗi upload: " + ex.Message;
+                return;
+            }
+        }
+
+        if (IsEdit)
+        {
+            Slider.UpdatedAt = DateTime.Now;
+            Slider.UpdatedBy = userName;
+            Db.Sliders.Update(Slider);
+        }
+        else
+        {
+            Slider.CreatedAt = DateTime.Now;
+            Slider.CreatedBy = userName;
+            await Db.Sliders.AddAsync(Slider);
+        }
+
+        await Db.SaveChangesAsync();
+        Nav.NavigateTo("/admin/sliders");
+    }
+}

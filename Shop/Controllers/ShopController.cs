@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.Models;
+using Shop.Models.ViewModel;
 using System.Text.Json;
 
 namespace Shop.Controllers
@@ -9,14 +11,18 @@ namespace Shop.Controllers
     {
         private readonly AppDbContext _context;
 
-        public ShopController(AppDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public ShopController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // ========== TRANG CHỦ ==========
         public IActionResult Index()
         {
+            
             var featuredProducts = _context.Products
                 .Include(p => p.Category)
                 .Where(p => p.IsActive && p.IsFeatured)
@@ -27,7 +33,9 @@ namespace Shop.Controllers
                 .Where(c => c.IsActive)
                 .Take(6)
                 .ToList();
+            var sliders = _context.Sliders.ToList();
 
+            ViewBag.Sliders = sliders;
             ViewBag.FeaturedProducts = featuredProducts;
             ViewBag.Categories = categories;
             return View();
@@ -226,11 +234,16 @@ namespace Shop.Controllers
             if (!cartItems.Any())
                 return RedirectToAction("Cart");
 
-            return View(cartItems);
+            var vm = new CheckoutViewModel
+            {
+                CartItems = cartItems
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
-        public IActionResult PlaceOrder(Order order)
+        public async Task<IActionResult> Checkout(CheckoutViewModel vm)
         {
             var sessionId = GetSessionId();
             var cartItems = _context.CartItems
@@ -241,7 +254,13 @@ namespace Shop.Controllers
             if (!cartItems.Any())
                 return RedirectToAction("Cart");
 
-            // Tạo đơn hàng
+            var order = vm.Order;
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                order.UserId = user.Id;
+            }
+
             order.OrderNumber = "ORD" + DateTime.Now.ToString("yyyyMMddHHmmss");
             order.OrderDate = DateTime.Now;
             order.Status = "Pending";
@@ -249,14 +268,13 @@ namespace Shop.Controllers
             order.TotalAmount = order.SubTotal + order.TaxAmount + order.ShippingAmount;
 
             _context.Orders.Add(order);
-            _context.SaveChanges(); // Lưu trước để order.OrderId có giá trị (quan trọng!)
+            _context.SaveChanges();
 
-            // Thêm chi tiết đơn hàng
             foreach (var cartItem in cartItems)
             {
                 var orderItem = new OrderItem
                 {
-                    OrderId = order.OrderId, // Lấy ID vừa lưu
+                    OrderId = order.OrderId,
                     ProductId = cartItem.ProductId,
                     ProductName = cartItem.ProductName,
                     ProductImage = cartItem.ProductImage,
@@ -267,13 +285,12 @@ namespace Shop.Controllers
                 _context.OrderItems.Add(orderItem);
             }
 
-            // Xóa giỏ hàng
             _context.CartItems.RemoveRange(cartItems);
-
-            _context.SaveChanges(); // Lưu toàn bộ OrderItems + remove CartItems
+            _context.SaveChanges();
 
             return RedirectToAction("OrderConfirmation", new { orderId = order.OrderId });
         }
+
 
 
         public IActionResult OrderConfirmation(int orderId)

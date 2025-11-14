@@ -1,17 +1,22 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Shop.Models;
 using System;
 
 namespace Shop.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly AppDbContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public AccountController(SignInManager<IdentityUser> signInManager,
+        public AccountController(AppDbContext context,
+                                 SignInManager<IdentityUser> signInManager,
                                  UserManager<IdentityUser> userManager)
         {
+            _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
         }
@@ -62,6 +67,34 @@ namespace Shop.Controllers
         {
             await _signInManager.SignOutAsync();
             return Redirect("/");
+        }
+
+        public async Task<IActionResult> MyOrders()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var orders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .Where(o => o.UserId == user.Id)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+
+            return View(orders);
+        }
+
+        public async Task<IActionResult> OrderDetail(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.OrderId == id && o.CustomerEmail == user.Email);
+
+            if (order == null) return NotFound();
+
+            return View(order);
         }
     }
 }

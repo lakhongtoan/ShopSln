@@ -1258,6 +1258,7 @@ h2.title {
     font-family: 'Roboto', sans-serif;
     font-size: 24px;
     font-weight: 700;
+    margin-bottom: 5px;
 }
 
 
@@ -1322,7 +1323,7 @@ h2.title {
     font-size: 14px;
     font-weight: 400;
     color: #080807;
-    min-height: 35px;
+    min-height: 36px;
 }
 
 
@@ -1382,13 +1383,6 @@ h2.title {
   overflow: hidden;
 }
 
-.category-tab ul {
-  border-bottom: 1px solid #607E3A;
-  list-style: none outside none;
-  margin: 0 0 30px;
-  padding: 0;
-  width: 100%;
-}
 /* ==== SHOP ITEMS SECTION ==== */
 .shop-items-section {
     margin-top: 50px;
@@ -2206,7 +2200,6 @@ h2.title {
 
 .breadcrumbs .breadcrumb {
   background:transparent;
-  margin-bottom: 75px;
   padding-left: 0;
 }
 
@@ -2261,26 +2254,14 @@ h2.title {
 }
 
 .cart_info table tr td {
-  border-top: 0 none;
-  vertical-align: inherit;
+    border-top: 0 none;
+    border-bottom: 0 none;
+    vertical-align: inherit;
 }
 
 
 #cart_items .cart_info .image {
   padding-left: 0px;
-}
-
-
-#cart_items .cart_info .cart_description h4 {
-  margin-bottom: 0
-}
-
-#cart_items .cart_info .cart_description h4 a {
-  color: #363432;
-  font-family: 'Roboto',sans-serif;
-  font-size: 20px;
-  font-weight: normal;
-
 }
 
 #cart_items .cart_info .cart_description p {

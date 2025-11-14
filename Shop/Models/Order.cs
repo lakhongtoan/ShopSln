@@ -47,7 +47,7 @@ namespace Shop.Models
         [StringLength(500)]
         public string? Notes { get; set; }
 
-
+        public string? UserId { get; set; }
         // Navigation property
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }

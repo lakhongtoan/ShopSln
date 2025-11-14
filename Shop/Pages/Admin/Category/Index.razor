@@ -51,10 +51,10 @@ else
                         </button>
                     </td>
                     <td>
-                        <NavLink class="btn btn-warning btn-sm me-2" href="@($"/admin/categories/edit/{c.CategoryId}")">
+                        <NavLink class="btn btn-warning btn-sm mb-2" href="@($"/admin/categories/edit/{c.CategoryId}")">
                             <i class="fa-solid fa-pen"></i> Sửa
                         </NavLink>
-                        <button class="btn btn-danger btn-sm" @onclick="async () => await DeleteCategory(c)">
+                        <button class="btn btn-danger btn-sm mb-2" @onclick="async () => await DeleteCategory(c)">
                             <i class="fa-solid fa-trash"></i> Xóa
                         </button>
                     </td>

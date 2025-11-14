@@ -105,9 +105,9 @@
                             <div class="col-sm-4">
                                 <div class="product-image-wrapper">
                                     <div class="single-products">
-                                        <div class="productinfo text-center">
+                                        <div class="productinfo">
                                             <img src="@(product.Image ?? "/images/home/anh.jpg")" alt="" />
-                                            <h2>$@product.Price</h2>
+                                            <h2>@product.Price.ToString("N0") ₫</h2>
                                             <p>@product.Name</p>
                                             <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
                                                 <i class="fa fa-shopping-cart"></i>Thêm vào giỏ
@@ -115,7 +115,7 @@
                                         </div>
                                         <div class="product-overlay">
                                             <div class="overlay-content">
-                                                <h2>$@product.Price</h2>
+                                                <h2>@product.Price.ToString("N0") ₫</h2>
                                                 <p>@product.Name</p>
                                                 <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
                                                     <i class="fa fa-shopping-cart"></i>Thêm vào giỏ
@@ -125,14 +125,9 @@
                                     </div>
                                     <div class="choose">
                                         <ul class="nav-pills nav-justified">
-                                        <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
-                                                <i class="fa fa-shopping-cart"></i>Mua ngay
+                                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.ProductID" class="btn btn-default mb-3">
+                                                <i class="fa fa-plus-square"></i> Xem chi tiết
                                             </a>
-                                            <li>
-                                                <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.ProductID">
-                                                    <i class="fa fa-plus-square"></i> Xem chi tiết
-                                                </a>
-                                            </li>
                                         </ul>
                                     </div>
                                 </div>

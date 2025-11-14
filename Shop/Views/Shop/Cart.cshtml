@@ -40,10 +40,10 @@
                                             <img src="@item.ProductImage" alt="" style="width: 100px; height: 100px;">
                                         </td>
                                         <td class="cart_description">
-                                            <h4><a href="">@item.ProductName</a></h4>
+                                            <h4>@item.ProductName</h4>
                                         </td>
                                         <td class="cart_price">
-                                            <p>$@item.UnitPrice</p>
+                                            <h4>$@item.UnitPrice.ToString("N0") ₫</h4>
                                         </td>
                                         <td class="cart_quantity">
                                             <div class="cart_quantity_button" style="margin-left: 12px;">
@@ -53,7 +53,7 @@
                                             </div>
                                         </td>
                                         <td class="cart_total">
-                                            <p class="cart_total_price">$@item.TotalPrice</p>
+                                            <h4 class="cart_total_price">$@item.TotalPrice.ToString("N0") ₫</h4>
                                         </td>
                                         <td class="cart_delete">
                                             <a class="cart_quantity_delete" href="#" data-cart-item-id="@item.CartItemId"><i class="fa fa-times"></i></a>
@@ -66,45 +66,24 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="do_action_wrapper">
-                        <div class="heading mb-3">
-                            <h3>Bạn muốn làm gì tiếp theo?</h3>
-                            <p>Chọn nếu bạn có mã giảm giá hoặc muốn ước tính chi phí vận chuyển.</p>
-                        </div>
-
-                        <div class="chose_area mb-4">
-                            <ul class="user_option">
-                                <li><input type="checkbox"><label> Sử dụng mã giảm giá</label></li>
-                                <li><input type="checkbox"><label> Ước tính phí vận chuyển & thuế</label></li>
-                            </ul>
-                            <ul class="user_info">
-                                <li class="single_field">
-                                    <label>Tỉnh / Thành phố:</label>
-                                    <select>
-                                        <option>Select</option>
-                                        <option>Dhaka</option>
-                                        <option>London</option>
-                                        <option>Dillih</option>
-                                        <option>Lahore</option>
-                                        <option>Alaska</option>
-                                        <option>Canada</option>
-                                        <option>Dubai</option>
-                                    </select>
-                                </li>
-                            </ul>
-                            <a class="btn btn-default update" href="">Lấy báo giá</a>
-                            <a class="btn btn-default check_out" href="">Tiếp tục</a>
-                        </div>
-
-                        <div class="total_area">
-                            <ul>
-                                <li>Tạm tính <span>$@Model.Sum(x => x.TotalPrice)</span></li>
-                                <li>Thuế <span>$2</span></li>
-                                <li>Phí vận chuyển <span>Miễn phí</span></li>
-                                <li>Tổng cộng <span>$@(Model.Sum(x => x.TotalPrice) + 2)</span></li>
-                            </ul>
-                            <a class="btn btn-default check_out" href="@Url.Action("Checkout", "Shop")">Thanh toán</a>
-                        </div>
+                    <div class="do_action_wrapper p-3 border rounded bg-light">
+                        <h4 class="mb-3">Tổng đơn hàng</h4>
+                        <ul class="list-unstyled mb-3">
+                            <li class="d-flex justify-content-between">
+                                <span>Tạm tính:</span>
+                                <span>$@Model.Sum(x => x.TotalPrice).ToString("N0") ₫</span>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span>Phí vận chuyển:</span>
+                                <span>Miễn phí</span>
+                            </li>
+                            <li class="d-flex justify-content-between fw-bold border-top pt-2 mt-2">
+                                <span>Tổng cộng:</span>
+                                <span>@Model.Sum(x => x.TotalPrice).ToString("N0") ₫</span>
+                            </li>
+                        </ul>
+                        <a class="btn btn-primary w-100" href="@Url.Action("Checkout", "Shop")">Thanh toán</a>
+                        <a class="btn btn-primary w-100 mt-2" href="@Url.Action("Shop", "Shop")">Tiếp tục mua sắm</a>
                     </div>
                 </div>
             </div>
@@ -113,7 +92,7 @@
         {
             <div class="text-center my-5">
                 <p>Giỏ hàng của bạn đang trống</p>
-                <a href="@Url.Action("Shop", "Shop")" class="btn btn-default">Tiếp tục mua sắm</a>
+                <a href="@Url.Action("Shop", "Shop")" class="btn btn-primary">Tiếp tục mua sắm</a>
             </div>
         }
     </div>

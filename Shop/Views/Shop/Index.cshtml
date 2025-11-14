@@ -61,7 +61,7 @@
                                     <div class="single-products">
                                         <div class="productinfo">
                                             <img src="@(product.Image ?? "/images/home/anh.jpg")" alt="" />
-                                            <h2>$@product.Price</h2>
+                                            <h2>@product.Price.ToString("N0") ₫</h2>
                                             <p>@product.Name</p>
                                             <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
                                                 <i class="fa fa-shopping-cart"></i>Thêm vào giỏ
@@ -69,7 +69,7 @@
                                         </div>
                                         <div class="product-overlay">
                                             <div class="overlay-content">
-                                                <h2>$@product.Price</h2>
+                                                <h2>@product.Price.ToString("N0") ₫</h2>
                                                 <p>@product.Name</p>
                                                 <a href="#" class="btn btn-default add-to-cart" data-product-id="@product.ProductID">
                                                     <i class="fa fa-shopping-cart"></i>Thêm vào giỏ

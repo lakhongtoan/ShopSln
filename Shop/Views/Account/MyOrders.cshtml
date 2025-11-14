@@ -1,0 +1,55 @@
+﻿@model List<Shop.Models.Order>
+
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+}
+
+<h2 class="mb-4">🛍️ Đơn hàng của tôi</h2>
+
+@if (!Model.Any())
+{
+    <p>Bạn chưa có đơn hàng nào.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã đơn</th>
+                <th>Ngày đặt</th>
+                <th>Trạng thái</th>
+                <th>Tổng tiền</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderNumber</td>
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @{
+                            string statusText = order.Status switch
+                            {
+                                "Pending" => "Chờ xử lý",
+                                "Processing" => "Đang xử lý",
+                                "Shipped" => "Đang giao",
+                                "Delivered" => "Đã giao",
+                                "Cancelled" => "Đã hủy",
+                                _ => order.Status
+                            };
+                        }
+                        <span class="label label-info">@statusText</span>
+                    </td>
+                    <td>$@order.TotalAmount</td>
+                    <td>
+                        <a asp-controller="Account" asp-action="OrderDetail" asp-route-id="@order.OrderId" class="btn btn-sm btn-outline-primary">
+                            Xem chi tiết
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

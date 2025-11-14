@@ -4,8 +4,9 @@
 @using System.Globalization
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Web
+@inject AppDbContext Db
 
-<h4>Bảng điều khiển</h4>
+<h4>WellCome</h4>
 
 <div class="row gy-3">
     <div class="col-12 col-sm-6 col-lg-3">
@@ -35,60 +36,83 @@
 </div>
 
 <h4 class="mt-5 fw-bold">Đơn hàng gần đây</h4>
-<table class="table table-striped table-hover mt-3">
-    <thead class="table-success">
-        <tr>
-            <th>Mã đơn</th>
-            <th>Ngày đặt</th>
-            <th>Trạng thái</th>
-            <th>Tổng tiền</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (RecentOrders != null && RecentOrders.Any())
-        {
+
+@if (RecentOrders == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else if (!RecentOrders.Any())
+{
+    <p>Không có đơn hàng chờ xử lý.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-success">
+            <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var order in RecentOrders)
             {
                 <tr>
-                    <td>@order.Id</td>
-                    <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
-                    <td>@order.Status</td>
-                    <td>@string.Format(CultureInfo.InvariantCulture, "{0:N0} ₫", order.TotalAmount)</td>
+                    <td>@order.OrderNumber</td>
+                    <td>@order.CustomerName</td>
+                    <td>@order.CustomerEmail</td>
+                    <td>@order.CustomerPhone</td>
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@string.Format("{0:N0} ₫", order.TotalAmount)</td>
+                    <td>
+                        <span class="badge bg-warning">@GetStatusText(order.Status)</span>
+                    </td>
+                    <td>
+                        <NavLink class="btn btn-info btn-sm" href="@($"/admin/orders/details/{order.OrderId}")">
+                            <i class="fa-solid fa-eye"></i> Chi tiết
+                        </NavLink>
+                    </td>
                 </tr>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="4" class="text-muted text-center">Không có đơn hàng nào gần đây</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+}
 
 @code {
-    private int TotalProducts { get; set; } = 12;
-    private int TotalOrders { get; set; } = 34;
-    private int TotalCategories { get; set; } = 5;
-    private int TotalContacts { get; set; } = 7;
+    private int TotalProducts;
+    private int TotalOrders;
+    private int TotalCategories;
+    private int TotalContacts;
+    private List<Order>? RecentOrders;
 
-    private List<Order> RecentOrders { get; set; }
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Fake dữ liệu
-        RecentOrders = new List<Order>
-        {
-            new Order{ Id=1, OrderDate=DateTime.Now.AddDays(-1), Status="Đã giao", TotalAmount=120000 },
-            new Order{ Id=2, OrderDate=DateTime.Now.AddDays(-2), Status="Đang xử lý", TotalAmount=450000 },
-        };
+        TotalProducts = await Db.Products.CountAsync();
+        TotalOrders = await Db.Orders.CountAsync();
+        TotalCategories = await Db.Categories.CountAsync();
+        TotalContacts = await Db.Contacts.CountAsync();
+
+        // Lấy 10 đơn hàng gần đây đang Pending
+        RecentOrders = await Db.Orders
+            .Where(o => o.Status == "Pending")
+            .OrderByDescending(o => o.OrderDate)
+            .Take(10)
+            .ToListAsync();
     }
 
-    private class Order
+    private string GetStatusText(string status) => status switch
     {
-        public int Id { get; set; }
-        public DateTime OrderDate { get; set; }
-        public string Status { get; set; }
-        public decimal TotalAmount { get; set; }
-    }
+        "Pending" => "Chờ xử lý",
+        "Processing" => "Đang xử lý",
+        "Shipped" => "Đã giao hàng",
+        "Delivered" => "Đã nhận hàng",
+        "Cancelled" => "Đã hủy",
+        _ => status
+    };
 }
