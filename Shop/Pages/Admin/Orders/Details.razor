@@ -166,31 +166,43 @@ else
                     <h5 class="mb-0">Cập nhật trạng thái</h5>
                 </div>
                 <div class="card-body">
-                    <EditForm Model="order" OnValidSubmit="HandleUpdateStatus">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
-
-                        <div class="mb-3">
-                            <label class="form-label">Trạng thái đơn hàng</label>
-                            <InputSelect class="form-select" @bind-Value="order.Status">
-                                <option value="Pending">Chờ xử lý</option>
-                                <option value="Processing">Đang xử lý</option>
-                                <option value="Shipped">Đã giao hàng</option>
-                                <option value="Delivered">Đã nhận hàng</option>
-                                <option value="Cancelled">Đã hủy</option>
-                            </InputSelect>
+                    @if (!string.IsNullOrEmpty(updateMessage))
+                    {
+                        <div class="alert @(updateMessage.Contains("thành công") ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+                            @updateMessage
+                            <button type="button" class="btn-close" @onclick="() => updateMessage = null" aria-label="Close"></button>
                         </div>
+                    }
 
-                        <div class="mb-3">
-                            <label class="form-label">Ghi chú</label>
-                            <InputTextArea class="form-control" @bind-Value="order.Notes" Rows="3" />
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái đơn hàng</label>
+                        <select class="form-select" @bind="selectedStatus">
+                            <option value="Pending">Chờ xử lý</option>
+                            <option value="Processing">Đang xử lý</option>
+                            <option value="Shipped">Đã giao hàng</option>
+                            <option value="Delivered">Đã nhận hàng</option>
+                            <option value="Cancelled">Đã hủy</option>
+                        </select>
+                    </div>
 
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary" type="submit">Cập nhật trạng thái</button>
-                            <NavLink class="btn btn-secondary" href="/admin/orders">Quay lại danh sách</NavLink>
-                        </div>
-                    </EditForm>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú</label>
+                        <textarea class="form-control" rows="3" @bind="orderNotes"></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" @onclick="HandleUpdateStatus" disabled="@isUpdating">
+                            @if (isUpdating)
+                            {
+                                <span>Đang cập nhật...</span>
+                            }
+                            else
+                            {
+                                <span>Cập nhật trạng thái</span>
+                            }
+                        </button>
+                        <NavLink class="btn btn-secondary" href="/admin/orders">Quay lại danh sách</NavLink>
+                    </div>
                 </div>
             </div>
         </div>
@@ -201,37 +213,140 @@ else
     [Parameter] public int id { get; set; }
     private Order? order;
     private List<OrderItem> orderItems = new();
+    private string? updateMessage = null;
+    private bool isUpdating = false;
+    private int lastLoadedId = 0; // Track id đã load để tránh reload không cần thiết
+    
+    // Form fields - tách biệt với entity để tránh tracking issues
+    private string selectedStatus = "Pending";
+    private string orderNotes = "";
 
     protected override async Task OnInitializedAsync()
     {
-        // 👉 Load đầy đủ cả Order + OrderItems trong 1 query để tránh null
-        order = await Db.Orders
-            .Include(o => o.OrderItems)
-            .FirstOrDefaultAsync(o => o.OrderId == id);
+        await LoadOrderData();
+    }
 
-        if (order != null)
-            orderItems = order.OrderItems.ToList();
+    protected override async Task OnParametersSetAsync()
+    {
+        // Chỉ reload khi id thay đổi
+        if (id > 0 && id != lastLoadedId)
+        {
+            await LoadOrderData();
+        }
+    }
+
+    private async Task LoadOrderData()
+    {
+        try
+        {
+            // Load với AsNoTracking để tránh tracking conflict
+            var loadedOrder = await Db.Orders
+                .Include(o => o.OrderItems)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+
+            if (loadedOrder != null)
+            {
+                // Tạo instance mới để hiển thị (không tracked)
+                order = new Order
+                {
+                    OrderId = loadedOrder.OrderId,
+                    OrderNumber = loadedOrder.OrderNumber,
+                    OrderDate = loadedOrder.OrderDate,
+                    Status = loadedOrder.Status,
+                    SubTotal = loadedOrder.SubTotal,
+                    TaxAmount = loadedOrder.TaxAmount,
+                    ShippingAmount = loadedOrder.ShippingAmount,
+                    TotalAmount = loadedOrder.TotalAmount,
+                    CustomerName = loadedOrder.CustomerName,
+                    CustomerPhone = loadedOrder.CustomerPhone,
+                    CustomerEmail = loadedOrder.CustomerEmail,
+                    ShippingAddress = loadedOrder.ShippingAddress,
+                    BillingAddress = loadedOrder.BillingAddress,
+                    ShippedDate = loadedOrder.ShippedDate,
+                    DeliveredDate = loadedOrder.DeliveredDate,
+                    Notes = loadedOrder.Notes
+                };
+                
+                // Copy OrderItems
+                orderItems = loadedOrder.OrderItems?.ToList() ?? new List<OrderItem>();
+                
+                // Cập nhật form fields
+                selectedStatus = order.Status;
+                orderNotes = order.Notes ?? "";
+                
+                // Lưu id đã load
+                lastLoadedId = id;
+            }
+            else
+            {
+                order = null;
+                orderItems = new List<OrderItem>();
+            }
+        }
+        catch (Exception ex)
+        {
+            updateMessage = $"Lỗi khi tải dữ liệu: {ex.Message}";
+            order = null;
+            orderItems = new List<OrderItem>();
+        }
     }
 
     private async Task HandleUpdateStatus()
     {
         if (order == null) return;
 
-        // 👉 Logic tự động set ngày
-        if (order.Status == "Shipped" && !order.ShippedDate.HasValue)
-            order.ShippedDate = DateTime.Now;
-        else if (order.Status == "Delivered" && !order.DeliveredDate.HasValue)
+        isUpdating = true;
+        updateMessage = null;
+
+        try
         {
-            order.DeliveredDate = DateTime.Now;
-            if (!order.ShippedDate.HasValue)
-                order.ShippedDate = DateTime.Now;
+            // Load entity mới từ database (có tracking) để update
+            var orderToUpdate = await Db.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+
+            if (orderToUpdate == null)
+            {
+                updateMessage = "Không tìm thấy đơn hàng!";
+                isUpdating = false;
+                return;
+            }
+
+            // Cập nhật trạng thái và ghi chú từ form
+            orderToUpdate.Status = selectedStatus;
+            orderToUpdate.Notes = orderNotes;
+
+            // Logic tự động set ngày khi chuyển sang trạng thái tương ứng
+            if (selectedStatus == "Shipped")
+            {
+                // Cập nhật ngày giao hàng mỗi khi chuyển về trạng thái Shipped
+                orderToUpdate.ShippedDate = DateTime.Now;
+            }
+            else if (selectedStatus == "Delivered")
+            {
+                // Cập nhật ngày nhận hàng mỗi khi chuyển về trạng thái Delivered
+                orderToUpdate.DeliveredDate = DateTime.Now;
+                // Đảm bảo có ngày giao hàng nếu chưa có
+                if (!orderToUpdate.ShippedDate.HasValue)
+                    orderToUpdate.ShippedDate = DateTime.Now;
+            }
+
+            // Lưu thay đổi
+            await Db.SaveChangesAsync();
+
+            // Reload lại dữ liệu để hiển thị thông tin mới nhất
+            await LoadOrderData();
+            
+            updateMessage = "Cập nhật trạng thái thành công!";
         }
-
-        Db.Orders.Update(order);
-        await Db.SaveChangesAsync();
-
-        // 👉 Sau khi cập nhật, quay lại danh sách đơn hàng
-        Nav.NavigateTo("/admin/orders");
+        catch (Exception ex)
+        {
+            updateMessage = $"Lỗi khi cập nhật: {ex.Message}";
+        }
+        finally
+        {
+            isUpdating = false;
+        }
     }
 
     private string GetStatusBadgeClass(string status) => status switch

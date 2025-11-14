@@ -90,7 +90,8 @@ namespace Shop.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
-                .FirstOrDefaultAsync(o => o.OrderId == id && o.CustomerEmail == user.Email);
+                .ThenInclude(i => i.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == id && o.UserId == user.Id);
 
             if (order == null) return NotFound();
 
