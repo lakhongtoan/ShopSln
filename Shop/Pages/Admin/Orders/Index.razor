@@ -4,27 +4,13 @@
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.JSInterop
 @using Shop.Models
+@implements IDisposable
 
 @inject AppDbContext Db
 @inject IJSRuntime JsRuntime
 @inject NavigationManager Navigation
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0 fw-bold">Quản lý đơn hàng</h4>
-    <div class="d-flex gap-2">
-        <select class="form-select" style="width: auto;" value="@selectedStatus" @onchange="HandleStatusChange">
-            <option value="">Tất cả trạng thái</option>
-            <option value="Pending">Chờ xử lý</option>
-            <option value="Processing">Đang xử lý</option>
-            <option value="Shipped">Đã giao hàng</option>
-            <option value="Delivered">Đã nhận hàng</option>
-            <option value="Cancelled">Đã hủy</option>
-        </select>
-        <input type="text" class="form-control" style="width: 300px;" 
-               placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng..." 
-               value="@searchTerm" @oninput="HandleSearchInput" />
-    </div>
-</div>
+<h4 class="mb-4 fw-bold">Quản lý đơn hàng</h4>
 
 @if (!string.IsNullOrEmpty(successMessage))
 {
@@ -55,7 +41,7 @@ else
 {
     <!-- Thống kê nhanh -->
     <div class="row mb-3">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2">Tổng đơn hàng</h6>
@@ -63,7 +49,7 @@ else
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2">Chờ xử lý</h6>
@@ -71,7 +57,7 @@ else
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card bg-info text-white">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2">Đang xử lý</h6>
@@ -79,13 +65,42 @@ else
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card bg-success text-white">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2">Đã hoàn thành</h6>
                     <h4 class="mb-0">@deliveredCount</h4>
                 </div>
             </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Đã hủy</h6>
+                    <h4 class="mb-0">@cancelledCount</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter và tìm kiếm -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center gap-2">
+            <label class="mb-0 fw-semibold">Trạng thái:</label>
+            <InputSelect class="form-select" style="width: auto;" @bind-Value="selectedStatus" @bind-Value:after="HandleStatusChange">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Pending">Chờ xử lý</option>
+                <option value="Processing">Đang xử lý</option>
+                <option value="Shipped">Đã giao hàng</option>
+                <option value="Delivered">Đã nhận hàng</option>
+                <option value="Cancelled">Đã hủy</option>
+            </InputSelect>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <label class="mb-0 fw-semibold">Tìm kiếm:</label>
+            <InputText class="form-control" style="width: 300px;" 
+                       placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng..." 
+                       @bind-Value="searchTerm" @bind-Value:after="HandleSearchInput" />
         </div>
     </div>
 
@@ -153,6 +168,11 @@ else
                                                 <li>
                                                     <a class="dropdown-item" href="#" @onclick="@(() => QuickUpdateStatus(order.OrderId, "Delivered"))" @onclick:preventDefault>
                                                         <i class="fa-solid fa-check me-2"></i>Đã nhận hàng
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-warning" href="#" @onclick="@(() => QuickUpdateStatus(order.OrderId, "Cancelled"))" @onclick:preventDefault>
+                                                        <i class="fa-solid fa-ban me-2"></i>Đã hủy
                                                     </a>
                                                 </li>
                                                 <li><hr class="dropdown-divider"></li>
@@ -227,25 +247,80 @@ else
     private int pendingCount = 0;
     private int processingCount = 0;
     private int deliveredCount = 0;
+    private int cancelledCount = 0;
+
+    // Semaphore để tránh concurrent database operations
+    private readonly SemaphoreSlim _dbSemaphore = new SemaphoreSlim(1, 1);
+    private bool _isLoading = false;
+
+    // Dispose semaphore khi component bị dispose
+    public void Dispose()
+    {
+        _dbSemaphore?.Dispose();
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadPage();
-        await LoadStatistics();
+        // Đọc query parameter từ URL nếu có
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchValues))
+        {
+            searchTerm = searchValues.ToString();
+        }
+        
+        await LoadData();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Đọc lại query parameter khi parameters thay đổi
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchValues))
+        {
+            var newSearchTerm = searchValues.ToString();
+            if (newSearchTerm != searchTerm)
+            {
+                searchTerm = newSearchTerm;
+                _pageNumber = 1;
+                await LoadData();
+            }
+        }
+    }
+
+    private async Task LoadData()
+    {
+        if (_isLoading) return;
+        
+        await _dbSemaphore.WaitAsync();
+        try
+        {
+            _isLoading = true;
+            await LoadPage();
+            await LoadStatistics();
+        }
+        finally
+        {
+            _isLoading = false;
+            _dbSemaphore.Release();
+        }
     }
 
     private async Task LoadStatistics()
     {
         try
         {
-            totalOrders = await Db.Orders.CountAsync();
-            pendingCount = await Db.Orders.CountAsync(o => o.Status == "Pending");
-            processingCount = await Db.Orders.CountAsync(o => o.Status == "Processing");
-            deliveredCount = await Db.Orders.CountAsync(o => o.Status == "Delivered");
+            // Load tất cả thống kê trong một query để tránh concurrent issues
+            var allOrders = await Db.Orders.AsNoTracking().ToListAsync();
+            
+            totalOrders = allOrders.Count;
+            pendingCount = allOrders.Count(o => o.Status == "Pending");
+            processingCount = allOrders.Count(o => o.Status == "Processing");
+            deliveredCount = allOrders.Count(o => o.Status == "Delivered");
+            cancelledCount = allOrders.Count(o => o.Status == "Cancelled");
         }
-        catch
+        catch (Exception ex)
         {
-            // Ignore errors in statistics
+            errorMessage = $"Lỗi khi tải thống kê: {ex.Message}";
         }
     }
 
@@ -292,18 +367,16 @@ else
         }
     }
 
-    private async Task HandleStatusChange(ChangeEventArgs e)
+    private async Task HandleStatusChange()
     {
-        selectedStatus = e.Value?.ToString() ?? "";
         _pageNumber = 1;
-        await LoadPage();
+        await LoadData();
     }
 
-    private async Task HandleSearchInput(ChangeEventArgs e)
+    private async Task HandleSearchInput()
     {
-        searchTerm = e.Value?.ToString() ?? "";
         _pageNumber = 1;
-        await LoadPage();
+        await LoadData();
     }
 
     private async Task NextPage()
@@ -311,7 +384,7 @@ else
         if (_pageNumber < _totalPages)
         {
             _pageNumber++;
-            await LoadPage();
+            await LoadData();
         }
     }
 
@@ -320,7 +393,7 @@ else
         if (_pageNumber > 1)
         {
             _pageNumber--;
-            await LoadPage();
+            await LoadData();
         }
     }
 
@@ -329,7 +402,7 @@ else
         if (page >= 1 && page <= _totalPages)
         {
             _pageNumber = page;
-            await LoadPage();
+            await LoadData();
         }
     }
 
@@ -361,8 +434,7 @@ else
             await Db.SaveChangesAsync();
             successMessage = "Cập nhật trạng thái thành công!";
             
-            await LoadPage();
-            await LoadStatistics();
+            await LoadData();
         }
         catch (Exception ex)
         {
@@ -403,8 +475,7 @@ else
             await Db.SaveChangesAsync();
             successMessage = "Xóa đơn hàng thành công!";
             
-            await LoadPage();
-            await LoadStatistics();
+            await LoadData();
         }
         catch (Exception ex)
         {

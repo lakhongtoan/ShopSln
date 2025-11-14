@@ -12,41 +12,38 @@
 
         <div class="col-md-10 col-12 bg-gradient-header d-flex flex-wrap align-items-center p-4">
             <button class="btn btn-outline-secondary d-md-none me-3" type="button"
-                    data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                    data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"
+                    style="font-size: 1.2rem; padding: 0.5rem 0.75rem;">
                 <i class="fa fa-bars"></i>
             </button>
 
-            <h4 class="mb-0 me-auto">Admin Manager</h4>
-
-            <form class="flex-grow-1 mx-3 position-relative" style="max-width:300px;">
-                <input type="search" class="form-control ps-5 rounded-pill border-0 shadow-sm"
-                       placeholder="Tìm kiếm ..." style="height:40px;" />
-                <span class="position-absolute start-0 top-50 translate-middle-y ms-3">
-                    <i class="fas fa-search text-muted"></i>
-                </span>
-            </form>
+            <h3 class="mb-0 me-auto fw-bold" style="font-size: 1.75rem;">Admin Manager</h3>
 
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" 
+                   data-bs-toggle="dropdown"
+                   style="font-size: 1.1rem; padding: 0.5rem 1rem; cursor: pointer;">
                     @* <img src="images/iconlogo/admin.png" class="rounded-circle me-2" width="40" height="40" /> *@
                     @if (!string.IsNullOrEmpty(AdminName))
                     {
-                        <div><h6>@AdminName</h6></div>
+                        <div><h5 class="mb-0 fw-bold">@AdminName</h5></div>
                     }
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end">
+                <ul class="dropdown-menu dropdown-menu-end" style="min-width: 220px;">
                     <li>
-                        <a href="#" class="dropdown-item fw-bold text-muted"
+                        <a href="#" class="dropdown-item fw-bold"
+                           style="font-size: 1rem; padding: 0.75rem 1rem;"
                            @onclick="GoToProfile"
-                        @onclick:preventDefault>
-                            <i class="fa-solid fa-id-card me-2"></i> Thông tin Admin
+                           @onclick:preventDefault>
+                            <i class="fa-solid fa-id-card me-2" style="font-size: 1.1rem;"></i> Thông tin Admin
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="dropdown-item fw-bold text-muted"
+                        <a href="#" class="dropdown-item fw-bold"
+                           style="font-size: 1rem; padding: 0.75rem 1rem;"
                            @onclick="Logout"
-                        @onclick:preventDefault>
-                            <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất
+                           @onclick:preventDefault>
+                            <i class="fa-solid fa-right-from-bracket me-2" style="font-size: 1.1rem;"></i> Đăng xuất
                         </a>
                     </li>
                 </ul>

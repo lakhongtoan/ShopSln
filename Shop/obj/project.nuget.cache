@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "m5ZOPVHJi++OVEfPBszIzReVAKpMGPlqYQoYPwm3L17jfyRFQCrLcu7nod2YZFmGGEAaAsVSjVKyR0MeG7XrfA==",
+  "dgSpecHash": "PE5A65Bc1+jjiyWYK/dRXeqBQjNP6iFuRmp5no5Q6HLAtPwM37wvxPekPug0pmz0Psc/4+RWBoESVLnWMuS7TA==",
   "success": true,
   "projectFilePath": "F:\\F8\\Project\\ShopSln\\Shop\\Shop.csproj",
   "expectedPackageFiles": [
@@ -76,11 +76,7 @@
     "C:\\Users\\trung\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512",
     "C:\\Users\\trung\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
     "C:\\Users\\trung\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.14\\microsoft.netcore.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.14\\microsoft.windowsdesktop.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.14\\microsoft.aspnetcore.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\7.0.14\\microsoft.netcore.app.host.win-x64.7.0.14.nupkg.sha512"
+    "C:\\Users\\trung\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }
