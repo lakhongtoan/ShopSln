@@ -14,6 +14,7 @@ namespace Shop.Models
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Slider> Sliders { get; set; }
+        public DbSet<ProductReview> ProductReviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +48,13 @@ namespace Shop.Models
                 .HasForeignKey(ci => ci.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Configure Product-ProductReview relationship
+            modelBuilder.Entity<ProductReview>()
+                .HasOne(pr => pr.Product)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(pr => pr.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Configure indexes
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.CategoryId);
@@ -66,6 +74,12 @@ namespace Shop.Models
 
             modelBuilder.Entity<CartItem>()
                 .HasIndex(ci => ci.SessionId);
+
+            modelBuilder.Entity<ProductReview>()
+                .HasIndex(pr => pr.ProductId);
+
+            modelBuilder.Entity<ProductReview>()
+                .HasIndex(pr => pr.UserId);
         }
     }
 }

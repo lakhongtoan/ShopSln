@@ -1,7 +1,11 @@
 @model Shop.Models.Product
+@using Shop.Models
 @{
     ViewData["Title"] = "Product Details";
     var relatedProducts = ViewBag.RelatedProducts as List<Shop.Models.Product>;
+    var reviews = ViewBag.Reviews as List<ProductReview> ?? new List<ProductReview>();
+    var averageRating = ViewBag.AverageRating as double? ?? 0;
+    var totalReviews = ViewBag.TotalReviews as int? ?? 0;
 }
 
 <section id="product-details" style="margin-top:40px;">
@@ -61,6 +65,140 @@
             </div>
         </div> <!-- ✅ Đóng hàng chi tiết sản phẩm ở đây -->
 
+        <!-- ==== PHẦN ĐÁNH GIÁ ==== -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0 fw-bold">Đánh giá sản phẩm</h4>
+                        @if (totalReviews > 0)
+                        {
+                            <div class="mt-2">
+                                <div class="d-flex align-items-center">
+                                    <span class="h5 mb-0 me-2">@averageRating</span>
+                                    <div class="star-rating me-2">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="fa @(i <= Math.Round(averageRating) ? "fa-star text-warning" : "fa-star-o text-muted")"></i>
+                                        }
+                                    </div>
+                                    <span class="text-muted">(@totalReviews đánh giá)</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0 mt-2">Chưa có đánh giá nào</p>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <!-- Form đánh giá -->
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <div class="review-form mb-4 p-4 bg-light rounded border">
+                                <h5 class="fw-bold mb-4">Viết đánh giá của bạn</h5>
+                                <form id="reviewForm">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" id="productId" value="@Model.ProductID" />
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold mb-2">Đánh giá của bạn: <span class="text-danger">*</span></label>
+                                        <div class="star-rating-input mb-2" id="starRating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fa fa-star-o star-select" data-rating="@i" style="font-size: 2rem; color: #ffc107; cursor: pointer; margin-right: 5px; transition: all 0.2s;"></i>
+                                            }
+                                        </div>
+                                        <small class="text-muted">Chọn số sao từ 1 đến 5</small>
+                                        <input type="hidden" id="rating" name="rating" required />
+                                        <span class="text-danger" id="ratingError" style="display:none;">Vui lòng chọn số sao</span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Bình luận:</label>
+                                        <textarea id="comment" name="comment" class="form-control" rows="4" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
+                                    </div>
+
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary" id="submitReviewBtn">
+                                            <i class="fa fa-paper-plane me-1"></i>Gửi đánh giá
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" id="resetReviewBtn">
+                                            <i class="fa fa-redo me-1"></i>Làm mới
+                                        </button>
+                                    </div>
+                                    <div id="reviewMessage" class="mt-2"></div>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mb-4 d-flex align-items-center">
+                                <i class="fa fa-info-circle me-2" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <strong>Đăng nhập để đánh giá</strong>
+                                    <p class="mb-0">Bạn cần <a href="/Account/Login" class="alert-link">đăng nhập</a> để có thể đánh giá sản phẩm này.</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Danh sách đánh giá -->
+                        <div class="reviews-list">
+                            <h5 class="fw-bold mb-4">
+                                <i class="fa fa-comments me-2 text-primary"></i>Đánh giá khách hàng 
+                                <span class="badge bg-primary">@totalReviews</span>
+                            </h5>
+                            @if (reviews.Any())
+                            {
+                                <div id="reviewsContainer">
+                                    @foreach (var review in reviews)
+                                    {
+                                        <div class="review-item border rounded p-3 mb-3 bg-white shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="user-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;">
+                                                        @((review.UserName ?? "N")[0].ToString().ToUpper())
+                                                    </div>
+                                                    <div>
+                                                        <strong class="d-block">@(review.UserName ?? "Người dùng")</strong>
+                                                        <div class="star-rating d-inline-block">
+                                                            @for (int i = 1; i <= 5; i++)
+                                                            {
+                                                                <i class="fa @(i <= review.Rating ? "fa-star text-warning" : "fa-star-o text-muted")" style="font-size: 0.85rem;"></i>
+                                                            }
+                                                            <span class="ms-1 text-muted small">(@review.Rating/5)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="fa fa-clock-o me-1"></i>@review.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                                </small>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(review.Comment))
+                                            {
+                                                <p class="mb-0 mt-2 text-secondary" style="line-height: 1.6;">@review.Comment</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="mb-0 mt-2 text-muted fst-italic">Không có bình luận</p>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-5">
+                                    <i class="fa fa-star-o text-muted" style="font-size: 3rem;"></i>
+                                    <p class="text-muted mt-3 mb-0">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ==== SẢN PHẨM LIÊN QUAN ==== -->
         @if (relatedProducts != null && relatedProducts.Any())
         {
@@ -92,6 +230,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // Add to cart functionality
             $('.add-to-cart').click(function (e) {
                 e.preventDefault();
                 var productId = $(this).data('product-id');
@@ -111,6 +250,137 @@
                     },
                     error: function () {
                         alert('Lỗi khi thêm vào giỏ hàng');
+                    }
+                });
+            });
+
+            // Star rating selection
+            $('.star-select').hover(function() {
+                var rating = $(this).data('rating');
+                $('.star-select').each(function(index) {
+                    if (index < rating) {
+                        $(this).removeClass('fa-star-o').addClass('fa-star').css('transform', 'scale(1.1)');
+                    } else {
+                        $(this).removeClass('fa-star').addClass('fa-star-o').css('transform', 'scale(1)');
+                    }
+                });
+            }, function() {
+                $('.star-select').css('transform', 'scale(1)');
+            });
+
+            $('.star-rating-input').mouseleave(function() {
+                var selectedRating = $('#rating').val();
+                if (selectedRating) {
+                    var rating = parseInt(selectedRating);
+                    $('.star-select').each(function(index) {
+                        if (index < rating) {
+                            $(this).removeClass('fa-star-o').addClass('fa-star');
+                        } else {
+                            $(this).removeClass('fa-star').addClass('fa-star-o');
+                        }
+                    });
+                } else {
+                    $('.star-select').removeClass('fa-star').addClass('fa-star-o');
+                }
+            });
+
+            $('.star-select').click(function() {
+                var rating = $(this).data('rating');
+                $('#rating').val(rating);
+                $('#ratingError').hide();
+                $('.star-select').each(function(index) {
+                    if (index < rating) {
+                        $(this).removeClass('fa-star-o').addClass('fa-star');
+                    } else {
+                        $(this).removeClass('fa-star').addClass('fa-star-o');
+                    }
+                });
+            });
+
+            // Reset review form
+            $('#resetReviewBtn').click(function() {
+                $('#rating').val('');
+                $('#comment').val('');
+                $('#ratingError').hide();
+                $('#reviewMessage').html('');
+                $('.star-select').removeClass('fa-star').addClass('fa-star-o');
+                $('#submitReviewBtn').prop('disabled', false).html('<i class="fa fa-paper-plane me-1"></i>Gửi đánh giá');
+            });
+
+            // Submit review form
+            $('#reviewForm').submit(function(e) {
+                e.preventDefault();
+                
+                var productId = $('#productId').val();
+                var rating = $('#rating').val();
+                var comment = $('#comment').val().trim();
+
+                // Validate
+                if (!rating) {
+                    $('#ratingError').show();
+                    $('html, body').animate({
+                        scrollTop: $('#starRating').offset().top - 100
+                    }, 500);
+                    return;
+                }
+
+                $('#ratingError').hide();
+                var $submitBtn = $('#submitReviewBtn');
+                var originalText = $submitBtn.html();
+                $submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i>Đang gửi...');
+                $('#reviewMessage').html('');
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                
+                // Gửi theo cách ASP.NET Core yêu cầu
+                $.ajax({
+                    url: '@Url.Action("SubmitReview", "Shop")',
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: token,
+                        productId: productId,
+                        rating: parseInt(rating),
+                        comment: comment || ''
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#reviewMessage').html('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                                '<i class="fa fa-check-circle me-2"></i>' + response.message +
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                                '</div>');
+                            
+                            // Reset form
+                            setTimeout(function() {
+                                $('#rating').val('');
+                                $('#comment').val('');
+                                $('.star-select').removeClass('fa-star').addClass('fa-star-o');
+                                $('#reviewMessage').html('');
+                                // Reload sau 1 giây để cập nhật danh sách đánh giá
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            }, 500);
+                        } else {
+                            $('#reviewMessage').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                                '<i class="fa fa-exclamation-circle me-2"></i>' + response.message +
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                                '</div>');
+                            $submitBtn.prop('disabled', false).html(originalText);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMsg = 'Lỗi khi gửi đánh giá';
+                        if (xhr.status === 401) {
+                            errorMsg = 'Vui lòng đăng nhập để đánh giá sản phẩm';
+                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        
+                        $('#reviewMessage').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                            '<i class="fa fa-exclamation-circle me-2"></i>' + errorMsg +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                            '</div>');
+                        $submitBtn.prop('disabled', false).html(originalText);
                     }
                 });
             });
@@ -142,5 +412,54 @@
 .related-products .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ==== STYLE ĐÁNH GIÁ ==== */
+.review-form {
+    border: 1px solid #dee2e6;
+}
+
+.star-select {
+    transition: all 0.2s ease;
+}
+
+.star-select:hover {
+    transform: scale(1.15);
+}
+
+.review-item {
+    transition: all 0.3s ease;
+}
+
+.review-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    transform: translateY(-2px);
+}
+
+.user-avatar {
+    flex-shrink: 0;
+}
+
+.reviews-list {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.reviews-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.reviews-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.reviews-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.reviews-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 </style>

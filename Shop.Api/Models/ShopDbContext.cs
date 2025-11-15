@@ -25,6 +25,8 @@ public partial class ShopDbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<ProductReview> ProductReviews { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CartItem>(entity =>
@@ -126,6 +128,25 @@ public partial class ShopDbContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
+        modelBuilder.Entity<ProductReview>(entity =>
+        {
+            entity.HasKey(e => e.ReviewId);
+
+            entity.HasIndex(e => e.ProductId, "IX_ProductReviews_ProductId");
+
+            entity.HasIndex(e => e.UserId, "IX_ProductReviews_UserId");
+
+            entity.Property(e => e.UserId).HasMaxLength(450);
+            entity.Property(e => e.UserName).HasMaxLength(100);
+            entity.Property(e => e.Comment).HasMaxLength(1000);
+            entity.Property(e => e.Rating).IsRequired();
+
+            entity.HasOne(d => d.Product)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         OnModelCreatingPartial(modelBuilder);

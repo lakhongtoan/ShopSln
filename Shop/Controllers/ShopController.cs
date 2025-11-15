@@ -97,7 +97,20 @@ namespace Shop.Controllers
                 .Take(4)
                 .ToList();
 
+            // Lấy đánh giá của sản phẩm
+            var reviews = _context.ProductReviews
+                .Where(r => r.ProductId == id && r.IsActive)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
+
+            // Tính điểm đánh giá trung bình
+            var averageRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+            var totalReviews = reviews.Count();
+
             ViewBag.RelatedProducts = relatedProducts;
+            ViewBag.Reviews = reviews;
+            ViewBag.AverageRating = Math.Round(averageRating, 1);
+            ViewBag.TotalReviews = totalReviews;
             return View(product);
         }
 
@@ -303,6 +316,87 @@ namespace Shop.Controllers
                 return NotFound();
 
             return View(order);
+        }
+
+        // ========== ĐÁNH GIÁ SẢN PHẨM ==========
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitReview(long productId, int rating, string? comment)
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập để đánh giá sản phẩm" });
+            }
+
+            if (rating < 1 || rating > 5)
+            {
+                return Json(new { success = false, message = "Đánh giá phải từ 1 đến 5 sao" });
+            }
+
+            try
+            {
+                var product = await _context.Products.FindAsync(productId);
+                if (product == null || !product.IsActive)
+                {
+                    return Json(new { success = false, message = "Sản phẩm không tồn tại" });
+                }
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Người dùng không hợp lệ" });
+                }
+
+                // Kiểm tra người dùng đã đánh giá sản phẩm này chưa
+                var existingReview = await _context.ProductReviews
+                    .FirstOrDefaultAsync(r => r.ProductId == productId && r.UserId == user.Id);
+
+                if (existingReview != null)
+                {
+                    // Cập nhật đánh giá cũ
+                    existingReview.Rating = rating;
+                    existingReview.Comment = comment;
+                    existingReview.CreatedAt = DateTime.Now;
+                }
+                else
+                {
+                    // Tạo đánh giá mới
+                    var review = new ProductReview
+                    {
+                        ProductId = productId,
+                        UserId = user.Id,
+                        UserName = user.UserName ?? user.Email ?? "Người dùng",
+                        Rating = rating,
+                        Comment = comment,
+                        CreatedAt = DateTime.Now,
+                        IsActive = true
+                    };
+                    _context.ProductReviews.Add(review);
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Lấy lại danh sách reviews và tính điểm trung bình
+                var reviews = await _context.ProductReviews
+                    .Where(r => r.ProductId == productId && r.IsActive)
+                    .OrderByDescending(r => r.CreatedAt)
+                    .ToListAsync();
+
+                var averageRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+                var totalReviews = reviews.Count();
+
+                return Json(new 
+                { 
+                    success = true, 
+                    message = "Đánh giá thành công",
+                    averageRating = Math.Round(averageRating, 1),
+                    totalReviews = totalReviews
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
+            }
         }
 
         // ========== LIÊN HỆ ==========

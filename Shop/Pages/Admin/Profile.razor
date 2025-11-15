@@ -41,12 +41,12 @@ else
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Tên hiển thị</label>
-                            <InputText class="form-control" @bind-Value="editModel.DisplayName" placeholder="Nhập tên hiển thị" />
+                            <InputText class="form-control bg-light" @bind-Value="editModel.DisplayName" placeholder="Nhập tên hiển thị" disabled />
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Email</label>
-                            <InputText type="email" class="form-control" @bind-Value="editModel.Email" placeholder="Nhập email" />
+                            <InputText type="email" class="form-control bg-light" @bind-Value="editModel.Email" placeholder="Nhập email" disabled />
                         </div>
 
                         <div class="mb-3">
@@ -188,50 +188,14 @@ else
 
         try
         {
-            // Validate email
-            if (!string.IsNullOrWhiteSpace(editModel.Email) && !IsValidEmail(editModel.Email))
-            {
-                errorMessage = "Email không hợp lệ!";
-                isProcessing = false;
-                return;
-            }
-
-            // Kiểm tra email đã tồn tại chưa (nếu khác email hiện tại)
-            if (!string.IsNullOrWhiteSpace(editModel.Email) && user.Email != editModel.Email)
-            {
-                var existingUser = await UserManager.FindByEmailAsync(editModel.Email);
-                if (existingUser != null && existingUser.Id != user.Id)
-                {
-                    errorMessage = "Email này đã được sử dụng bởi tài khoản khác!";
-                    isProcessing = false;
-                    return;
-                }
-            }
-
-            // Cập nhật email
-            if (user.Email != editModel.Email)
-            {
-                user.Email = editModel.Email;
-                user.EmailConfirmed = false; // Đặt lại trạng thái xác nhận khi email thay đổi
-            }
+            // Không cho phép cập nhật Tên hiển thị và Email (đã khóa)
+            // Chỉ cập nhật số điện thoại và địa chỉ
 
             // Cập nhật số điện thoại
             user.PhoneNumber = editModel.PhoneNumber;
 
-            // Cập nhật tên hiển thị (lưu trong claims)
-            var claims = await UserManager.GetClaimsAsync(user);
-            var displayNameClaim = claims.FirstOrDefault(c => c.Type == "DisplayName");
-            
-            if (displayNameClaim != null)
-            {
-                await UserManager.ReplaceClaimAsync(user, displayNameClaim, new System.Security.Claims.Claim("DisplayName", editModel.DisplayName ?? ""));
-            }
-            else if (!string.IsNullOrWhiteSpace(editModel.DisplayName))
-            {
-                await UserManager.AddClaimAsync(user, new System.Security.Claims.Claim("DisplayName", editModel.DisplayName));
-            }
-
             // Cập nhật địa chỉ trong claims
+            var claims = await UserManager.GetClaimsAsync(user);
             var addressClaim = claims.FirstOrDefault(c => c.Type == "Address");
             
             if (addressClaim != null)

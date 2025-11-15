@@ -1,6 +1,124 @@
 @Shop.Api_HostAddress = http://localhost:5023
+@ProductId = 1
+@ReviewId = 1
 
-GET {{Shop.Api_HostAddress}}/weatherforecast/
+### ==================== PRODUCTS API ====================
+
+### Lấy tất cả sản phẩm
+GET {{Shop.Api_HostAddress}}/api/products
 Accept: application/json
+
+###
+
+### Lấy sản phẩm theo ID
+GET {{Shop.Api_HostAddress}}/api/products/{{ProductId}}
+Accept: application/json
+
+###
+
+### Lấy sản phẩm với đánh giá
+GET {{Shop.Api_HostAddress}}/api/products/{{ProductId}}?includeReviews=true
+Accept: application/json
+
+###
+
+### Tạo sản phẩm mới
+POST {{Shop.Api_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Test Product",
+  "description": "Test Description",
+  "price": 100.00,
+  "categoryId": 1,
+  "stockQuantity": 10,
+  "isActive": true
+}
+
+###
+
+### Cập nhật sản phẩm
+PUT {{Shop.Api_HostAddress}}/api/products/{{ProductId}}
+Content-Type: application/json
+
+{
+  "productID": 1,
+  "name": "Updated Product",
+  "description": "Updated Description",
+  "price": 150.00
+}
+
+###
+
+### Xóa sản phẩm
+DELETE {{Shop.Api_HostAddress}}/api/products/{{ProductId}}
+
+###
+
+### ==================== REVIEWS API ====================
+
+### Lấy tất cả đánh giá
+GET {{Shop.Api_HostAddress}}/api/reviews
+Accept: application/json
+
+###
+
+### Lấy đánh giá với filter
+GET {{Shop.Api_HostAddress}}/api/reviews?productId=1&rating=5&isActive=true&page=1&pageSize=10
+Accept: application/json
+
+###
+
+### Lấy đánh giá theo ID
+GET {{Shop.Api_HostAddress}}/api/reviews/{{ReviewId}}
+Accept: application/json
+
+###
+
+### Lấy đánh giá của một sản phẩm
+GET {{Shop.Api_HostAddress}}/api/reviews/product/{{ProductId}}
+Accept: application/json
+
+###
+
+### Tạo đánh giá mới
+POST {{Shop.Api_HostAddress}}/api/reviews
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "userId": "user123",
+  "userName": "Nguyễn Văn A",
+  "rating": 5,
+  "comment": "Sản phẩm rất tốt!",
+  "isActive": true
+}
+
+###
+
+### Cập nhật đánh giá
+PUT {{Shop.Api_HostAddress}}/api/reviews/{{ReviewId}}
+Content-Type: application/json
+
+{
+  "reviewId": 1,
+  "productId": 1,
+  "userId": "user123",
+  "userName": "Nguyễn Văn A",
+  "rating": 4,
+  "comment": "Sản phẩm tốt, nhưng có thể cải thiện thêm",
+  "isActive": true
+}
+
+###
+
+### Toggle trạng thái đánh giá (ẩn/hiện)
+PATCH {{Shop.Api_HostAddress}}/api/reviews/{{ReviewId}}/toggle
+Accept: application/json
+
+###
+
+### Xóa đánh giá
+DELETE {{Shop.Api_HostAddress}}/api/reviews/{{ReviewId}}
 
 ###

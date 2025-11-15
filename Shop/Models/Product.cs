@@ -61,5 +61,7 @@ namespace Shop.Models
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
+        public virtual ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
     }
 }

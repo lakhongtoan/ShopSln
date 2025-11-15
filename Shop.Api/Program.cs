@@ -12,7 +12,28 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Shop API",
+        Version = "v1",
+        Description = "RESTful API cho hệ thống Shop - Quản lý sản phẩm, đánh giá và đơn hàng",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Shop API Support",
+            Email = "support@shop.com"
+        }
+    });
+    
+    // Include XML comments for Swagger
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
+});
 
 // DbContext (Database-First)
 builder.Services.AddDbContext<ShopDbContext>(options =>

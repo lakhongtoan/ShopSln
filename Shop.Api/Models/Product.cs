@@ -44,4 +44,6 @@ public partial class Product
     public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<OrderItem> OrderItems { get; } = new List<OrderItem>();
+
+    public virtual ICollection<ProductReview> Reviews { get; } = new List<ProductReview>();
 }
