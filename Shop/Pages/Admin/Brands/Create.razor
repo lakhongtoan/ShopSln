@@ -1,0 +1,76 @@
+@page "/admin/brands/create"
+@using Shop.Models
+@using Microsoft.AspNetCore.Components.Forms
+@inject AppDbContext Db
+@inject NavigationManager Nav
+@inject IWebHostEnvironment Env
+
+<h3>Thêm thương hiệu</h3>
+
+<div class="card p-4">
+    <EditForm Model="@brand" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label>Tên thương hiệu</label>
+            <InputText class="form-control" @bind-Value="brand.Name" />
+        </div>
+
+        <div class="mb-3">
+            <label>Slug</label>
+            <InputText class="form-control" @bind-Value="brand.Slug" />
+        </div>
+
+        <div class="mb-3">
+            <label>Mô tả</label>
+            <InputTextArea class="form-control" @bind-Value="brand.Description" />
+        </div>
+
+        <div class="mb-3">
+            <label>Upload ảnh</label>
+            <InputFile OnChange="HandleImageUpload" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(previewImage))
+        {
+            <img src="@previewImage" style="max-height:150px" class="img-thumbnail" />
+        }
+
+        <br />
+
+        <button class="btn btn-success mt-3">Thêm</button>
+        <button type="button" class="btn btn-secondary mt-3" @onclick="Back">Quay lại</button>
+    </EditForm>
+</div>
+
+@code {
+    Brand brand = new();
+    string? previewImage;
+    IBrowserFile? upload;
+
+    async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        upload = e.File;
+        var folder = Path.Combine(Env.WebRootPath, "images", "brands");
+        Directory.CreateDirectory(folder);
+
+        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(upload.Name)}";
+        var filePath = Path.Combine(folder, fileName);
+
+        await using var fs = File.Create(filePath);
+        await upload.OpenReadStream(5 * 1024 * 1024).CopyToAsync(fs);
+
+        brand.Image = $"/images/brands/{fileName}";
+        previewImage = brand.Image;
+    }
+
+    async Task Save()
+    {
+        Db.Brands.Add(brand);
+        await Db.SaveChangesAsync();   // CHẮC CHẮN ĐÃ CÓ
+        Nav.NavigateTo("/admin/brands");
+    }
+
+    void Back() => Nav.NavigateTo("/admin/brands");
+}

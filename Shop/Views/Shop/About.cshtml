@@ -1,0 +1,256 @@
+@{
+    ViewData["Title"] = "Giới thiệu Camping CDSG";
+}
+
+<style>
+    .about-hero {
+        position: relative;
+        padding: 80px 0;
+        background: linear-gradient(135deg, #1b4332, #2d6a4f);
+        color: #ffffff;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("/images/home/tent.jpg");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.18;
+        z-index: 0;
+    }
+
+    .about-hero .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .about-hero h1 {
+        font-size: 40px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .about-hero p.lead {
+        font-size: 18px;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    .about-section {
+        padding: 60px 0;
+    }
+
+    .about-title {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .about-title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 60%;
+        height: 3px;
+        background: #2d6a4f;
+    }
+
+    .about-text {
+        font-size: 15px;
+        line-height: 1.9;
+        color: #444;
+        text-align: justify;
+    }
+
+    .about-highlight {
+        background: #f4f9f4;
+        border-radius: 8px;
+        padding: 25px 25px 10px;
+        border-left: 4px solid #2d6a4f;
+        margin-bottom: 25px;
+    }
+
+    .about-pill {
+        display: inline-block;
+        padding: 5px 14px;
+        border-radius: 999px;
+        background: #e9f5ec;
+        color: #1b4332;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .about-image-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .about-image-grid img {
+        width: 100%;
+        border-radius: 12px;
+        object-fit: cover;
+        height: 220px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .about-image-grid img:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.2);
+    }
+
+    .about-badge-list {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    .about-badge-list li {
+        position: relative;
+        padding-left: 24px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .about-badge-list li::before {
+        content: "✔";
+        position: absolute;
+left: 0;
+        top: 1px;
+        font-size: 13px;
+        color: #2d6a4f;
+        font-weight: 700;
+    }
+
+    .about-cta {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 25px 20px;
+        text-align: center;
+        margin-top: 15px;
+        border: 1px solid #e0e4e8;
+    }
+
+    .about-cta h4 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .about-cta p {
+        margin-bottom: 15px;
+        color: #555;
+    }
+
+    .about-cta .btn-about {
+        display: inline-block;
+        padding: 10px 24px;
+        border-radius: 999px;
+        border: none;
+        background: #2d6a4f;
+        color: #fff;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        text-decoration: none;
+    }
+
+    .about-cta .btn-about:hover {
+        background: #1b4332;
+        text-decoration: none;
+    }
+</style>
+
+
+
+<!-- CONTENT -->
+<section class="about-section">
+    <div class="container">
+        <div class="row g-4">
+
+            <div class="col-md-7">
+
+                <div class="about-highlight">
+                    <span class="about-pill">Giới thiệu về Camping CDSG</span>
+                    <h2 class="about-title">Câu chuyện của chúng tôi</h2>
+
+                    <p class="about-text">
+                        Camping CDSG được thành lập vào năm 2022 khi nhu cầu du lịch dã ngoại trở nên phổ biến hơn bao giờ hết.
+                        Với mong muốn mang lại những trải nghiệm tuyệt vời và đáng nhớ, Camping CDSG luôn nỗ lực phát triển,
+                        mang đến những sản phẩm chất lượng, phù hợp nhất với từng khách hàng.
+                    </p>
+
+                    <p class="about-text">
+                        Chúng tôi cũng chú trọng đào tạo đội ngũ nhân viên chuyên nghiệp, tận tâm – sẵn sàng hỗ trợ khách hàng
+                        mọi lúc, mọi nơi.
+                    </p>
+                </div>
+
+                <h3 class="about-title">Phương châm hoạt động</h3>
+
+                <p class="about-text">
+                    Với phương châm <strong>“Hãy để mỗi khoảnh khắc thư giãn bên gia đình và bạn bè trở nên vô giá”</strong>,
+                    Camping CDSG luôn đặt sự hài lòng của khách hàng làm ưu tiên hàng đầu.
+                </p>
+
+                <ul class="about-badge-list">
+                    <li>Tư vấn sản phẩm theo nhu cầu thực tế.</li>
+                    <li>Ưu tiên chất lượng, độ bền và tính an toàn.</li>
+                    <li>Luôn lắng nghe để cải thiện dịch vụ.</li>
+                </ul>
+
+            </div>
+
+            <div class="col-md-5">
+
+                <div class="about-image-grid mb-4">
+                    <img src="/images/about/camping-1.jpg" alt="Camping CDSG 1" />
+                    <img src="/images/about/camping-2.jpg" alt="Camping CDSG 2" />
+                </div>
+
+                <h3 class="about-title">Độ uy tín của Camping CDSG</h3>
+
+                <p class="about-text">
+                    Camping CDSG đã chứng minh sự uy tín thông qua chất lượng sản phẩm, dịch vụ chăm sóc khách hàng tận tâm
+                    và sự hài lòng của hàng nghìn khách hàng trong thời gian qua.
+                </p>
+
+                <div class="about-cta">
+                    <h4>Cảm ơn Quý khách hàng!</h4>
+                    <p>Sự tin tưởng của bạn chính là động lực để chúng tôi phát triển hơn mỗi ngày.</p>
+                    <a asp-controller="Shop" asp-action="Shop" class="btn-about">Khám phá ngay</a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- HERO -->
+        <section class="about-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Camping CDSG</h1>
+                    <p class="lead">
+                        Đồng hành cùng bạn trên mọi hành trình cắm trại, dã ngoại và khám phá thiên nhiên.
+                    </p>
+                </div>
+            </div>
+        </section>
+</section>

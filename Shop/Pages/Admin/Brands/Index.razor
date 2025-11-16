@@ -1,0 +1,60 @@
+@page "/admin/brands"
+@using Shop.Models
+@inject AppDbContext Db
+@inject NavigationManager Nav
+
+<h3>Thương hiệu</h3>
+
+<button class="btn btn-primary mb-3" @onclick="CreateNew">+ Thêm Brand</button>
+
+@if (brands == null)
+{
+    <p>Đang tải...</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Ảnh</th>
+                <th>Tên</th>
+                <th>Slug</th>
+                <th>Mô tả</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in brands)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(b.Image))
+                        {
+                            <img src="@b.Image" style="height:60px" />
+                        }
+                    </td>
+                    <td>@b.Name</td>
+                    <td>@b.Slug</td>
+                    <td>@b.Description</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" @onclick="() => Edit(b.BrandId)">Sửa</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Delete(b.BrandId)">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Brand>? brands;
+
+    protected override void OnInitialized()
+    {
+        brands = Db.Brands.ToList();
+    }
+
+    void CreateNew() => Nav.NavigateTo("/admin/brands/create");
+    void Edit(int id) => Nav.NavigateTo($"/admin/brands/edit/{id}");
+    void Delete(int id) => Nav.NavigateTo($"/admin/brands/delete/{id}");
+}

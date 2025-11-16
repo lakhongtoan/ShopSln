@@ -399,6 +399,12 @@ namespace Shop.Controllers
             }
         }
 
+        // ========== GIỚI THIỆU ==========
+        public IActionResult About()
+        {
+            return View();
+        }
+
         // ========== LIÊN HỆ ==========
         [HttpPost]
         public IActionResult Contact(Contact contact)

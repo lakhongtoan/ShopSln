@@ -65,6 +65,14 @@
       "PackagePath": "staticwebassets\\fonts\\glyphicons-halflings-regular.woff"
     },
     {
+      "Id": "D:\\Back-end\\Project\\ShopSln\\Shop\\wwwroot\\images\\about\\camping-1.jpg",
+      "PackagePath": "staticwebassets\\images\\about\\camping-1.jpg"
+    },
+    {
+      "Id": "D:\\Back-end\\Project\\ShopSln\\Shop\\wwwroot\\images\\about\\camping-2.jpg",
+      "PackagePath": "staticwebassets\\images\\about\\camping-2.jpg"
+    },
+    {
       "Id": "D:\\Back-end\\Project\\ShopSln\\Shop\\wwwroot\\images\\home\\1.jfif",
       "PackagePath": "staticwebassets\\images\\home\\1.jfif"
     },
@@ -87,6 +95,14 @@
     {
       "Id": "D:\\Back-end\\Project\\ShopSln\\Shop\\wwwroot\\images\\home\\6.jfif",
       "PackagePath": "staticwebassets\\images\\home\\6.jfif"
+    },
+    {
+      "Id": "D:\\Back-end\\Project\\ShopSln\\Shop\\wwwroot\\images\\home\\661ac360-ac5a-41f3-bea8-2be6c4f76182.webp",
+      "PackagePath": "staticwebassets\\images\\home\\661ac360-ac5a-41f3-bea8-2be6c4f76182.webp"
+    },
+    {
+      "Id": "D:\\Back-end\\Project\\ShopSln\\Shop\\wwwroot\\images\\home\\6d933db8-c13c-4349-933c-80e3281fdd49.webp",
+      "PackagePath": "staticwebassets\\images\\home\\6d933db8-c13c-4349-933c-80e3281fdd49.webp"
     },
     {
       "Id": "D:\\Back-end\\Project\\ShopSln\\Shop\\wwwroot\\images\\home\\7.jfif",
