@@ -227,6 +227,32 @@ namespace Shop.Models
                 context.OrderItems.AddRange(orderItems);
                 context.SaveChanges();
             }
+
+            // ========================= SEED SLIDERS =========================
+            if (!context.Sliders.Any())
+            {
+                context.Sliders.AddRange(
+                    new Slider
+                    {
+                        Title = "Khuyến mãi đặc biệt",
+                        Image = "/images/home/slider_1.webp",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
+                    },
+                    new Slider
+                    {
+                        Title = "Sản phẩm mới nhất",
+                        Image = "/images/home/slider_2.webp",
+                        CreatedAt = now,
+                        CreatedBy = defaultUser,
+                        UpdatedAt = now,
+                        UpdatedBy = defaultUser
+                    }
+                );
+                context.SaveChanges();
+            }
         }
     }
 }

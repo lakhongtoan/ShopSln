@@ -89,14 +89,14 @@
                 }
 
                 var fileName = Guid.NewGuid() + ext;
-                var folder = Path.Combine(Env.WebRootPath, "images", "sliders");
+                var folder = Path.Combine(Env.WebRootPath, "images", "home");
                 Directory.CreateDirectory(folder);
 
                 var filePath = Path.Combine(folder, fileName);
                 await using var fs = new FileStream(filePath, FileMode.Create);
                 await SelectedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
 
-                Slider.Image = $"/images/sliders/{fileName}";
+                Slider.Image = $"/images/home/{fileName}";
                 UploadError = null;
             }
             catch (Exception ex)
