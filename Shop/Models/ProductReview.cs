@@ -6,6 +6,7 @@ namespace Shop.Models
     public class ProductReview
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ReviewId { get; set; }
 
         [Required]

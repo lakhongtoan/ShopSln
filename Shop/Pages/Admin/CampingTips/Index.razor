@@ -61,6 +61,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         tips = await Db.CampingTips
+            .AsNoTracking()
             .OrderByDescending(x => x.CreatedAt)
             .ToListAsync();
     }

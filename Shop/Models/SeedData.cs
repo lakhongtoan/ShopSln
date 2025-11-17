@@ -540,25 +540,44 @@ namespace Shop.Models
             if (!context.ProductReviews.Any())
             {
                 var products = context.Products.Take(10).ToList();
-                var userIds = new[] { "user1", "user2", "user3", "user4", "user5", "user6", "user7", "user8", "user9", "user10" };
-                var userNames = new[] { "Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D", "Hoàng Văn E", "Nguyễn Thị F", "Trần Văn G", "Lê Thị H", "Phạm Văn I", "Hoàng Thị K" };
-                
-                var reviews = new List<ProductReview>();
-                for (int i = 0; i < 10; i++)
+                if (products.Any())
                 {
-                    reviews.Add(new ProductReview
+                    var userIds = new[] { "user1", "user2", "user3", "user4", "user5", "user6", "user7", "user8", "user9", "user10" };
+                    var userNames = new[] { "Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D", "Hoàng Văn E", "Nguyễn Thị F", "Trần Văn G", "Lê Thị H", "Phạm Văn I", "Hoàng Thị K" };
+                    
+                    var reviews = new List<ProductReview>();
+                    for (int i = 0; i < 10; i++)
                     {
-                        ProductId = products[i % products.Count].ProductID,
-                        UserId = userIds[i],
-                        UserName = userNames[i],
-                        Rating = (i % 5) + 1,
-                        Comment = $"Đánh giá sản phẩm {i + 1}: Sản phẩm rất tốt, chất lượng cao, giao hàng nhanh.",
-                        CreatedAt = now.AddDays(-(10 - i)),
-                        IsActive = true
-                    });
+                        // Đảm bảo không tạo duplicate reviews cho cùng sản phẩm và user
+                        var product = products[i % products.Count];
+                        var userId = userIds[i];
+                        
+                        // Kiểm tra xem đã có review của user này cho sản phẩm này chưa
+                        var existingReview = context.ProductReviews
+                            .FirstOrDefault(r => r.ProductId == product.ProductID && r.UserId == userId);
+                        
+                        if (existingReview == null)
+                        {
+                            reviews.Add(new ProductReview
+                            {
+                                // ReviewId sẽ được tự động generate (Identity)
+                                ProductId = product.ProductID,
+                                UserId = userId,
+                                UserName = userNames[i],
+                                Rating = (i % 5) + 1,
+                                Comment = $"Đánh giá sản phẩm {i + 1}: Sản phẩm rất tốt, chất lượng cao, giao hàng nhanh.",
+                                CreatedAt = now.AddDays(-(10 - i)),
+                                IsActive = true
+                            });
+                        }
+                    }
+                    
+                    if (reviews.Any())
+                    {
+                        context.ProductReviews.AddRange(reviews);
+                        context.SaveChanges();
+                    }
                 }
-                context.ProductReviews.AddRange(reviews);
-                context.SaveChanges();
             }
 
             // ========================= SEED CAMPING TIPS =========================

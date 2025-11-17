@@ -47,6 +47,10 @@ namespace Shop.Services
             {
                 // API không khả dụng, trả về empty để fallback về DbContext
             }
+            catch (TaskCanceledException)
+            {
+                // Timeout - fallback nhanh về database
+            }
             return Enumerable.Empty<Product>();
         }
 
@@ -73,6 +77,10 @@ namespace Shop.Services
             {
                 // API không khả dụng
             }
+            catch (TaskCanceledException)
+            {
+                // Timeout - fallback nhanh về database
+            }
             return null;
         }
 
@@ -91,6 +99,10 @@ namespace Shop.Services
             {
                 // API không khả dụng, trả về empty để fallback về DbContext
             }
+            catch (TaskCanceledException)
+            {
+                // Timeout - fallback nhanh về database
+            }
             return Enumerable.Empty<Product>();
         }
 
@@ -108,6 +120,10 @@ namespace Shop.Services
             catch (HttpRequestException)
             {
                 // API không khả dụng
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout - fallback nhanh về database
             }
             return Enumerable.Empty<Product>();
         }
@@ -130,6 +146,10 @@ namespace Shop.Services
             catch (HttpRequestException)
             {
                 // API không khả dụng, trả về empty để fallback về DbContext
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout - fallback nhanh về database
             }
             return Enumerable.Empty<Category>();
         }
@@ -162,27 +182,42 @@ namespace Shop.Services
             {
                 // API không khả dụng
             }
+            catch (TaskCanceledException)
+            {
+                // Timeout - fallback nhanh về database
+            }
             return Enumerable.Empty<CartItem>();
         }
 
         public async Task<CartItem?> AddToCartAsync(string sessionId, long productId, int quantity = 1, string? userId = null)
         {
-            var request = new
+            try
             {
-                SessionId = sessionId,
-                ProductId = productId,
-                Quantity = quantity,
-                UserId = userId
-            };
+                var request = new
+                {
+                    SessionId = sessionId,
+                    ProductId = productId,
+                    Quantity = quantity,
+                    UserId = userId
+                };
 
-            var json = JsonSerializer.Serialize(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("/api/cartitems", content);
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("/api/cartitems", content);
 
-            if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseJson = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<CartItem>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+            }
+            catch (HttpRequestException)
             {
-                var responseJson = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<CartItem>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                // API không khả dụng, trả về null để fallback về database
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout khi gọi API
             }
             return null;
         }

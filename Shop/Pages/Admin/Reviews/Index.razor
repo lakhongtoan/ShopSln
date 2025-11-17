@@ -59,7 +59,19 @@ else
                 <option value="false">Đã ẩn</option>
             </InputSelect>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <label class="mb-0 fw-semibold">Sản phẩm:</label>
+            <InputSelect class="form-select" style="width: 200px;" @bind-Value="selectedProductId" @bind-Value:after="HandleProductChange">
+                <option value="">Tất cả sản phẩm</option>
+                @if (ProductList != null)
+                {
+                    @foreach (var product in ProductList)
+                    {
+                        <option value="@product.ProductID">@product.Name</option>
+                    }
+                }
+            </InputSelect>
+
             <label class="mb-0 fw-semibold">Tìm kiếm:</label>
             <InputText class="form-control" style="width: 300px;" 
                        placeholder="Tìm theo tên sản phẩm, người dùng..." 
@@ -233,12 +245,14 @@ else
 
 @code {
     private List<ProductReview>? ReviewData;
+    private List<Product>? ProductList;
     private int _pageNumber = 1;
     private int _pageSize = 15;
     private int _totalPages = 1;
     private string selectedRating = "";
     private string selectedStatus = "";
     private string searchTerm = "";
+    private string? selectedProductId = "";
     private string? successMessage;
     private string? errorMessage;
     
@@ -260,7 +274,25 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadProductList();
         await LoadData();
+    }
+
+    private async Task LoadProductList()
+    {
+        try
+        {
+            ProductList = await Db.Products
+                .AsNoTracking()
+                .Where(p => p.IsActive)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi tải danh sách sản phẩm: {ex.Message}";
+            ProductList = new List<Product>();
+        }
     }
 
     private async Task LoadData()
@@ -318,6 +350,12 @@ else
                 query = query.Where(r => r.IsActive == isActive);
             }
 
+            // Lọc theo sản phẩm
+            if (!string.IsNullOrEmpty(selectedProductId) && long.TryParse(selectedProductId, out long productId))
+            {
+                query = query.Where(r => r.ProductId == productId);
+            }
+
             // Tìm kiếm
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -362,6 +400,12 @@ else
     }
 
     private async Task HandleSearchInput()
+    {
+        _pageNumber = 1;
+        await LoadData();
+    }
+
+    private async Task HandleProductChange()
     {
         _pageNumber = 1;
         await LoadData();

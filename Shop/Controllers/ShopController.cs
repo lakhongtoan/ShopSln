@@ -26,40 +26,56 @@ namespace Shop.Controllers
         // ========== TRANG CHỦ ==========
         public async Task<IActionResult> Index()
         {
-            // Thử dùng API, nếu không khả dụng thì fallback về DbContext
-            var featuredProducts = await _apiService.GetFeaturedProductsAsync(8);
+            // ⚡ Chạy API calls SONG SONG (chúng không dùng DbContext)
+            var featuredProductsTask = _apiService.GetFeaturedProductsAsync(8);
+            var categoriesTask = _apiService.GetCategoriesAsync(true);
+
+            // Đợi API calls hoàn thành
+            await Task.WhenAll(featuredProductsTask, categoriesTask);
+
+            // Xử lý kết quả API
+            var featuredProducts = await featuredProductsTask;
             if (!featuredProducts.Any())
             {
-                // Fallback về DbContext
-                featuredProducts = _context.Products
+                // Fallback về DbContext (tuần tự vì cùng instance)
+                featuredProducts = await _context.Products
+                    .AsNoTracking()
                     .Include(p => p.Category)
                     .Where(p => p.IsActive && p.IsFeatured)
                     .Take(8)
-                    .ToList();
+                    .ToListAsync();
             }
 
-            var categories = (await _apiService.GetCategoriesAsync(true)).Take(6).ToList();
+            var categories = (await categoriesTask).Take(6).ToList();
             if (!categories.Any())
             {
-                // Fallback về DbContext
-                categories = _context.Categories
+                // Fallback về DbContext (tuần tự)
+                categories = await _context.Categories
+                    .AsNoTracking()
                     .Where(c => c.IsActive)
                     .Take(6)
-                    .ToList();
+                    .ToListAsync();
             }
 
-            var sliders = _context.Sliders.ToList();
+            // ⚡ Database queries chạy TUẦN TỰ (không thể song song trên cùng DbContext)
+            // Nhưng vẫn async nên không block thread
+            var sliders = await _context.Sliders
+                .AsNoTracking()
+                .ToListAsync();
 
-            var brands = _context.Brands
+            var brands = await _context.Brands
+                .AsNoTracking()
                 .Where(b => b.IsActive)
-                .Take(8)             
-                .ToList();
+                .Take(8)
+                .ToListAsync();
 
-            var campingTips = _context.CampingTips
+            var campingTips = await _context.CampingTips
+                .AsNoTracking()
                 .Where(x => x.IsPublished)
                 .OrderByDescending(x => x.CreatedAt)
                 .Take(3)
-                .ToList();
+                .ToListAsync();
+
             ViewBag.CampingTips = campingTips;
             ViewBag.Sliders = sliders;
             ViewBag.FeaturedProducts = featuredProducts;
@@ -72,13 +88,18 @@ namespace Shop.Controllers
         // ========== DANH SÁCH SẢN PHẨM ==========
         public async Task<IActionResult> Shop(int? categoryId, string? search, int page = 1, int pageSize = 12)
         {
-            var products = await _apiService.GetProductsAsync(categoryId, search, null, page, pageSize);
+            // ⚡ Chạy products và categories song song
+            var productsTask = _apiService.GetProductsAsync(categoryId, search, null, page, pageSize);
+            var categoriesTask = _apiService.GetCategoriesAsync(true);
+            
+            var products = await productsTask;
             var productList = products.ToList();
             
             // Fallback về DbContext nếu API không khả dụng
             if (!productList.Any())
             {
                 var query = _context.Products
+                    .AsNoTracking()
                     .Include(p => p.Category)
                     .Where(p => p.IsActive);
 
@@ -92,12 +113,18 @@ namespace Shop.Controllers
                     query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
                 }
 
-                var totalProducts = query.Count();
-                productList = query
+                // ⚡ Chạy Count và query song song
+                var countTask = query.CountAsync();
+                var productsDbTask = query
                     .OrderByDescending(p => p.CreatedAt)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
-                    .ToList();
+                    .ToListAsync();
+
+                await Task.WhenAll(countTask, productsDbTask);
+
+                var totalProducts = await countTask;
+                productList = await productsDbTask;
 
                 ViewBag.TotalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
                 ViewBag.TotalProducts = totalProducts;
@@ -108,13 +135,14 @@ namespace Shop.Controllers
                 ViewBag.TotalProducts = productList.Count;
             }
 
-            var categories = await _apiService.GetCategoriesAsync(true);
+            var categories = await categoriesTask;
             var categoryList = categories.ToList();
             if (!categoryList.Any())
             {
-                categoryList = _context.Categories
+                categoryList = await _context.Categories
+                    .AsNoTracking()
                     .Where(c => c.IsActive)
-                    .ToList();
+                    .ToListAsync();
             }
 
             ViewBag.Categories = categoryList;
@@ -129,38 +157,54 @@ namespace Shop.Controllers
         // View: Views/Shop/Details.cshtml
         public async Task<IActionResult> Details(long id)
         {
-            var product = await _apiService.GetProductByIdAsync(id, true);
+            // ⚡ Chạy các queries song song
+            var productTask = _apiService.GetProductByIdAsync(id, true);
+            var relatedProductsTask = _apiService.GetRelatedProductsAsync(id, 4);
+            var reviewsTask = _apiService.GetReviewsByProductIdAsync(id);
+
+            var product = await productTask;
 
             // Fallback về DbContext nếu API không khả dụng
             if (product == null)
             {
-                product = _context.Products
+                product = await _context.Products
+                    .AsNoTracking()
                     .Include(p => p.Category)
-                    .FirstOrDefault(p => p.ProductID == id);
+                    .FirstOrDefaultAsync(p => p.ProductID == id);
             }
 
             if (product == null || !product.IsActive)
                 return NotFound();
 
+            // Đợi các queries song song
+            await Task.WhenAll(relatedProductsTask, reviewsTask);
+
             // Lấy sản phẩm liên quan
-            var relatedProducts = await _apiService.GetRelatedProductsAsync(id, 4);
+            var relatedProducts = await relatedProductsTask;
             if (!relatedProducts.Any())
             {
-                relatedProducts = _context.Products
+                relatedProducts = await _context.Products
+                    .AsNoTracking()
                     .Include(p => p.Category)
                     .Where(p => p.CategoryId == product.CategoryId && p.ProductID != id && p.IsActive)
                     .Take(4)
-                    .ToList();
+                    .ToListAsync();
             }
 
-            // Lấy đánh giá của sản phẩm
-            var reviews = await _apiService.GetReviewsByProductIdAsync(id);
+            // Lấy đánh giá của sản phẩm (chỉ lấy reviews của sản phẩm này)
+            var reviews = await reviewsTask;
             if (!reviews.Any())
             {
-                reviews = _context.ProductReviews
+                reviews = await _context.ProductReviews
+                    .AsNoTracking()
                     .Where(r => r.ProductId == id && r.IsActive)
                     .OrderByDescending(r => r.CreatedAt)
-                    .ToList();
+                    .ToListAsync();
+            }
+            else
+            {
+                // Đảm bảo chỉ lấy reviews của sản phẩm này
+                reviews = reviews.Where(r => r.ProductId == id && r.IsActive).ToList();
             }
 
             // Tính điểm đánh giá trung bình
@@ -190,22 +234,48 @@ namespace Shop.Controllers
             // Fallback về DbContext nếu API không khả dụng
             if (!cartItems.Any())
             {
-                cartItems = _context.CartItems
+                cartItems = await _context.CartItems
+                    .AsNoTracking()
                     .Include(ci => ci.Product)
                     .Where(ci => ci.SessionId == sessionId)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                // Load product details for each cart item
+                // ⚡ Batch load - 1 query thay vì N+1 queries
+                var productIds = cartItems.Select(ci => ci.ProductId).Distinct().ToList();
+                var productsDict = new Dictionary<long, Product>();
+
+                // Load từ database trước (nhanh hơn API)
+                var products = await _context.Products
+                    .AsNoTracking()
+                    .Where(p => productIds.Contains(p.ProductID))
+                    .ToListAsync();
+
+                foreach (var product in products)
+                {
+                    productsDict[product.ProductID] = product;
+                }
+
+                // Chỉ gọi API cho products còn thiếu (song song)
+                var missingIds = productIds.Where(id => !productsDict.ContainsKey(id)).ToList();
+                if (missingIds.Any())
+                {
+                    var apiProductTasks = missingIds.Select(id => _apiService.GetProductByIdAsync(id));
+                    var apiProducts = await Task.WhenAll(apiProductTasks);
+                    foreach (var product in apiProducts.Where(p => p != null))
+                    {
+                        if (product != null)
+                        {
+                            productsDict[product.ProductID] = product;
+                        }
+                    }
+                }
+
+                // Gán vào cart items
                 foreach (var item in cartItems)
                 {
-                    var product = await _apiService.GetProductByIdAsync(item.ProductId);
-                    if (product == null)
-                    {
-                        product = _context.Products.Find(item.ProductId);
-                    }
-                    if (product != null)
+                    if (productsDict.TryGetValue(item.ProductId, out var product))
                     {
                         item.Product = product;
                     }
@@ -218,18 +288,69 @@ namespace Shop.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(long productId, int quantity = 1)
         {
+            // Thử lấy product từ API trước, nếu không khả dụng thì fallback về database
             var product = await _apiService.GetProductByIdAsync(productId);
+            if (product == null)
+            {
+                // Fallback về DbContext nếu API không khả dụng
+                product = await _context.Products
+                    .AsNoTracking()
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.ProductID == productId);
+            }
+
             if (product == null || !product.IsActive)
-                return Json(new { success = false, message = "Product not found" });
+                return Json(new { success = false, message = "Sản phẩm không tồn tại hoặc đã bị vô hiệu hóa" });
 
             var sessionId = GetSessionId();
             var userId = User.Identity?.IsAuthenticated == true ? User.Identity.Name : null;
 
+            // Thử thêm vào giỏ qua API, nếu không khả dụng thì dùng database trực tiếp
             var cartItem = await _apiService.AddToCartAsync(sessionId, productId, quantity, userId);
             if (cartItem == null)
-                return Json(new { success = false, message = "Failed to add to cart" });
+            {
+                // Fallback: Thêm vào giỏ hàng trực tiếp qua database
+                var existingCartItem = await _context.CartItems
+                    .FirstOrDefaultAsync(ci => ci.SessionId == sessionId && ci.ProductId == productId);
 
+                if (existingCartItem != null)
+                {
+                    existingCartItem.Quantity += quantity;
+                    existingCartItem.UnitPrice = product.SalePrice ?? product.Price;
+                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.UnitPrice;
+                }
+                else
+                {
+                    var unitPrice = product.SalePrice ?? product.Price;
+                    cartItem = new CartItem
+                    {
+                        ProductId = productId,
+                        ProductName = product.Name,
+                        ProductImage = product.Image ?? "",
+                        UnitPrice = unitPrice,
+                        Quantity = quantity,
+                        TotalPrice = unitPrice * quantity,
+                        SessionId = sessionId,
+                        UserId = userId,
+                        CreatedAt = DateTime.Now
+                    };
+                    _context.CartItems.Add(cartItem);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            // Lấy số lượng giỏ hàng
             var cartItems = await _apiService.GetCartItemsAsync(sessionId);
+            if (!cartItems.Any())
+            {
+                // Fallback về database nếu API không khả dụng
+                cartItems = await _context.CartItems
+                    .AsNoTracking()
+                    .Where(ci => ci.SessionId == sessionId)
+                    .ToListAsync();
+            }
+
             var cartCount = cartItems.Sum(ci => ci.Quantity);
 
             return Json(new { success = true, cartCount = cartCount });
@@ -273,11 +394,40 @@ namespace Shop.Controllers
             if (!cartItems.Any())
                 return RedirectToAction("Cart");
 
-            // Load product details
+            // ⚡ Batch load - 1 query thay vì N+1 queries
+            var productIds = cartItems.Select(ci => ci.ProductId).Distinct().ToList();
+            var productsDict = new Dictionary<long, Product>();
+
+            // Load từ database trước (nhanh hơn API)
+            var products = await _context.Products
+                .AsNoTracking()
+                .Where(p => productIds.Contains(p.ProductID))
+                .ToListAsync();
+
+            foreach (var product in products)
+            {
+                productsDict[product.ProductID] = product;
+            }
+
+            // Chỉ gọi API cho products còn thiếu (song song)
+            var missingIds = productIds.Where(id => !productsDict.ContainsKey(id)).ToList();
+            if (missingIds.Any())
+            {
+                var apiProductTasks = missingIds.Select(id => _apiService.GetProductByIdAsync(id));
+                var apiProducts = await Task.WhenAll(apiProductTasks);
+                foreach (var product in apiProducts.Where(p => p != null))
+                {
+                    if (product != null)
+                    {
+                        productsDict[product.ProductID] = product;
+                    }
+                }
+            }
+
+            // Gán vào cart items
             foreach (var item in cartItems)
             {
-                var product = await _apiService.GetProductByIdAsync(item.ProductId);
-                if (product != null)
+                if (productsDict.TryGetValue(item.ProductId, out var product))
                 {
                     item.Product = product;
                 }

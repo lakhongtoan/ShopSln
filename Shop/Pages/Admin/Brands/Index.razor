@@ -1,5 +1,6 @@
 @page "/admin/brands"
 @using Shop.Models
+@using Microsoft.EntityFrameworkCore
 @inject AppDbContext Db
 @inject NavigationManager Nav
 
@@ -7,23 +8,27 @@
 
 <button class="btn btn-primary mb-3" @onclick="CreateBrand">+ Thêm Brand</button>
 
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Tên</th>
-            <th>Slug</th>
-            <th>Mô tả</th>
-            <th>Ảnh</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (brands == null || !brands.Any())
-        {
-            <tr><td colspan="5">Chưa có dữ liệu Brand hoặc đang tải...</td></tr>
-        }
-        else
-        {
+@if (brands == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else if (!brands.Any())
+{
+    <p>Chưa có dữ liệu Brand.</p>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Tên</th>
+                <th>Slug</th>
+                <th>Mô tả</th>
+                <th>Ảnh</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var b in brands)
             {
                 <tr>
@@ -33,7 +38,7 @@
                     <td>
                         @if (!string.IsNullOrEmpty(b.Image))
                         {
-                            <img src="images/brands/@b.Image" width="60" />
+                            <img src="images/brands/@b.Image" width="60" alt="@b.Name" />
                         }
                     </td>
                     <td>
@@ -42,16 +47,19 @@
                     </td>
                 </tr>
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+}
 
 @code {
-    List<Brand> brands = new();
+    private List<Brand>? brands;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        brands = Db.Brands.ToList();
+        brands = await Db.Brands
+            .AsNoTracking()
+            .OrderBy(b => b.Name)
+            .ToListAsync();
     }
 
     void CreateBrand()
@@ -64,17 +72,20 @@
         Nav.NavigateTo($"/admin/brands/upsert/{id}");
     }
 
-    void DeleteBrand(int id)
+    private async Task DeleteBrand(int id)
     {
-        var brand = Db.Brands.Find(id);
+        var brand = await Db.Brands.FindAsync(id);
         if (brand != null)
         {
             Db.Brands.Remove(brand);
-            Db.SaveChanges();
+            await Db.SaveChangesAsync();
         }
 
         // Load lại danh sách
-        brands = Db.Brands.ToList();
+        brands = await Db.Brands
+            .AsNoTracking()
+            .OrderBy(b => b.Name)
+            .ToListAsync();
         StateHasChanged();
     }
 }

@@ -53,15 +53,20 @@
     private Brand brand = new();
     private IBrowserFile? uploadedFile;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (Id != 0)
         {
             // Chế độ sửa
-            var existing = Db.Brands.Find(Id);
+            var existing = await Db.Brands.FindAsync(Id);
             if (existing != null)
             {
                 brand = existing;
+            }
+            else
+            {
+                // Nếu không tìm thấy, quay lại danh sách
+                Nav.NavigateTo("/admin/brands");
             }
         }
         else
@@ -106,7 +111,7 @@
             Db.Brands.Update(brand);
         }
 
-        Db.SaveChanges();
+        await Db.SaveChangesAsync();
         Nav.NavigateTo("/admin/brands");
     }
 

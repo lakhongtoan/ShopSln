@@ -174,25 +174,44 @@
         $(document).ready(function() {
             $('.add-to-cart').click(function(e) {
                 e.preventDefault();
-                var productId = $(this).data('product-id');
+                var $btn = $(this);
+                
+                // Ngăn chặn click nhiều lần khi đang xử lý
+                if ($btn.data('processing')) {
+                    return false;
+                }
+                
+                $btn.data('processing', true);
+                var productId = $btn.data('product-id');
                 
                 $.ajax({
                     url: '@Url.Action("AddToCart", "Shop")',
                     type: 'POST',
+                    dataType: 'json',
                     data: { productId: productId, quantity: 1 },
                     success: function(response) {
-                        if (response.success) {
-                            $('.cart-count').text(response.cartCount);
+                        if (response && response.success) {
+                            $('.cart-count').text(response.cartCount || 0);
                             alert('Đã thêm sản phẩm vào giỏ hàng!');
                         } else {
-                            alert(response.message);
+                            var message = (response && response.message) ? response.message : 'Không thể thêm sản phẩm vào giỏ hàng';
+                            alert(message);
                         }
                     },
-                    error: function() {
-                        alert('Lỗi khi thêm sản phẩm vào giỏ hàng');
+                    error: function(xhr, status, error) {
+                        var errorMsg = 'Lỗi khi thêm sản phẩm vào giỏ hàng';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        alert(errorMsg);
+                    },
+                    complete: function() {
+                        // Cho phép click lại sau khi xử lý xong
+                        $btn.data('processing', false);
                     }
                 });
             });
         });
     </script>
 }
+

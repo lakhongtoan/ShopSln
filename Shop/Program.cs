@@ -38,7 +38,7 @@ builder.Services.AddHttpClient<IApiService, ApiService>(client =>
 {
     var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:5023";
     client.BaseAddress = new Uri(baseUrl);
-    client.Timeout = TimeSpan.FromSeconds(30);
+    client.Timeout = TimeSpan.FromSeconds(2); // Giảm timeout để fallback nhanh hơn
 });
 
 var app = builder.Build();

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4noFcZDd5He/rzjnmfSlwdDXsJQQAjFWM6hgHEQ8UdxnPIjT9wUoq+SLv0Fde6DcxOsS/S7LPqQPc48kN+Ng9A==",
+  "dgSpecHash": "dldl8ceTbWgHTOKlE9SQdR4/ItTajIZmSPA4V12q7pLJiA5rCDAgaKztZU1zdv+ZBY8n9ibnZG0puwU+aLf0WQ==",
   "success": true,
-  "projectFilePath": "F:\\F8\\test\\ShopSln\\Shop\\Shop.csproj",
+  "projectFilePath": "F:\\F8\\project-test\\ShopSln\\Shop\\Shop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\trung\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\trung\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
@@ -76,11 +76,7 @@
     "C:\\Users\\trung\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512",
     "C:\\Users\\trung\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
     "C:\\Users\\trung\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.14\\microsoft.netcore.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.14\\microsoft.windowsdesktop.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.14\\microsoft.aspnetcore.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\trung\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\7.0.14\\microsoft.netcore.app.host.win-x64.7.0.14.nupkg.sha512"
+    "C:\\Users\\trung\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }
