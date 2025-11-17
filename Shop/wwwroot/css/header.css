@@ -1,4 +1,4 @@
-#header nav.mainmenu .nav,
+﻿#header nav.mainmenu .nav,
     header#header nav.mainmenu .nav,
     :where(#header) :where(nav.mainmenu) :where(.nav) {
         display: flex !important;
@@ -66,3 +66,33 @@
         object-fit: contain !important;
         display: block !important;
     }
+
+#header {
+    transition: all 0.3s cubic-bezier(0.28, 0.6, 0.75, 0.51);
+}
+
+    #header.header-transparent {
+        background: transparent !important;
+    }
+
+    /* Header khi scroll xuống */
+    #header.scrolled {
+        background: #fff !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+        /* Đổi màu chữ menu */
+        #header.scrolled nav.mainmenu .nav > li > a {
+            color: #000 !important;
+        }
+
+        /* Đổi màu icon giỏ hàng, user, search */
+        #header.scrolled .header-right a,
+        #header.scrolled .header-right i {
+            color: #000 !important;
+        }
+
+        /* Đổi màu menu dropdown */
+        #header.scrolled nav.mainmenu .dropdown .sub-menu li a {
+            color: #000 !important;
+        }

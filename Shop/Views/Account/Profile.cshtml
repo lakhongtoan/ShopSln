@@ -1,0 +1,18 @@
+﻿@model IdentityUser
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container m-4 p-5">
+    <h2 class="mb-4">Thông tin tài khoản</h2>
+
+    <div class="card p-4 shadow-sm">
+        <h4><strong>Tên đăng nhập:</strong> @Model.UserName</h4>
+        <h4><strong>Email:</strong> @Model.Email</h4>
+
+        <a href="/Account/ChangePassword" class="btn btn-primary mt-3">
+            <i class="fa-solid fa-key"></i> Đổi mật khẩu
+        </a>
+    </div>
+</div>

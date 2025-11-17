@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Shop.Models;
 using Shop.Services;
 using System;
 
 namespace Shop.Controllers
 {
-    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
@@ -27,9 +27,11 @@ namespace Shop.Controllers
             _apiService = apiService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login() => View();
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
@@ -50,9 +52,11 @@ namespace Shop.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Register() => View();
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(string username, string email, string password)
         {
@@ -97,6 +101,47 @@ namespace Shop.Controllers
             if (order == null || order.UserId != user.Id) return NotFound();
 
             return View(order);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return View(user);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        {
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Error = "Mật khẩu xác nhận không khớp.";
+                return View();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+
+            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                ViewBag.Success = "Đổi mật khẩu thành công!";
+            }
+            else
+            {
+                ViewBag.Error = string.Join(", ", result.Errors.Select(e => e.Description));
+            }
+
+            return View();
         }
     }
 }

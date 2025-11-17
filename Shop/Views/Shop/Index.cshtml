@@ -1,9 +1,10 @@
-@model dynamic
+
 @{
     ViewData["Title"] = "Home";
     var featuredProducts = ViewBag.FeaturedProducts as List<Shop.Models.Product>;
     var campingTips = ViewBag.CampingTips as List<Shop.Models.CampingTip>;
     var categories = ViewBag.Categories as List<Shop.Models.Category>;
+    var brands = ViewBag.Brands as List<Shop.Models.Brand>;
 }
 
 <!-- ✅ Gọi file banner riêng -->
@@ -31,8 +32,8 @@
                             }
                         }
                     </div>
-                </div>
-             <div class="brands_products">
+
+                    <div class="brands_products">
                         <!--brands_products-->
                         <h2>Thương hiệu</h2>
                         <div class="brands-name">
@@ -48,6 +49,7 @@
                         </div>
                     </div>
                     <!--/brands_products-->
+                </div>
             </div>
             
             <div class="col-sm-9 padding-right">
@@ -94,7 +96,7 @@
         </div><!-- ✅ đóng row -->
     </div><!-- ✅ đóng container -->
 </section>
-<!-- ================== KINH NGHIỆM CẮM TRẠI ================== -->
+
 <!-- ================== KINH NGHIỆM CẮM TRẠI ================== -->
 <section id="experience" class="py-5">
     <h2 class="section-title text-center mb-5">Kinh Nghiệm Cắm Trại</h2>
@@ -143,9 +145,6 @@
     </div>
 </section>
 <!-- ================== /KINH NGHIỆM CẮM TRẠI ================== -->
-@{
-    var brands = ViewBag.Brands as List<Shop.Models.Brand>;
-}
 
 @if (brands != null && brands.Any())
 {

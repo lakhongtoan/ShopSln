@@ -10,7 +10,14 @@
                     <h2>Đăng nhập tài khoản</h2>
                     <form asp-action="Login" method="post">
                         <input type="text" name="username" placeholder="Tên đăng nhập" required />
-                        <input type="password" name="password" placeholder="Mật khẩu" required />
+                        <div style="position: relative;">
+                            <input type="password" id="password" name="password"
+                                placeholder="Mật khẩu" required style="padding-right:40px;" />
+
+                            <i id="togglePassword" class="fa-solid fa-eye"
+                               style="position:absolute; right:10px; top:50%;
+                                        transform:translateY(-50%); cursor:pointer;"></i>
+                        </div>
                         <span>
                             <input type="checkbox" class="checkbox">
                             Ghi nhớ đăng nhập
@@ -48,3 +55,15 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        const input = document.getElementById("password");
+        const type = input.type === "password" ? "text" : "password";
+        input.type = type;
+
+        // đổi icon
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+    });
+</script>
