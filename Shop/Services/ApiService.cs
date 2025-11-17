@@ -19,6 +19,7 @@ namespace Shop.Services
             _baseUrl = _configuration["ApiSettings:BaseUrl"] ?? "https://localhost:5023";
             _httpClient.BaseAddress = new Uri(_baseUrl);
             _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+            _httpClient.Timeout = TimeSpan.FromSeconds(10);
         }
 
         // Products
@@ -304,13 +305,22 @@ namespace Shop.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    return JsonSerializer.Deserialize<IEnumerable<ProductReview>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? Enumerable.Empty<ProductReview>();
+
+                    // Nếu API trả object thay vì array, wrap thành array
+                    if (!json.TrimStart().StartsWith("["))
+                    {
+                        json = "[" + json + "]";
+                    }
+
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    return JsonSerializer.Deserialize<IEnumerable<ProductReview>>(json, options)
+                           ?? Enumerable.Empty<ProductReview>();
                 }
             }
-            catch (HttpRequestException)
-            {
-                // API không khả dụng
-            }
+            catch (HttpRequestException) { }
+            catch (TaskCanceledException) { }
+            catch (JsonException) { }
+
             return Enumerable.Empty<ProductReview>();
         }
 

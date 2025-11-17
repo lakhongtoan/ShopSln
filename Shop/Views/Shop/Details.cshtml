@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Product Details";
     var relatedProducts = ViewBag.RelatedProducts as List<Shop.Models.Product>;
-    var reviews = ViewBag.Reviews as List<ProductReview> ?? new List<ProductReview>();
+    var reviews = ViewBag.Reviews as List<Shop.Models.ProductReview> ?? new List<Shop.Models.ProductReview>();
     var averageRating = ViewBag.AverageRating as double? ?? 0;
     var totalReviews = ViewBag.TotalReviews as int? ?? 0;
 }
@@ -51,9 +51,9 @@
 
                     <div class="mt-3">
                             <button type="button"
-                                    class="btn fw-semibold add-to-cart"
+                                    class="btn btn-primary add-to-cart"
                                     data-product-id="@Model.ProductID"
-                                    style="background-color:#ff8c00; color:#fff; border:none; padding:10px 20px; border-radius:6px;">
+                                    style="color:#fff;">
                                 <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
                             </button>
                         </div>
@@ -123,7 +123,7 @@
                                         <button type="submit" class="btn btn-primary" id="submitReviewBtn">
                                             <i class="fa fa-paper-plane me-1"></i>Gửi đánh giá
                                         </button>
-                                        <button type="button" class="btn btn-secondary" id="resetReviewBtn">
+                                        <button type="button" class="btn btn-primary" id="resetReviewBtn">
                                             <i class="fa fa-redo me-1"></i>Làm mới
                                         </button>
                                     </div>
@@ -145,9 +145,10 @@
                         <!-- Danh sách đánh giá -->
                         <div class="reviews-list">
                             <h5 class="fw-bold mb-4">
-                                <i class="fa fa-comments me-2 text-primary"></i>Đánh giá khách hàng 
+                                <i class="fa fa-comments me-2 text-primary"></i>Đánh giá khách hàng
                                 <span class="badge bg-primary">@totalReviews</span>
                             </h5>
+
                             @if (reviews.Any())
                             {
                                 <div id="reviewsContainer">
@@ -160,7 +161,7 @@
                                                         @((review.UserName ?? "N")[0].ToString().ToUpper())
                                                     </div>
                                                     <div>
-                                                        <strong class="d-block">@(review.UserName ?? "Người dùng")</strong>
+                                                        <strong class="d-block">@review.UserName</strong>
                                                         <div class="star-rating d-inline-block">
                                                             @for (int i = 1; i <= 5; i++)
                                                             {
@@ -174,14 +175,7 @@
                                                     <i class="fa fa-clock-o me-1"></i>@review.CreatedAt.ToString("dd/MM/yyyy HH:mm")
                                                 </small>
                                             </div>
-                                            @if (!string.IsNullOrEmpty(review.Comment))
-                                            {
-                                                <p class="mb-0 mt-2 text-secondary" style="line-height: 1.6;">@review.Comment</p>
-                                            }
-                                            else
-                                            {
-                                                <p class="mb-0 mt-2 text-muted fst-italic">Không có bình luận</p>
-                                            }
+                                            <p class="mb-0 mt-2 text-secondary" style="line-height: 1.6;">@(!string.IsNullOrEmpty(review.Comment) ? review.Comment : "Không có bình luận")</p>
                                         </div>
                                     }
                                 </div>
@@ -229,181 +223,102 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            // Add to cart functionality
-            $('.add-to-cart').click(function (e) {
-                e.preventDefault();
-                var $btn = $(this);
-                
-                // Ngăn chặn click nhiều lần khi đang xử lý
-                if ($btn.data('processing')) {
-                    return false;
-                }
-                
-                $btn.data('processing', true);
-                var productId = $btn.data('product-id');
-                var quantity = parseInt($('#quantity').val()) || 1;
-
-                $.ajax({
-                    url: '@Url.Action("AddToCart", "Shop")',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { productId: productId, quantity: quantity },
-                    success: function (response) {
-                        if (response && response.success) {
-                            $('.cart-count').text(response.cartCount || 0);
-                            alert('Đã thêm sản phẩm vào giỏ hàng!');
-                        } else {
-                            var message = (response && response.message) ? response.message : 'Không thể thêm sản phẩm vào giỏ hàng';
-                            alert(message);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        var errorMsg = 'Lỗi khi thêm vào giỏ hàng';
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMsg = xhr.responseJSON.message;
-                        }
-                        alert(errorMsg);
-                    },
-                    complete: function () {
-                        // Cho phép click lại sau khi xử lý xong
-                        $btn.data('processing', false);
-                    }
-                });
-            });
-
-            // Star rating selection
-            $('.star-select').hover(function() {
-                var rating = $(this).data('rating');
-                $('.star-select').each(function(index) {
-                    if (index < rating) {
-                        $(this).removeClass('fa-star-o').addClass('fa-star').css('transform', 'scale(1.1)');
-                    } else {
-                        $(this).removeClass('fa-star').addClass('fa-star-o').css('transform', 'scale(1)');
-                    }
-                });
-            }, function() {
-                $('.star-select').css('transform', 'scale(1)');
-            });
-
-            $('.star-rating-input').mouseleave(function() {
-                var selectedRating = $('#rating').val();
-                if (selectedRating) {
-                    var rating = parseInt(selectedRating);
-                    $('.star-select').each(function(index) {
-                        if (index < rating) {
-                            $(this).removeClass('fa-star-o').addClass('fa-star');
-                        } else {
-                            $(this).removeClass('fa-star').addClass('fa-star-o');
-                        }
-                    });
-                } else {
-                    $('.star-select').removeClass('fa-star').addClass('fa-star-o');
-                }
-            });
-
+        $(function() {
+            // Chọn số sao
             $('.star-select').click(function() {
                 var rating = $(this).data('rating');
                 $('#rating').val(rating);
-                $('#ratingError').hide();
-                $('.star-select').each(function(index) {
-                    if (index < rating) {
-                        $(this).removeClass('fa-star-o').addClass('fa-star');
-                    } else {
-                        $(this).removeClass('fa-star').addClass('fa-star-o');
-                    }
+                $('.star-select').each(function() {
+                    var i = $(this).data('rating');
+                    $(this).toggleClass('fa-star fa-star-o', i <= rating);
                 });
-            });
-
-            // Reset review form
-            $('#resetReviewBtn').click(function() {
-                $('#rating').val('');
-                $('#comment').val('');
                 $('#ratingError').hide();
-                $('#reviewMessage').html('');
-                $('.star-select').removeClass('fa-star').addClass('fa-star-o');
-                $('#submitReviewBtn').prop('disabled', false).html('<i class="fa fa-paper-plane me-1"></i>Gửi đánh giá');
             });
 
-            // Submit review form
+            // Submit review
             $('#reviewForm').submit(function(e) {
                 e.preventDefault();
-                
                 var productId = $('#productId').val();
                 var rating = $('#rating').val();
-                var comment = $('#comment').val().trim();
+                var comment = $('#comment').val();
 
-                // Validate
                 if (!rating) {
                     $('#ratingError').show();
-                    $('html, body').animate({
-                        scrollTop: $('#starRating').offset().top - 100
-                    }, 500);
                     return;
                 }
 
-                $('#ratingError').hide();
-                var $submitBtn = $('#submitReviewBtn');
-                var originalText = $submitBtn.html();
-                $submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i>Đang gửi...');
-                $('#reviewMessage').html('');
-
-                var token = $('input[name="__RequestVerificationToken"]').val();
-                
-                // Gửi theo cách ASP.NET Core yêu cầu
                 $.ajax({
-                    url: '@Url.Action("SubmitReview", "Shop")',
+                    url: '/Shop/SubmitReview',
                     type: 'POST',
                     data: {
-                        __RequestVerificationToken: token,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
                         productId: productId,
-                        rating: parseInt(rating),
-                        comment: comment || ''
+                        rating: rating,
+                        comment: comment
                     },
-                    success: function(response) {
-                        if (response.success) {
-                            $('#reviewMessage').html('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                                '<i class="fa fa-check-circle me-2"></i>' + response.message +
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
-                                '</div>');
-                            
+                    success: function(res) {
+                        if (res.success) {
+                            // Thêm review mới vào đầu danh sách
+                            var newReview = `
+                                <div class="review-item border rounded p-3 mb-3 bg-white shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;">
+                                                ${res.userInitial}
+                                            </div>
+                                            <div>
+                                                <strong class="d-block">${res.userName}</strong>
+                                                <div class="star-rating d-inline-block">
+                                                    ${Array(5).fill(0).map((_, i) => i < res.rating ? '<i class="fa fa-star text-warning"></i>' : '<i class="fa fa-star-o text-muted"></i>').join('')}
+                                                    <span class="ms-1 text-muted small">(${res.rating}/5)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fa fa-clock-o me-1"></i>Vừa xong
+                                        </small>
+                                    </div>
+                                    <p class="mb-0 mt-2 text-secondary" style="line-height: 1.6;">${res.comment || 'Không có bình luận'}</p>
+                                </div>`;
+
+                            $('#reviewsContainer').prepend(newReview);
+
+                            // Cập nhật tổng số và điểm trung bình
+                            $('.badge.bg-primary').text(res.totalReviews);
+                            $('.h5.mb-0.me-2').text(res.averageRating);
+                            // Optional: cập nhật star trung bình
+                            var roundedAvg = Math.round(res.averageRating);
+                            $('.star-rating > i').each(function(index) {
+                                $(this).toggleClass('fa-star text-warning fa-star-o text-muted', index < roundedAvg);
+                            });
+
                             // Reset form
-                            setTimeout(function() {
-                                $('#rating').val('');
-                                $('#comment').val('');
-                                $('.star-select').removeClass('fa-star').addClass('fa-star-o');
-                                $('#reviewMessage').html('');
-                                // Reload sau 1 giây để cập nhật danh sách đánh giá
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 1000);
-                            }, 500);
+                            $('#rating').val('');
+                            $('#comment').val('');
+                            $('.star-select').removeClass('fa-star').addClass('fa-star-o');
+                            $('#ratingError').hide();
+                            $('#reviewMessage').html('<span class="text-success">Đánh giá thành công!</span>');
                         } else {
-                            $('#reviewMessage').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                                '<i class="fa fa-exclamation-circle me-2"></i>' + response.message +
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
-                                '</div>');
-                            $submitBtn.prop('disabled', false).html(originalText);
+                            $('#reviewMessage').html('<span class="text-danger">' + res.message + '</span>');
                         }
                     },
-                    error: function(xhr, status, error) {
-                        var errorMsg = 'Lỗi khi gửi đánh giá';
-                        if (xhr.status === 401) {
-                            errorMsg = 'Vui lòng đăng nhập để đánh giá sản phẩm';
-                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMsg = xhr.responseJSON.message;
-                        }
-                        
-                        $('#reviewMessage').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                            '<i class="fa fa-exclamation-circle me-2"></i>' + errorMsg +
-                            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
-                            '</div>');
-                        $submitBtn.prop('disabled', false).html(originalText);
+                    error: function() {
+                        $('#reviewMessage').html('<span class="text-danger">Có lỗi xảy ra</span>');
                     }
                 });
             });
+
+            // Reset form
+            $('#resetReviewBtn').click(function() {
+                $('#rating').val('');
+                $('#comment').val('');
+                $('.star-select').removeClass('fa-star').addClass('fa-star-o');
+                $('#ratingError').hide();
+                $('#reviewMessage').html('');
+            });
         });
     </script>
+
 }
 
 <style>

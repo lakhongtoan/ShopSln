@@ -157,14 +157,10 @@ namespace Shop.Controllers
         // View: Views/Shop/Details.cshtml
         public async Task<IActionResult> Details(long id)
         {
-            // ⚡ Chạy các queries song song
-            var productTask = _apiService.GetProductByIdAsync(id, true);
-            var relatedProductsTask = _apiService.GetRelatedProductsAsync(id, 4);
-            var reviewsTask = _apiService.GetReviewsByProductIdAsync(id);
+            // Lấy sản phẩm từ API trước
+            Product? product = await _apiService.GetProductByIdAsync(id, true);
 
-            var product = await productTask;
-
-            // Fallback về DbContext nếu API không khả dụng
+            // Nếu API không có, fallback về database
             if (product == null)
             {
                 product = await _context.Products
@@ -176,11 +172,10 @@ namespace Shop.Controllers
             if (product == null || !product.IsActive)
                 return NotFound();
 
-            // Đợi các queries song song
-            await Task.WhenAll(relatedProductsTask, reviewsTask);
+            // Lấy sản phẩm liên quan từ API
+            List<Product> relatedProducts = (await _apiService.GetRelatedProductsAsync(id, 4))?.ToList() ?? new List<Product>();
 
-            // Lấy sản phẩm liên quan
-            var relatedProducts = await relatedProductsTask;
+            // Nếu API không có, fallback về DB
             if (!relatedProducts.Any())
             {
                 relatedProducts = await _context.Products
@@ -191,8 +186,10 @@ namespace Shop.Controllers
                     .ToListAsync();
             }
 
-            // Lấy đánh giá của sản phẩm (chỉ lấy reviews của sản phẩm này)
-            var reviews = await reviewsTask;
+            // Lấy đánh giá từ API
+            List<ProductReview> reviews = (await _apiService.GetReviewsByProductIdAsync(id))?.ToList() ?? new List<ProductReview>();
+
+            // Nếu API không có, fallback về DB
             if (!reviews.Any())
             {
                 reviews = await _context.ProductReviews
@@ -203,21 +200,24 @@ namespace Shop.Controllers
             }
             else
             {
-                // Đảm bảo chỉ lấy reviews của sản phẩm này
+                // Chỉ lấy review của sản phẩm này
                 reviews = reviews.Where(r => r.ProductId == id && r.IsActive).ToList();
             }
 
-            // Tính điểm đánh giá trung bình
-            var activeReviews = reviews.Where(r => r.IsActive).ToList();
-            var averageRating = activeReviews.Any() ? activeReviews.Average(r => r.Rating) : 0;
-            var totalReviews = activeReviews.Count;
+            // Tính điểm trung bình và tổng số review
+            List<ProductReview> activeReviews = reviews.Where(r => r.IsActive).ToList();
+            double averageRating = activeReviews.Any() ? activeReviews.Average(r => r.Rating) : 0;
+            int totalReviews = activeReviews.Count;
 
+            // Truyền dữ liệu sang view
             ViewBag.RelatedProducts = relatedProducts;
             ViewBag.Reviews = activeReviews;
             ViewBag.AverageRating = Math.Round(averageRating, 1);
             ViewBag.TotalReviews = totalReviews;
+
             return View(product);
         }
+
 
         // Redirect từ đường dẫn cũ (nếu còn link ProductDetails)
         public IActionResult ProductDetails(long id)
@@ -288,72 +288,57 @@ namespace Shop.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(long productId, int quantity = 1)
         {
-            // Thử lấy product từ API trước, nếu không khả dụng thì fallback về database
-            var product = await _apiService.GetProductByIdAsync(productId);
-            if (product == null)
-            {
-                // Fallback về DbContext nếu API không khả dụng
-                product = await _context.Products
-                    .AsNoTracking()
-                    .Include(p => p.Category)
-                    .FirstOrDefaultAsync(p => p.ProductID == productId);
-            }
-
-            if (product == null || !product.IsActive)
-                return Json(new { success = false, message = "Sản phẩm không tồn tại hoặc đã bị vô hiệu hóa" });
+            if (productId <= 0)
+                return Json(new { success = false, message = "ProductId không hợp lệ" });
 
             var sessionId = GetSessionId();
             var userId = User.Identity?.IsAuthenticated == true ? User.Identity.Name : null;
 
-            // Thử thêm vào giỏ qua API, nếu không khả dụng thì dùng database trực tiếp
-            var cartItem = await _apiService.AddToCartAsync(sessionId, productId, quantity, userId);
-            if (cartItem == null)
+            var product = await _apiService.GetProductByIdAsync(productId);
+            if (product == null)
             {
-                // Fallback: Thêm vào giỏ hàng trực tiếp qua database
-                var existingCartItem = await _context.CartItems
-                    .FirstOrDefaultAsync(ci => ci.SessionId == sessionId && ci.ProductId == productId);
-
-                if (existingCartItem != null)
-                {
-                    existingCartItem.Quantity += quantity;
-                    existingCartItem.UnitPrice = product.SalePrice ?? product.Price;
-                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.UnitPrice;
-                }
-                else
-                {
-                    var unitPrice = product.SalePrice ?? product.Price;
-                    cartItem = new CartItem
-                    {
-                        ProductId = productId,
-                        ProductName = product.Name,
-                        ProductImage = product.Image ?? "",
-                        UnitPrice = unitPrice,
-                        Quantity = quantity,
-                        TotalPrice = unitPrice * quantity,
-                        SessionId = sessionId,
-                        UserId = userId,
-                        CreatedAt = DateTime.Now
-                    };
-                    _context.CartItems.Add(cartItem);
-                }
-
-                await _context.SaveChangesAsync();
-            }
-
-            // Lấy số lượng giỏ hàng
-            var cartItems = await _apiService.GetCartItemsAsync(sessionId);
-            if (!cartItems.Any())
-            {
-                // Fallback về database nếu API không khả dụng
-                cartItems = await _context.CartItems
+                product = await _context.Products
                     .AsNoTracking()
-                    .Where(ci => ci.SessionId == sessionId)
-                    .ToListAsync();
+                    .FirstOrDefaultAsync(p => p.ProductID == productId);
             }
 
-            var cartCount = cartItems.Sum(ci => ci.Quantity);
+            if (product == null)
+                return Json(new { success = false, message = "Sản phẩm không tồn tại" });
 
-            return Json(new { success = true, cartCount = cartCount });
+            // Thêm vào DB nếu API trả null
+            var existingCartItem = await _context.CartItems
+                .FirstOrDefaultAsync(ci => ci.SessionId == sessionId && ci.ProductId == productId);
+
+            if (existingCartItem != null)
+            {
+                existingCartItem.Quantity += quantity;
+                existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.UnitPrice;
+            }
+            else
+            {
+                var unitPrice = product.SalePrice ?? product.Price;
+                existingCartItem = new CartItem
+                {
+                    ProductId = productId,
+                    ProductName = product.Name,
+                    ProductImage = product.Image ?? "",
+                    UnitPrice = unitPrice,
+                    Quantity = quantity,
+                    TotalPrice = unitPrice * quantity,
+                    SessionId = sessionId,
+                    UserId = userId,
+                    CreatedAt = DateTime.Now
+                };
+                _context.CartItems.Add(existingCartItem);
+            }
+
+            await _context.SaveChangesAsync();
+
+            var cartCount = await _context.CartItems
+                .Where(ci => ci.SessionId == sessionId)
+                .SumAsync(ci => ci.Quantity);
+
+            return Json(new { success = true, cartCount });
         }
 
         [HttpPost]
@@ -374,24 +359,31 @@ namespace Shop.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
-            var success = await _apiService.RemoveFromCartAsync(cartItemId);
-            if (!success)
-                return Json(new { success = false, message = "Cart item not found" });
+            var cartItem = await _context.CartItems
+                .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId);
+
+            if (cartItem == null)
+                return Json(new { success = false, message = "Cart item không tồn tại" });
+
+            _context.CartItems.Remove(cartItem);
+            await _context.SaveChangesAsync();
 
             var sessionId = GetSessionId();
-            var cartItems = await _apiService.GetCartItemsAsync(sessionId);
-            var cartCount = cartItems.Sum(ci => ci.Quantity);
+            var cartCount = await _context.CartItems
+                .Where(ci => ci.SessionId == sessionId)
+                .SumAsync(ci => ci.Quantity);
 
-            return Json(new { success = true, cartCount = cartCount });
+            return Json(new { success = true, cartCount });
         }
 
         // ================================ CHECKOUT ================================
+        [HttpGet]
         public async Task<IActionResult> Checkout()
         {
             var sessionId = GetSessionId();
             var cartItems = await _apiService.GetCartItemsAsync(sessionId);
 
-            if (!cartItems.Any())
+            if (cartItems == null || !cartItems.Any())
                 return RedirectToAction("Cart");
 
             // ⚡ Batch load - 1 query thay vì N+1 queries
@@ -565,29 +557,6 @@ namespace Shop.Controllers
 
         // ========== GIỚI THIỆU ==========
         public IActionResult About()
-        {
-            return View();
-        }
-
-        // ========== LIÊN HỆ ==========
-        [HttpPost]
-        public async Task<IActionResult> Contact(Contact contact)
-        {
-            if (ModelState.IsValid)
-            {
-                contact.CreatedAt = DateTime.Now;
-                var createdContact = await _apiService.CreateContactAsync(contact);
-                if (createdContact != null)
-                {
-                    TempData["Message"] = "Thank you for your message. We will get back to you soon!";
-                    return RedirectToAction("Contact");
-                }
-                ModelState.AddModelError("", "Không thể gửi tin nhắn. Vui lòng thử lại.");
-            }
-            return View(contact);
-        }
-
-        public IActionResult Contact()
         {
             return View();
         }

@@ -56,7 +56,11 @@
                                             <h4 class="cart_total_price">$@item.TotalPrice.ToString("N0") ₫</h4>
                                         </td>
                                         <td class="cart_delete">
-                                            <a class="cart_quantity_delete" href="#" data-cart-item-id="@item.CartItemId"><i class="fa fa-times"></i></a>
+                                            <a href="javascript:void(0);"
+                                               class="cart_quantity_delete btn btn-sm"
+                                               data-cart-item-id="@item.CartItemId">
+                                                <i class="fa fa-times"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 }
@@ -82,9 +86,7 @@
                                 <span>@Model.Sum(x => x.TotalPrice).ToString("N0") ₫</span>
                             </li>
                         </ul>
-                        <form method="get" action="/Shop/Checkout">
-                            <button type="submit" class="btn btn-primary w-100">Thanh toán</button>
-                        </form>
+                        <a class="btn btn-primary w-100 mb-2" href="@Url.Action("Checkout", "Shop")">Thanh toán</a>
                         <a class="btn btn-primary w-100 mt-2" href="@Url.Action("Shop", "Shop")">Tiếp tục mua sắm</a>
                     </div>
                 </div>
@@ -103,6 +105,8 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+
+            // Nút tăng số lượng
             $('.cart_quantity_up').click(function(e) {
                 e.preventDefault();
                 var cartItemId = $(this).data('cart-item-id');
@@ -110,6 +114,7 @@
                 updateCartItem(cartItemId, currentQty + 1);
             });
 
+            // Nút giảm số lượng
             $('.cart_quantity_down').click(function(e) {
                 e.preventDefault();
                 var cartItemId = $(this).data('cart-item-id');
@@ -119,12 +124,43 @@
                 }
             });
 
+            // Nút xóa
             $('.cart_quantity_delete').click(function(e) {
                 e.preventDefault();
-                var cartItemId = $(this).data('cart-item-id');
-                removeFromCart(cartItemId);
+                var $btn = $(this);
+                var cartItemId = $btn.data('cart-item-id');
+
+                if (!cartItemId) {
+                    alert("Cart item không hợp lệ!");
+                    return;
+                }
+
+                $btn.prop('disabled', true);
+
+                $.ajax({
+                    url: '@Url.Action("RemoveFromCart", "Shop")',
+                    type: 'POST',
+                    data: { cartItemId: cartItemId },
+                    success: function(response) {
+                        if (response.success) {
+                            $btn.closest('tr').fadeOut(300, function() {
+                                $(this).remove();
+                            });
+                            $('.cart-count').text(response.cartCount || 0);
+                        } else {
+                            alert(response.message || 'Lỗi khi xóa sản phẩm');
+                        }
+                    },
+                    error: function() {
+                        alert('Lỗi server khi xóa sản phẩm');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false);
+                    }
+                });
             });
 
+            // Hàm update quantity
             function updateCartItem(cartItemId, quantity) {
                 $.ajax({
                     url: '@Url.Action("UpdateCartItem", "Shop")',
@@ -142,24 +178,7 @@
                     }
                 });
             }
-
-            function removeFromCart(cartItemId) {
-                $.ajax({
-                    url: '@Url.Action("RemoveFromCart", "Shop")',
-                    type: 'POST',
-                    data: { cartItemId: cartItemId },
-                    success: function(response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            alert('Lỗi khi xóa sản phẩm khỏi giỏ hàng');
-                        }
-                    },
-                    error: function() {
-                        alert('Error removing item from cart');
-                    }
-                });
-            }
         });
     </script>
 }
+

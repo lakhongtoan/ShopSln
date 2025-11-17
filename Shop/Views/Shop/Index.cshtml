@@ -82,7 +82,7 @@
                                     </div>
                                     <div class="choose">
                                         <ul class="nav-pills nav-justified">
-                                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.ProductID" class="btn btn-default mb-3">
+                                            <a href="@Url.Action("Details", "Shop", new { id = product.ProductID })" class="btn btn-default mb-3">
                                                 <i class="fa fa-plus-square"></i> Xem chi tiết
                                             </a>
                                         </ul>
