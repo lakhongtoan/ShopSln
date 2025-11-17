@@ -73,7 +73,6 @@ public class CartItemsController : ControllerBase
             // Cập nhật số lượng
             existingItem.Quantity += request.Quantity;
             existingItem.TotalPrice = existingItem.Quantity * existingItem.UnitPrice;
-            existingItem.UpdatedAt = DateTime.Now;
         }
         else
         {
@@ -88,9 +87,7 @@ public class CartItemsController : ControllerBase
                 Quantity = request.Quantity,
                 TotalPrice = unitPrice * request.Quantity,
                 SessionId = request.SessionId,
-                UserId = request.UserId,
                 CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
             };
 
             _db.CartItems.Add(cartItem);
@@ -143,7 +140,6 @@ public class CartItemsController : ControllerBase
 
         cartItem.Quantity = request.Quantity;
         cartItem.TotalPrice = cartItem.Quantity * cartItem.UnitPrice;
-        cartItem.UpdatedAt = DateTime.Now;
 
         await _db.SaveChangesAsync();
 

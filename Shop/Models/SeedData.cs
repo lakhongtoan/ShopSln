@@ -261,6 +261,7 @@ namespace Shop.Models
                         CategoryId = clothing.CategoryId,
                         Price = 299.99m,
                         StockQuantity = 25,
+                        IsFeatured = true,
                         IsActive = true,
                         Image = "/images/home/anh.jpg",
                         CreatedAt = now,
@@ -304,16 +305,16 @@ namespace Shop.Models
             if (!context.Brands.Any())
             {
                 context.Brands.AddRange(
-                    new Brand { Name = "Apple", Slug = "apple", Description = "Technology brand", IsActive = true },
-                    new Brand { Name = "Samsung", Slug = "samsung", Description = "Electronics manufacturer", IsActive = true },
-                    new Brand { Name = "Nike", Slug = "nike", Description = "Sportswear brand", IsActive = true },
-                    new Brand { Name = "Adidas", Slug = "adidas", Description = "Athletic apparel", IsActive = true },
-                    new Brand { Name = "Sony", Slug = "sony", Description = "Electronics and entertainment", IsActive = true },
-                    new Brand { Name = "LG", Slug = "lg", Description = "Consumer electronics", IsActive = true },
-                    new Brand { Name = "Canon", Slug = "canon", Description = "Camera and imaging", IsActive = true },
-                    new Brand { Name = "Dell", Slug = "dell", Description = "Computer technology", IsActive = true },
-                    new Brand { Name = "HP", Slug = "hp", Description = "Technology solutions", IsActive = true },
-                    new Brand { Name = "Microsoft", Slug = "microsoft", Description = "Software and hardware", IsActive = true }
+                    new Brand { Name = "Apple", Slug = "apple", Image = "/images/brands/brands1.jpg", Description = "Technology brand", IsActive = true },
+                    new Brand { Name = "Samsung", Slug = "samsung", Image = "/images/brands/brands1.jpg", Description = "Electronics manufacturer", IsActive = true },
+                    new Brand { Name = "Nike", Slug = "nike", Image = "/images/brands/brands1.jpg", Description = "Sportswear brand", IsActive = true },
+                    new Brand { Name = "Adidas", Slug = "adidas", Image = "/images/brands/brands1.jpg", Description = "Athletic apparel", IsActive = true },
+                    new Brand { Name = "Sony", Slug = "sony", Image = "/images/brands/brands1.jpg", Description = "Electronics and entertainment", IsActive = true },
+                    new Brand { Name = "LG", Slug = "lg", Image = "/images/brands/brands1.jpg", Description = "Consumer electronics", IsActive = true },
+                    new Brand { Name = "Canon", Slug = "canon", Image = "/images/brands/brands1.jpg", Description = "Camera and imaging", IsActive = true },
+                    new Brand { Name = "Dell", Slug = "dell", Image = "/images/brands/brands1.jpg", Description = "Computer technology", IsActive = true },
+                    new Brand { Name = "HP", Slug = "hp", Image = "/images/brands/brands1.jpg", Description = "Technology solutions", IsActive = true },
+                    new Brand { Name = "Microsoft", Slug = "microsoft", Image = "/images/brands/brands1.jpg", Description = "Software and hardware", IsActive = true }
                 );
                 context.SaveChanges();
             }
@@ -586,10 +587,10 @@ namespace Shop.Models
                 context.CampingTips.AddRange(
                     new CampingTip { Title = "Chọn địa điểm cắm trại phù hợp", Content = "Nên chọn nơi bằng phẳng, có nguồn nước gần, tránh khu vực nguy hiểm", Image = "/images/camping/camping-1.jpg", Author = "Admin", CreatedAt = now.AddDays(-10), IsPublished = true },
                     new CampingTip { Title = "Chuẩn bị lều trại đúng cách", Content = "Kiểm tra lều trước khi đi, mang theo dây cố định và bạt che mưa", Image = "/images/camping/camping-2.jpg", Author = "Admin", CreatedAt = now.AddDays(-9), IsPublished = true },
-                    new CampingTip { Title = "An toàn khi đốt lửa trại", Content = "Chỉ đốt lửa ở khu vực được phép, luôn dập lửa kỹ trước khi rời đi", Image = "/images/camping/camping-1.jpg", Author = "Admin", CreatedAt = now.AddDays(-8), IsPublished = true },
-                    new CampingTip { Title = "Bảo quản thực phẩm", Content = "Giữ thực phẩm trong hộp kín, tránh ánh nắng trực tiếp, sử dụng đá giữ lạnh", Image = "/images/camping/camping-2.jpg", Author = "Admin", CreatedAt = now.AddDays(-7), IsPublished = true },
-                    new CampingTip { Title = "Xử lý rác thải", Content = "Mang theo túi rác, không vứt rác bừa bãi, để lại nơi cắm trại sạch sẽ", Image = "/images/camping/camping-1.jpg", Author = "Admin", CreatedAt = now.AddDays(-6), IsPublished = true },
-                    new CampingTip { Title = "Chuẩn bị quần áo phù hợp", Content = "Mang theo quần áo ấm, áo mưa, giày đi bộ phù hợp với địa hình", Image = "/images/camping/camping-2.jpg", Author = "Admin", CreatedAt = now.AddDays(-5), IsPublished = true },
+                    new CampingTip { Title = "An toàn khi đốt lửa trại", Content = "Chỉ đốt lửa ở khu vực được phép, luôn dập lửa kỹ trước khi rời đi", Image = "/images/camping/camping-3.jpg", Author = "Admin", CreatedAt = now.AddDays(-8), IsPublished = true },
+                    new CampingTip { Title = "Bảo quản thực phẩm", Content = "Giữ thực phẩm trong hộp kín, tránh ánh nắng trực tiếp, sử dụng đá giữ lạnh", Image = "/images/camping/camping-1.jpg", Author = "Admin", CreatedAt = now.AddDays(-7), IsPublished = true },
+                    new CampingTip { Title = "Xử lý rác thải", Content = "Mang theo túi rác, không vứt rác bừa bãi, để lại nơi cắm trại sạch sẽ", Image = "/images/camping/camping-2.jpg", Author = "Admin", CreatedAt = now.AddDays(-6), IsPublished = true },
+                    new CampingTip { Title = "Chuẩn bị quần áo phù hợp", Content = "Mang theo quần áo ấm, áo mưa, giày đi bộ phù hợp với địa hình", Image = "/images/camping/camping-3.jpg", Author = "Admin", CreatedAt = now.AddDays(-5), IsPublished = true },
                     new CampingTip { Title = "Sử dụng bản đồ và la bàn", Content = "Luôn mang theo bản đồ khu vực, biết cách sử dụng la bàn", Image = "/images/camping/camping-1.jpg", Author = "Admin", CreatedAt = now.AddDays(-4), IsPublished = true },
                     new CampingTip { Title = "Sơ cứu cơ bản", Content = "Mang theo hộp sơ cứu, biết cách xử lý vết thương nhỏ, côn trùng cắn", Image = "/images/camping/camping-2.jpg", Author = "Admin", CreatedAt = now.AddDays(-3), IsPublished = true },
                     new CampingTip { Title = "Quan sát thời tiết", Content = "Kiểm tra dự báo thời tiết trước khi đi, chuẩn bị cho các tình huống thời tiết xấu", Image = "/images/camping/camping-1.jpg", Author = "Admin", CreatedAt = now.AddDays(-2), IsPublished = true },

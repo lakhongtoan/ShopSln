@@ -83,7 +83,7 @@ namespace Shop.Controllers
             ViewBag.Brands = brands;   
 
             return View();
-}
+        }
 
         // ========== DANH SÁCH SẢN PHẨM ==========
         public async Task<IActionResult> Shop(int? categoryId, string? search, int page = 1, int pageSize = 12)
