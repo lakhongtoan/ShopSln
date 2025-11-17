@@ -73,7 +73,7 @@
                     </nav>
 
         <!-- SEARCH + LOGIN + CART -->
-        <div class="header-right d-flex align-items-center gap-3">
+        <div class="header-right d-flex align-items-center gap-3" style="flex-wrap: nowrap; white-space: nowrap;">
             <!-- SEARCH -->
             <div class="search_box">
                 <form asp-controller="Shop" asp-action="Shop" method="get" class="search-form">
@@ -82,7 +82,7 @@
             </div>
 
             <!-- CART ICON -->
-            <div class="cart-icon position-relative">
+            <div class="cart-icon position-relative" style="margin-right: 15px;">
                     <a asp-controller="Shop" asp-action="Cart" class="text-white position-relative">
                     <i class="fa fa-shopping-cart fa-lg"></i>
                     <span class="cart-count badge bg-warning text-dark position-absolute top-0 start-100 translate-middle rounded-pill" style="font-size:0.7rem;">
@@ -128,7 +128,7 @@
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="btn-login">
+                    <a asp-controller="Account" asp-action="Login" class="btn-login" style="white-space: nowrap;">
                         <i class="fa fa-lock"></i> Đăng nhập / Đăng ký
                     </a>
                 }

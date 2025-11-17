@@ -12,16 +12,19 @@ namespace Shop.Controllers
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly AppIdentityDbContext _identityContext;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IApiService _apiService;
 
         public AccountController(AppDbContext context,
+                                 AppIdentityDbContext identityContext,
                                  SignInManager<IdentityUser> signInManager,
                                  UserManager<IdentityUser> userManager,
                                  IApiService apiService)
         {
             _context = context;
+            _identityContext = identityContext;
             _signInManager = signInManager;
             _userManager = userManager;
             _apiService = apiService;
@@ -60,16 +63,46 @@ namespace Shop.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(string username, string email, string password)
         {
+            // Kiểm tra email đã tồn tại chưa (query trực tiếp để tránh lỗi khi có nhiều email trùng)
+            var existingUserByEmail = await _identityContext.Users
+                .Where(u => u.Email == email)
+                .FirstOrDefaultAsync();
+            if (existingUserByEmail != null)
+            {
+                ViewBag.Error = "Email này đã được sử dụng. Vui lòng sử dụng email khác!";
+                return View();
+            }
+
+            // Kiểm tra username đã tồn tại chưa
+            var existingUserByUsername = await _userManager.FindByNameAsync(username);
+            if (existingUserByUsername != null)
+            {
+                ViewBag.Error = "Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác!";
+                return View();
+            }
+
             var user = new IdentityUser { UserName = username, Email = email };
             var result = await _userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "User");
-                return RedirectToAction("Login");
+                ViewBag.Success = "Đăng ký thành công! Vui lòng đăng nhập.";
+                return View();
             }
 
-            ViewBag.Error = string.Join(", ", result.Errors.Select(e => e.Description));
+            // Xử lý các lỗi validation khác từ Identity
+            var errorMessages = result.Errors.Select(e => e.Description).ToList();
+            var errorText = string.Join(", ", errorMessages);
+            
+            // Chuyển đổi một số thông báo lỗi phổ biến sang tiếng Việt
+            if (errorText.Contains("Password") && errorText.Contains("too short"))
+                ViewBag.Error = "Mật khẩu phải có ít nhất 6 ký tự!";
+            else if (errorText.Contains("Password") && errorText.Contains("non alphanumeric"))
+                ViewBag.Error = "Mật khẩu phải chứa ít nhất một ký tự đặc biệt!";
+            else
+                ViewBag.Error = errorText;
+
             return View();
         }
 

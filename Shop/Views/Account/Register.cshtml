@@ -1,0 +1,55 @@
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<section id="form">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-4">
+                <div class="signup-form">
+                    <h2>Đăng ký tài khoản mới</h2>
+                    <form asp-action="Register" method="post">
+                        <input type="text" name="username" placeholder="Tên đăng nhập" required />
+                        <input type="email" name="email" placeholder="Địa chỉ email" required />
+                        <div style="position: relative;">
+                            <input type="password" id="password" name="password"
+                                placeholder="Mật khẩu" required style="padding-right:40px;" />
+
+                            <i id="togglePassword" class="fa-solid fa-eye"
+                               style="position:absolute; right:10px; top:50%;
+                                        transform:translateY(-50%); cursor:pointer;"></i>
+                        </div>
+                        <button type="submit" class="btn btn-default">Đăng ký</button>
+
+                        @if (ViewBag.Error != null)
+                        {
+                            <p style="color:red; margin-top:10px;">@ViewBag.Error</p>
+                        }
+
+                        @if (ViewBag.Success != null)
+                        {
+                            <p style="color:green; margin-top:10px;">@ViewBag.Success</p>
+                        }
+
+                        <div style="margin-top: 15px; text-align: center;">
+                            <p>Đã có tài khoản? <a asp-action="Login">Đăng nhập ngay</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        const input = document.getElementById("password");
+        const type = input.type === "password" ? "text" : "password";
+        input.type = type;
+
+        // đổi icon
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+    });
+</script>
+
