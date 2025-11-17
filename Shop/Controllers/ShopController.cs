@@ -20,9 +20,8 @@ namespace Shop.Controllers
         }
 
         // ========== TRANG CHỦ ==========
-        public IActionResult Index()
+                public IActionResult Index()
         {
-            
             var featuredProducts = _context.Products
                 .Include(p => p.Category)
                 .Where(p => p.IsActive && p.IsFeatured)
@@ -33,13 +32,27 @@ namespace Shop.Controllers
                 .Where(c => c.IsActive)
                 .Take(6)
                 .ToList();
+
             var sliders = _context.Sliders.ToList();
 
+            var brands = _context.Brands
+                .Where(b => b.IsActive)
+                .Take(8)             
+                .ToList();
+
+            var campingTips = _context.CampingTips
+                .Where(x => x.IsPublished)
+                .OrderByDescending(x => x.CreatedAt)
+                .Take(3)
+                .ToList();
+            ViewBag.CampingTips = campingTips;
             ViewBag.Sliders = sliders;
             ViewBag.FeaturedProducts = featuredProducts;
             ViewBag.Categories = categories;
+            ViewBag.Brands = brands;   
+
             return View();
-        }
+}
 
         // ========== DANH SÁCH SẢN PHẨM ==========
         public IActionResult Shop(int? categoryId, string? search, int page = 1, int pageSize = 12)
@@ -398,6 +411,7 @@ namespace Shop.Controllers
                 return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
             }
         }
+  
 
         // ========== GIỚI THIỆU ==========
         public IActionResult About()

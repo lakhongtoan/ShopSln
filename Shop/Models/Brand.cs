@@ -4,23 +4,21 @@ namespace Shop.Models
 {
     public class Brand
     {
-        public int BrandId { get; set; }
+        [Key]
+        public int Id { get; set; }   // KHÓA CHÍNH LÀ Id
 
         [Required, StringLength(100)]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
 
-        [StringLength(200)]
-        public string? Slug { get; set; }
+        [Required, StringLength(100)]
+        public string Slug { get; set; }
 
-        [StringLength(500)]
+        [StringLength(255)]
         public string? Description { get; set; }
 
-        [StringLength(300)]
+        [StringLength(255)]
         public string? Image { get; set; }
 
         public bool IsActive { get; set; } = true;
-
-        // Navigation property
-        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

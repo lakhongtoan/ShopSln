@@ -1,0 +1,83 @@
+@page "/admin/campingtips"
+@using Shop.Models
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext Db
+@inject NavigationManager Nav
+
+<h3>Kinh nghiệm cắm trại</h3>
+
+<button class="btn btn-primary mb-3" @onclick="Create">
+    + Thêm bài viết
+</button>
+
+@if (tips is null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else if (!tips.Any())
+{
+    <p>Chưa có bài viết nào.</p>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Tác giả</th>
+                <th>Ngày tạo</th>
+                <th>Xuất bản</th>
+                <th style="width:150px;">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in tips)
+            {
+                <tr>
+                    <td>@t.Title</td>
+                    <td>@t.Author</td>
+                    <td>@t.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    <td>@(t.IsPublished ? "Có" : "Không")</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-2"
+                                @onclick="() => Edit(t.Id)">
+                            Sửa
+                        </button>
+
+                        <button class="btn btn-sm btn-danger"
+                                @onclick="() => Delete(t.Id)">
+                            Xóa
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CampingTip>? tips;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tips = await Db.CampingTips
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
+    }
+
+    void Create() => Nav.NavigateTo("/admin/campingtips/upsert/0");
+
+    void Edit(int id) => Nav.NavigateTo($"/admin/campingtips/upsert/{id}");
+
+    private async Task Delete(int id)
+    {
+        var entity = await Db.CampingTips.FindAsync(id);
+        if (entity is null) return;
+
+        Db.CampingTips.Remove(entity);
+        await Db.SaveChangesAsync();
+
+        tips!.Remove(entity);
+        StateHasChanged();
+    }
+}

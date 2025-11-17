@@ -27,6 +27,9 @@ public partial class ShopDbContext : DbContext
 
     public virtual DbSet<ProductReview> ProductReviews { get; set; }
 
+    public DbSet<CampingTip> CampingTips { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CartItem>(entity =>

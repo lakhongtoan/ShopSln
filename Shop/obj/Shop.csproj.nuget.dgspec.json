@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Back-end\\Project\\ShopSln\\Shop\\Shop.csproj": {}
+    "D:\\Backend\\ShopSln\\Shop\\Shop.csproj": {}
   },
   "projects": {
-    "D:\\Back-end\\Project\\ShopSln\\Shop\\Shop.csproj": {
+    "D:\\Backend\\ShopSln\\Shop\\Shop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Back-end\\Project\\ShopSln\\Shop\\Shop.csproj",
+        "projectUniqueName": "D:\\Backend\\ShopSln\\Shop\\Shop.csproj",
         "projectName": "Shop",
-        "projectPath": "D:\\Back-end\\Project\\ShopSln\\Shop\\Shop.csproj",
-        "packagesPath": "C:\\Users\\Triet\\.nuget\\packages\\",
-        "outputPath": "D:\\Back-end\\Project\\ShopSln\\Shop\\obj\\",
+        "projectPath": "D:\\Backend\\ShopSln\\Shop\\Shop.csproj",
+        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+        "outputPath": "D:\\Backend\\ShopSln\\Shop\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Triet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

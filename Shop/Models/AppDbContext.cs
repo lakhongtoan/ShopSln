@@ -32,10 +32,10 @@ namespace Shop.Models
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Product - Brand
+            // Product - Brand (Brand KHÔNG có Products → WithMany())
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Brand)
-                .WithMany(b => b.Products)
+                .WithMany()
                 .HasForeignKey(p => p.BrandId)
                 .OnDelete(DeleteBehavior.SetNull);
 
@@ -60,7 +60,7 @@ namespace Shop.Models
                 .HasForeignKey(ci => ci.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configure Product-ProductReview relationship
+            // Product - ProductReview
             modelBuilder.Entity<ProductReview>()
                 .HasOne(pr => pr.Product)
                 .WithMany(p => p.Reviews)
@@ -68,30 +68,17 @@ namespace Shop.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             // INDEXES
-            modelBuilder.Entity<Product>()
-                .HasIndex(p => p.CategoryId);
+            modelBuilder.Entity<Product>().HasIndex(p => p.CategoryId);
+            modelBuilder.Entity<Product>().HasIndex(p => p.IsActive);
+            modelBuilder.Entity<Product>().HasIndex(p => p.IsFeatured);
 
-            modelBuilder.Entity<Product>()
-                .HasIndex(p => p.IsActive);
+            modelBuilder.Entity<Order>().HasIndex(o => o.OrderNumber).IsUnique();
+            modelBuilder.Entity<Order>().HasIndex(o => o.OrderDate);
 
-            modelBuilder.Entity<Product>()
-                .HasIndex(p => p.IsFeatured);
+            modelBuilder.Entity<CartItem>().HasIndex(ci => ci.SessionId);
 
-            modelBuilder.Entity<Order>()
-                .HasIndex(o => o.OrderNumber)
-                .IsUnique();
-
-            modelBuilder.Entity<Order>()
-                .HasIndex(o => o.OrderDate);
-
-            modelBuilder.Entity<CartItem>()
-                .HasIndex(ci => ci.SessionId);
-
-            modelBuilder.Entity<ProductReview>()
-                .HasIndex(pr => pr.ProductId);
-
-            modelBuilder.Entity<ProductReview>()
-                .HasIndex(pr => pr.UserId);
+            modelBuilder.Entity<ProductReview>().HasIndex(pr => pr.ProductId);
+            modelBuilder.Entity<ProductReview>().HasIndex(pr => pr.UserId);
         }
     }
 }

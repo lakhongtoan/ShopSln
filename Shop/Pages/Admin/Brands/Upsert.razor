@@ -1,0 +1,117 @@
+@page "/admin/brands/upsert"
+@page "/admin/brands/upsert/{Id:int}"
+
+@using Shop.Models
+@using Microsoft.AspNetCore.Components.Forms
+@inject AppDbContext Db
+@inject NavigationManager Nav
+@inject IWebHostEnvironment Env
+
+<h3>@(brand.Id == 0 ? "Thêm Brand" : "Sửa Brand")</h3>
+
+<EditForm Model="brand" OnValidSubmit="SaveBrand">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Tên</label>
+        <InputText class="form-control" @bind-Value="brand.Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Slug</label>
+        <InputText class="form-control" @bind-Value="brand.Slug" />
+    </div>
+
+    <div class="form-group">
+        <label>Mô tả</label>
+        <InputTextArea class="form-control" @bind-Value="brand.Description" />
+    </div>
+
+    <div class="form-group">
+        <label>Ảnh</label><br />
+
+        @if (!string.IsNullOrEmpty(brand.Image))
+        {
+            <img src="images/brands/@brand.Image" width="120" class="mb-2" />
+            <br />
+        }
+
+        <InputFile OnChange="OnInputFileChange" />
+        <small class="form-text text-muted">
+            Chọn ảnh mới để thay đổi (nếu không chọn thì giữ nguyên ảnh cũ).
+        </small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <button type="button" class="btn btn-secondary ml-2" @onclick="BackToList">Hủy</button>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private Brand brand = new();
+    private IBrowserFile? uploadedFile;
+
+    protected override void OnInitialized()
+    {
+        if (Id != 0)
+        {
+            // Chế độ sửa
+            var existing = Db.Brands.Find(Id);
+            if (existing != null)
+            {
+                brand = existing;
+            }
+        }
+        else
+        {
+            // Chế độ thêm mới
+            brand = new Brand();
+        }
+    }
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        uploadedFile = e.File;
+    }
+
+    private async Task SaveBrand()
+    {
+        // Nếu có chọn ảnh mới thì lưu file
+        if (uploadedFile != null)
+        {
+            // Thư mục: wwwroot/images/brands
+            var uploadFolder = Path.Combine(Env.WebRootPath, "images", "brands");
+            Directory.CreateDirectory(uploadFolder);
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadedFile.Name);
+            var filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+            using (var stream = File.Create(filePath))
+            {
+                await uploadedFile.OpenReadStream(10 * 1024 * 1024).CopyToAsync(stream); // 10MB
+            }
+
+            // Lưu tên file vào DB
+            brand.Image = uniqueFileName;
+        }
+
+        if (brand.Id == 0)
+        {
+            Db.Brands.Add(brand);
+        }
+        else
+        {
+            Db.Brands.Update(brand);
+        }
+
+        Db.SaveChanges();
+        Nav.NavigateTo("/admin/brands");
+    }
+
+    private void BackToList()
+    {
+        Nav.NavigateTo("/admin/brands");
+    }
+}

@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Home";
     var featuredProducts = ViewBag.FeaturedProducts as List<Shop.Models.Product>;
+    var campingTips = ViewBag.CampingTips as List<Shop.Models.CampingTip>;
     var categories = ViewBag.Categories as List<Shop.Models.Category>;
 }
 
@@ -94,81 +95,76 @@
     </div><!-- ✅ đóng container -->
 </section>
 <!-- ================== KINH NGHIỆM CẮM TRẠI ================== -->
-        <h2 class="section-title text-center mb-5">Kinh Nghiệm Cắm Trại</h2>
-<section class="blog-section py-5">
-    <div class="container">
-        <div class="row g-4 justify-content-center">
-            <!-- Bài viết 1 -->
-            <div class="col-md-4">
-                <div class="blog-card card border-0 shadow-sm h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img src="~/images/home/tent.jpg" class="card-img-top" alt="Lều trại">
-                        <div class="blog-date bg-primary text-white text-center">
-                            <span>22</span><small>May</small>
-                        </div>
-                        <div class="blog-overlay d-flex align-items-center justify-content-center">
-                            <a href="#" class="btn btn-light btn-sm">Xem chi tiết</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title fw-semibold">Hướng dẫn bảo quản lều trại</h5>
-                        <p class="card-text text-muted">
-                            Việc chăm sóc đúng cách cho chiếc lều của bạn sẽ giúp kéo dài tuổi thọ và đồng hành trong nhiều chuyến đi...
-                        </p>
-                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">XEM THÊM</a>
-                    </div>
-                </div>
-            </div>
+<!-- ================== KINH NGHIỆM CẮM TRẠI ================== -->
+<section id="experience" class="py-5">
+    <h2 class="section-title text-center mb-5">Kinh Nghiệm Cắm Trại</h2>
 
-            <!-- Bài viết 2 -->
-            <div class="col-md-4">
-                <div class="blog-card card border-0 shadow-sm h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img src="~/images/home/pump.jpg" class="card-img-top" alt="Máy bơm du lịch">
-                        <div class="blog-date bg-primary text-white text-center">
-                            <span>31</span><small>Dec</small>
-                        </div>
-                        <div class="blog-overlay d-flex align-items-center justify-content-center">
-                            <a href="#" class="btn btn-light btn-sm">Xem chi tiết</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title fw-semibold">Khám phá máy bơm mini</h5>
-                        <p class="card-text text-muted">
-                            Bắt đầu hành trình cắm trại với trải nghiệm tiện ích nhỏ gọn, tiết kiệm năng lượng và bền bỉ...
-                        </p>
-                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">XEM THÊM</a>
-                    </div>
-                </div>
-            </div>
+    <div class="blog-section">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
 
-            <!-- Bài viết 3 -->
-            <div class="col-md-4">
-                <div class="blog-card card border-0 shadow-sm h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img src="~/images/home/sleep.jpg" class="card-img-top" alt="Giường hơi cắm trại">
-                        <div class="blog-date bg-primary text-white text-center">
-                            <span>28</span><small>Dec</small>
-                        </div>
-                        <div class="blog-overlay d-flex align-items-center justify-content-center">
-                            <a href="#" class="btn btn-light btn-sm">Xem chi tiết</a>
+                @foreach (var item in campingTips)
+                {
+                    <div class="col-md-4">
+                        <div class="blog-card card border-0 shadow-sm h-100">
+                            <div class="position-relative overflow-hidden">
+                                <img src="@item.Image" class="card-img-top" alt="@item.Title" />
+
+                                <div class="blog-date bg-primary text-white text-center">
+                                    <span>@item.CreatedAt.Day</span>
+                                    <small>@item.CreatedAt.ToString("MMM")</small>
+                                </div>
+
+                                <div class="blog-overlay d-flex align-items-center justify-content-center">
+                                    <a href="#" class="btn btn-light btn-sm">Xem chi tiết</a>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title fw-semibold">@item.Title</h5>
+                                <p class="card-text text-muted">
+                                    @{
+                                        var text = item.Content ?? "";
+                                        var preview = text.Length > 120 ? text.Substring(0, 120) + "..." : text;
+                                    }
+                                    @preview
+                                </p>
+                                <a href="#" class="btn btn-outline-primary btn-sm mt-2">XEM THÊM</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title fw-semibold">Giường hơi phát tiếng ồn – cách khắc phục</h5>
-                        <p class="card-text text-muted">
-                            Nếu bạn từng nghe âm thanh lạ khi nằm trên giường hơi, bài viết này sẽ giúp bạn hiểu rõ nguyên nhân và cách xử lý...
-                        </p>
-                        <a href="#" class="btn btn-outline-primary btn-sm mt-2">XEM THÊM</a>
-                    </div>
-                </div>
+                }
+
             </div>
         </div>
     </div>
 </section>
 <!-- ================== /KINH NGHIỆM CẮM TRẠI ================== -->
+@{
+    var brands = ViewBag.Brands as List<Shop.Models.Brand>;
+}
 
+@if (brands != null && brands.Any())
+{
+    <section id="brand" class="pt-4 pb-4">
+        <div class="container">
+            <h2 class="text-center mb-4">Thương hiệu</h2>
+            <div class="row">
 
+                @foreach (var b in brands)
+                {
+                    <div class="col-md-3 col-6 text-center mb-4">
+                        <img src="~/images/brands/@b.Image" 
+                             class="img-fluid"
+                             style="height:100px; object-fit:contain;" />
+                        <h5 class="mt-2">@b.Name</h5>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </section>
+}
 @section Scripts {
     <script>
         $(document).ready(function () {

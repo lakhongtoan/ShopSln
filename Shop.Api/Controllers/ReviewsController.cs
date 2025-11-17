@@ -148,10 +148,11 @@ public class ReviewsController : ControllerBase
 
         // Kiểm tra sản phẩm tồn tại
         var product = await _db.Products.FindAsync(input.ProductId);
-        if (product == null || !product.IsActive)
-        {
-            return NotFound(new { message = "Sản phẩm không tồn tại hoặc đã bị vô hiệu hóa" });
-        }
+        if (product == null || !(product.IsActive ?? false))
+            {
+                return NotFound(new { message = "Sản phẩm không tồn tại hoặc đã bị vô hiệu hóa" });
+            }
+
 
         input.CreatedAt = DateTime.Now;
         input.IsActive = input.IsActive; // Default true

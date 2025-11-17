@@ -1,0 +1,114 @@
+@page "/admin/campingtips/upsert/{Id:int}"
+@using Shop.Models
+@inject AppDbContext Db
+@inject NavigationManager Nav
+@inject IWebHostEnvironment Env
+
+<h3>@(IsNew ? "Thêm kinh nghiệm cắm trại" : "Chỉnh sửa kinh nghiệm cắm trại")</h3>
+
+<EditForm Model="tip" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Tiêu đề</label>
+        <InputText @bind-Value="tip.Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Nội dung</label>
+        <InputTextArea @bind-Value="tip.Content" class="form-control" rows="6" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tác giả</label>
+        <InputText @bind-Value="tip.Author" class="form-control" />
+    </div>
+
+    <!-- Upload ảnh -->
+    <div class="mb-3">
+        <label class="form-label">Ảnh minh họa</label>
+        <InputFile OnChange="UploadImage" />
+
+        @if (!string.IsNullOrEmpty(tip.Image))
+        {
+            <div class="mt-2">
+                <img src="@tip.Image" style="max-width:200px; border-radius:6px;" />
+            </div>
+        }
+    </div>
+
+    <div class="form-check mb-3">
+        <InputCheckbox @bind-Value="tip.IsPublished" class="form-check-input" />
+        <label class="form-check-label">Xuất bản</label>
+    </div>
+
+    <button type="submit" class="btn btn-success me-2">Lưu</button>
+    <button type="button" class="btn btn-secondary" @onclick="Back">Hủy</button>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private CampingTip tip = new();
+    private bool IsNew => Id == 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsNew)
+        {
+            tip = new CampingTip
+            {
+                CreatedAt = DateTime.Now,
+                IsPublished = true
+            };
+        }
+        else
+        {
+            var dbTip = await Db.CampingTips.FindAsync(Id);
+            if (dbTip != null)
+            {
+                tip = dbTip;
+            }
+            else
+            {
+                Nav.NavigateTo("/admin/campingtips");
+            }
+        }
+    }
+
+    // 📌 HÀM UPLOAD ẢNH TỪ THIẾT BỊ
+    private async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.Name);
+
+        var folder = Path.Combine(Env.WebRootPath, "images/camping");
+        if (!Directory.Exists(folder))
+            Directory.CreateDirectory(folder);
+
+        var filePath = Path.Combine(folder, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.OpenReadStream().CopyToAsync(stream);
+        }
+
+        // Lưu đường dẫn vào database
+        tip.Image = $"/images/camping/{fileName}";
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (IsNew)
+            Db.CampingTips.Add(tip);
+        else
+            Db.CampingTips.Update(tip);
+
+        await Db.SaveChangesAsync();
+        Nav.NavigateTo("/admin/campingtips");
+    }
+
+    private void Back() => Nav.NavigateTo("/admin/campingtips");
+}
