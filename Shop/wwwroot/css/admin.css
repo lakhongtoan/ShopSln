@@ -168,4 +168,24 @@ a {
     color: white;
 }
 
-/* ========== Admin Dashboard ========== */
+/* ========== Fix Layout Scroll Issue ========== */
+html, body {
+    scroll-behavior: auto;
+    overflow-x: hidden;
+}
+
+/* Ensure page starts at top position */
+body {
+    position: relative;
+}
+
+/* Fix layout shift after navigation back */
+.bg-light.min-vh-100 {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Content area should scroll independently if needed */
+.col-12.col-md-10.bg-secondary {
+    overflow-x: hidden;
+}

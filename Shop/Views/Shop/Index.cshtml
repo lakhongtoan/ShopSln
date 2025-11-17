@@ -103,7 +103,9 @@
         <div class="container">
             <div class="row g-4 justify-content-center">
 
-                @foreach (var item in campingTips)
+                @if (campingTips != null)
+                {
+                    @foreach (var item in campingTips)
                 {
                     <div class="col-md-4">
                         <div class="blog-card card border-0 shadow-sm h-100">
@@ -133,6 +135,7 @@
                             </div>
                         </div>
                     </div>
+                    }
                 }
 
             </div>

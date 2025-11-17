@@ -1,24 +1,30 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.Models;
+using Shop.Services;
 using System;
 
 namespace Shop.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IApiService _apiService;
 
         public AccountController(AppDbContext context,
                                  SignInManager<IdentityUser> signInManager,
-                                 UserManager<IdentityUser> userManager)
+                                 UserManager<IdentityUser> userManager,
+                                 IApiService apiService)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
+            _apiService = apiService;
         }
 
         [HttpGet]
@@ -63,37 +69,32 @@ namespace Shop.Controllers
             return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return Redirect("/");
         }
 
+        [Authorize]
         public async Task<IActionResult> MyOrders()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            var orders = await _context.Orders
-                .Include(o => o.OrderItems)
-                .Where(o => o.UserId == user.Id)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
+            var orders = await _apiService.GetOrdersByUserIdAsync(user.Id);
 
             return View(orders);
         }
 
+        [Authorize]
         public async Task<IActionResult> OrderDetail(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            var order = await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync(o => o.OrderId == id && o.UserId == user.Id);
-
-            if (order == null) return NotFound();
+            var order = await _apiService.GetOrderByIdAsync(id);
+            if (order == null || order.UserId != user.Id) return NotFound();
 
             return View(order);
         }

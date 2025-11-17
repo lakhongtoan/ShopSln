@@ -24,5 +24,24 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="_framework/blazor.server.js"></script>
+    <script>
+        // Scroll to top when navigating back/forward
+        window.addEventListener('popstate', function() {
+            window.scrollTo(0, 0);
+            const contentArea = document.getElementById('admin-content-area');
+            if (contentArea) {
+                contentArea.scrollTop = 0;
+            }
+        });
+        
+        // Ensure page starts at top
+        window.addEventListener('load', function() {
+            window.scrollTo(0, 0);
+            const contentArea = document.getElementById('admin-content-area');
+            if (contentArea) {
+                contentArea.scrollTop = 0;
+            }
+        });
+    </script>
 </body>
 </html>

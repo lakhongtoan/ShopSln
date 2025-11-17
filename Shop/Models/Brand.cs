@@ -8,10 +8,10 @@ namespace Shop.Models
         public int Id { get; set; }   // KHÓA CHÍNH LÀ Id
 
         [Required, StringLength(100)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required, StringLength(100)]
-        public string Slug { get; set; }
+        public string Slug { get; set; } = string.Empty;
 
         [StringLength(255)]
         public string? Description { get; set; }

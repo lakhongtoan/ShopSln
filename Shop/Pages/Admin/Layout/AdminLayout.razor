@@ -1,4 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.JSInterop
+@implements IDisposable
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 <div class="bg-light text-start min-vh-100 d-flex flex-column">
     <div>
@@ -9,7 +14,7 @@
         <div class="col-md-2 d-none d-md-block bg-secondary bg-opacity-10">
             <SidebarAdmin />
         </div>
-        <div class="col-12 col-md-10 bg-secondary bg-opacity-25 p-3">
+        <div class="col-12 col-md-10 bg-secondary bg-opacity-25 p-3" style="overflow-y: auto;" id="admin-content-area">
             @Body
         </div>
     </div>
@@ -18,3 +23,38 @@
         <FooterAdmin />
     </div>
 </div>
+
+@code {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Navigation.LocationChanged += OnLocationChanged;
+        }
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // Scroll to top when navigation occurs
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(100); // Small delay to ensure DOM is updated
+            await InvokeAsync(async () =>
+            {
+                // Scroll both window and content area to top
+                await JSRuntime.InvokeVoidAsync("eval", @"
+                    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                    const contentArea = document.getElementById('admin-content-area');
+                    if (contentArea) {
+                        contentArea.scrollTop = 0;
+                    }
+                ");
+            });
+        });
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
+}

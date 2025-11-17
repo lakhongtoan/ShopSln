@@ -28,7 +28,7 @@
     </div>
 }
 
-@if (OrderData == null)
+@if (OrderData == null || _isLoading)
 {
     <div class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
@@ -198,7 +198,11 @@ else
     {
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="text-muted">
-                Hiển thị @((_pageNumber - 1) * _pageSize + 1) - @(Math.Min(_pageNumber * _pageSize, totalOrders)) trong tổng số @totalOrders đơn hàng
+                Hiển thị @((_pageNumber - 1) * _pageSize + 1) - @(Math.Min(_pageNumber * _pageSize, TotalFilteredCount)) trong tổng số @TotalFilteredCount đơn hàng
+                @if (HasActiveFilter)
+                {
+                    <span class="text-info">(đã lọc)</span>
+                }
             </div>
             <nav>
                 <ul class="pagination mb-0">
@@ -223,7 +227,11 @@ else
     {
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="text-muted">
-                Hiển thị @totalOrders đơn hàng
+                Hiển thị @TotalFilteredCount đơn hàng
+                @if (HasActiveFilter)
+                {
+                    <span class="text-info">(đã lọc)</span>
+                }
             </div>
             <div class="text-muted">
                 Trang @_pageNumber / @_totalPages
@@ -243,11 +251,12 @@ else
     private string? errorMessage;
     
     // Thống kê
-    private int totalOrders = 0;
+    private int totalOrders = 0; // Total orders without filter
     private int pendingCount = 0;
     private int processingCount = 0;
     private int deliveredCount = 0;
     private int cancelledCount = 0;
+    private int filteredTotalCount = 0; // Total after filter
 
     // Semaphore để tránh concurrent database operations
     private readonly SemaphoreSlim _dbSemaphore = new SemaphoreSlim(1, 1);
@@ -297,6 +306,7 @@ else
             _isLoading = true;
             await LoadPage();
             await LoadStatistics();
+            StateHasChanged(); // Force UI update after loading
         }
         finally
         {
@@ -351,21 +361,51 @@ else
             _totalPages = (int)Math.Ceiling(total / (double)_pageSize);
             if (_totalPages == 0) _totalPages = 1;
 
-            OrderData = await query
-                .OrderByDescending(o => o.OrderDate)
-                .Skip((_pageNumber - 1) * _pageSize)
-                .Take(_pageSize)
-                .AsNoTracking()
-                .ToListAsync();
+            // Reset to page 1 if current page is out of range
+            if (_pageNumber > _totalPages)
+            {
+                _pageNumber = 1;
+            }
 
-            totalOrders = total;
+            filteredTotalCount = total; // Store filtered total count
+
+            if (total > 0)
+            {
+                OrderData = await query
+                    .OrderByDescending(o => o.OrderDate)
+                    .Skip((_pageNumber - 1) * _pageSize)
+                    .Take(_pageSize)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            else
+            {
+                OrderData = new List<Order>();
+            }
         }
         catch (Exception ex)
         {
             errorMessage = $"Lỗi khi tải dữ liệu: {ex.Message}";
             OrderData = new List<Order>();
+            _totalPages = 1;
+            filteredTotalCount = 0;
         }
     }
+
+    private int GetFilteredTotalCount()
+    {
+        // If no filter is applied, return total orders
+        if (string.IsNullOrEmpty(selectedStatus) && string.IsNullOrEmpty(searchTerm))
+        {
+            return totalOrders;
+        }
+        // Otherwise return filtered count
+        return filteredTotalCount;
+    }
+
+    // Computed properties for Razor markup
+    private int TotalFilteredCount => GetFilteredTotalCount();
+    private bool HasActiveFilter => !string.IsNullOrEmpty(selectedStatus) || !string.IsNullOrEmpty(searchTerm);
 
     private async Task HandleStatusChange()
     {
@@ -509,3 +549,4 @@ else
         };
     }
 }
+
