@@ -94,17 +94,35 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model.OrderItems)
+                            @if (Model.OrderItems == null || !Model.OrderItems.Any())
                             {
                                 <tr>
-                                    <td>
-                                        <img src="@(item.ProductImage ?? "/images/home/anh.jpg")" alt="" style="width: 50px; height: 50px; margin-right: 10px;">
-                                        @item.ProductName
+                                    <td colspan="4" class="text-center text-muted">
+                                        <em>Không có sản phẩm nào trong đơn hàng này.</em>
                                     </td>
-                                    <td>@item.UnitPrice.ToString("N0") ₫</td>
-                                    <td>@item.Quantity</td>
-                                    <td>@item.TotalPrice.ToString("N0") ₫</td>
                                 </tr>
+                            }
+                            else
+                            {
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.ProductImage))
+                                            {
+                                                <img src="@item.ProductImage" alt="@item.ProductName" style="width: 50px; height: 50px; margin-right: 10px; object-fit: contain;">
+                                            }
+                                            else
+                                            {
+                                                <img src="/images/home/anh.jpg" alt="@item.ProductName" style="width: 50px; height: 50px; margin-right: 10px; object-fit: contain;">
+                                            }
+                                            @item.ProductName
+                                        </td>
+                                        <td>$@item.UnitPrice.ToString("N2")</td>
+                                        <td>@item.Quantity</td>
+                                        <td>$@item.TotalPrice.ToString("N2")</td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                         <tfoot>

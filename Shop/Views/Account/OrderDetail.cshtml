@@ -44,7 +44,7 @@
                     </tr>
                     <tr>
                         <td><strong>Tổng tiền:</strong></td>
-                        <td><strong class="text-danger">$@Model.TotalAmount.ToString("N2")</strong></td>
+                        <td><strong>$@Model.TotalAmount</strong></td>
                     </tr>
                 </table>
             </div>
@@ -115,8 +115,8 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" class="text-end"><strong>Phí vận chuyển:</strong></td>
-                                <td class="text-end"><strong>$@Model.ShippingAmount.ToString("N2")</strong></td>
+                                <td colspan="3"><strong>Phí vận chuyển:</strong></td>
+                                <td><strong>$@Model.ShippingAmount</strong></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -125,13 +125,9 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-12">
-                <div class="text-end mb-3">
-                    <h4><strong>Tổng cộng: <span class="text-danger">$@Model.TotalAmount.ToString("N2")</span></strong></h4>
-                </div>
-                <div class="text-center">
-                    <a asp-controller="Account" asp-action="MyOrders" class="btn btn-primary">← Quay lại danh sách</a>
-                </div>
+            <div class="col-sm-12 text-center">
+                <p class="text-end"><strong>Tổng cộng:</strong> $@Model.TotalAmount</p>
+                <a asp-controller="Account" asp-action="MyOrders" class="btn btn-primary mt-3">← Quay lại danh sách</a>
             </div>
         </div>
     </div>

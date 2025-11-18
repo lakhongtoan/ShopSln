@@ -119,28 +119,18 @@ namespace Shop.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            // Luôn load từ DbContext để đảm bảo OrderItems được load đầy đủ
-            var orders = await _context.Orders
-                .Where(o => o.UserId == user.Id)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
-
-            // Load tất cả OrderItems cho các orders này
-            var orderIds = orders.Select(o => o.OrderId).ToList();
-            if (orderIds.Any())
+            // Thử lấy từ API trước
+            var orders = await _apiService.GetOrdersByUserIdAsync(user.Id);
+            
+            // Nếu API không khả dụng hoặc không có dữ liệu, fallback về DbContext
+            if (!orders.Any())
             {
-                var allOrderItems = await _context.OrderItems
-                    .AsNoTracking()
-                    .Where(oi => orderIds.Contains(oi.OrderId))
+                orders = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                    .Where(o => o.UserId == user.Id)
+                    .OrderByDescending(o => o.OrderDate)
                     .ToListAsync();
-
-                // Gán OrderItems cho từng order
-                foreach (var order in orders)
-                {
-                    order.OrderItems = allOrderItems
-                        .Where(oi => oi.OrderId == order.OrderId)
-                        .ToList();
-                }
             }
 
             return View(orders);
@@ -152,21 +142,34 @@ namespace Shop.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            // Luôn load từ DbContext để đảm bảo OrderItems được load đầy đủ
-            var order = await _context.Orders
-                .AsNoTracking()
-                .FirstOrDefaultAsync(o => o.OrderId == id);
+            // Thử lấy từ API trước
+            var order = await _apiService.GetOrderByIdAsync(id);
+            
+            // Nếu API không khả dụng hoặc OrderItems không có, fallback về DbContext
+            if (order == null || order.OrderItems == null || !order.OrderItems.Any())
+            {
+                order = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(o => o.OrderId == id);
+                
+                // Đảm bảo OrderItems được load
+                if (order != null && (order.OrderItems == null || !order.OrderItems.Any()))
+                {
+                    // Load OrderItems riêng nếu chưa có
+                    var orderItems = await _context.OrderItems
+                        .AsNoTracking()
+                        .Where(oi => oi.OrderId == id)
+                        .ToListAsync();
+                    
+                    if (orderItems.Any())
+                    {
+                        order.OrderItems = orderItems;
+                    }
+                }
+            }
 
             if (order == null || order.UserId != user.Id) return NotFound();
-
-            // Load OrderItems riêng để đảm bảo có dữ liệu
-            var orderItems = await _context.OrderItems
-                .AsNoTracking()
-                .Where(oi => oi.OrderId == id)
-                .ToListAsync();
-
-            // Gán OrderItems cho order
-            order.OrderItems = orderItems;
 
             return View(order);
         }

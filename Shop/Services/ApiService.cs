@@ -369,36 +369,87 @@ namespace Shop.Services
 
         public async Task<bool> UpdateCartItemAsync(int cartItemId, int quantity)
         {
-            var request = new { Quantity = quantity };
-            var json = JsonSerializer.Serialize(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync($"/api/cartitems/{cartItemId}", content);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var request = new { Quantity = quantity };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsync($"/api/cartitems/{cartItemId}", content);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng, return false để trigger fallback
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout, return false để trigger fallback
+            }
+            return false;
         }
 
         public async Task<bool> RemoveFromCartAsync(int cartItemId)
         {
-            var response = await _httpClient.DeleteAsync($"/api/cartitems/{cartItemId}");
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"/api/cartitems/{cartItemId}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng, return false để trigger fallback
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout, return false để trigger fallback
+            }
+            return false;
         }
 
         public async Task<bool> ClearCartAsync(string sessionId)
         {
-            var response = await _httpClient.DeleteAsync($"/api/cartitems/session/{Uri.EscapeDataString(sessionId)}");
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"/api/cartitems/session/{Uri.EscapeDataString(sessionId)}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng, return false để trigger fallback
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout, return false để trigger fallback
+            }
+            return false;
         }
 
         // Orders
         public async Task<Order?> CreateOrderAsync(Order order)
         {
-            var json = JsonSerializer.Serialize(order);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("/api/orders", content);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var responseJson = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<Order>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var json = JsonSerializer.Serialize(order);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("/api/orders", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseJson = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<Order>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng, return null để trigger fallback
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout, return null để trigger fallback
+            }
+            catch (Exception)
+            {
+                // Lỗi khác, return null để trigger fallback
             }
             return null;
         }

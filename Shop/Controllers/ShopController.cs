@@ -345,11 +345,33 @@ namespace Shop.Controllers
         public async Task<IActionResult> UpdateCartItem(int cartItemId, int quantity)
         {
             var success = await _apiService.UpdateCartItemAsync(cartItemId, quantity);
+            
+            // Nếu API fail, fallback về DbContext
             if (!success)
-                return Json(new { success = false, message = "Cart item not found" });
+            {
+                var cartItem = await _context.CartItems
+                    .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId);
+                
+                if (cartItem == null)
+                    return Json(new { success = false, message = "Cart item not found" });
+
+                cartItem.Quantity = quantity;
+                cartItem.TotalPrice = cartItem.UnitPrice * quantity;
+                await _context.SaveChangesAsync();
+            }
 
             var sessionId = GetSessionId();
             var cartItems = await _apiService.GetCartItemsAsync(sessionId);
+            
+            // Nếu API fail, fallback về DbContext
+            if (!cartItems.Any())
+            {
+                cartItems = await _context.CartItems
+                    .Include(ci => ci.Product)
+                    .Where(ci => ci.SessionId == sessionId)
+                    .ToListAsync();
+            }
+
             var cartCount = cartItems.Sum(ci => ci.Quantity);
             var cartTotal = cartItems.Sum(ci => ci.TotalPrice);
 
@@ -359,14 +381,21 @@ namespace Shop.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
-            var cartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId);
+            // Thử xóa qua API trước
+            var success = await _apiService.RemoveFromCartAsync(cartItemId);
+            
+            // Nếu API fail, fallback về DbContext
+            if (!success)
+            {
+                var cartItem = await _context.CartItems
+                    .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId);
 
-            if (cartItem == null)
-                return Json(new { success = false, message = "Cart item không tồn tại" });
+                if (cartItem == null)
+                    return Json(new { success = false, message = "Cart item không tồn tại" });
 
-            _context.CartItems.Remove(cartItem);
-            await _context.SaveChangesAsync();
+                _context.CartItems.Remove(cartItem);
+                await _context.SaveChangesAsync();
+            }
 
             var sessionId = GetSessionId();
             var cartCount = await _context.CartItems
@@ -382,6 +411,15 @@ namespace Shop.Controllers
         {
             var sessionId = GetSessionId();
             var cartItems = await _apiService.GetCartItemsAsync(sessionId);
+
+            // Nếu API fail, fallback về DbContext
+            if (cartItems == null || !cartItems.Any())
+            {
+                cartItems = await _context.CartItems
+                    .Include(ci => ci.Product)
+                    .Where(ci => ci.SessionId == sessionId)
+                    .ToListAsync();
+            }
 
             if (cartItems == null || !cartItems.Any())
                 return RedirectToAction("Cart");
@@ -439,8 +477,20 @@ namespace Shop.Controllers
             var sessionId = GetSessionId();
             var cartItems = await _apiService.GetCartItemsAsync(sessionId);
 
+            // Nếu API fail, fallback về DbContext
+            if (cartItems == null || !cartItems.Any())
+            {
+                cartItems = await _context.CartItems
+                    .Include(ci => ci.Product)
+                    .Where(ci => ci.SessionId == sessionId)
+                    .ToListAsync();
+            }
+
             if (!cartItems.Any())
+            {
+                ModelState.AddModelError("", "Giỏ hàng của bạn đang trống.");
                 return RedirectToAction("Cart");
+            }
 
             var order = vm.Order;
             var user = await _userManager.GetUserAsync(User);
@@ -456,7 +506,7 @@ namespace Shop.Controllers
             order.TotalAmount = order.SubTotal + order.TaxAmount + order.ShippingAmount;
 
             // Create order items
-            order.OrderItems = cartItems.Select(ci => new OrderItem
+            var orderItems = cartItems.Select(ci => new OrderItem
             {
                 ProductId = ci.ProductId,
                 ProductName = ci.ProductName,
@@ -466,27 +516,85 @@ namespace Shop.Controllers
                 TotalPrice = ci.TotalPrice
             }).ToList();
 
+            order.OrderItems = orderItems;
+
+            // Thử tạo order qua API trước
             var createdOrder = await _apiService.CreateOrderAsync(order);
+            
+            // Nếu API fail, tạo order trực tiếp trong DbContext
             if (createdOrder == null)
             {
-                ModelState.AddModelError("", "Không thể tạo đơn hàng. Vui lòng thử lại.");
-                vm.CartItems = cartItems.ToList();
-                return View(vm);
+                try
+                {
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+                    createdOrder = order;
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Không thể tạo đơn hàng: {ex.Message}");
+                    vm.CartItems = cartItems.ToList();
+                    return View(vm);
+                }
             }
 
             // Clear cart after successful order
-            await _apiService.ClearCartAsync(sessionId);
+            try
+            {
+                var clearSuccess = await _apiService.ClearCartAsync(sessionId);
+                if (!clearSuccess)
+                {
+                    // Nếu API clear cart fail, clear trực tiếp trong DbContext
+                    var cartItemsToRemove = await _context.CartItems
+                        .Where(ci => ci.SessionId == sessionId)
+                        .ToListAsync();
+                    _context.CartItems.RemoveRange(cartItemsToRemove);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                // Nếu có lỗi, vẫn clear trong DbContext
+                try
+                {
+                    var cartItemsToRemove = await _context.CartItems
+                        .Where(ci => ci.SessionId == sessionId)
+                        .ToListAsync();
+                    _context.CartItems.RemoveRange(cartItemsToRemove);
+                    await _context.SaveChangesAsync();
+                }
+                catch { }
+            }
 
             return RedirectToAction("OrderConfirmation", new { orderId = createdOrder.OrderId });
         }
 
 
 
+        [HttpGet]
         public async Task<IActionResult> OrderConfirmation(int orderId)
         {
+            // Thử lấy từ API trước
             var order = await _apiService.GetOrderByIdAsync(orderId);
-            if (order == null)
-                return NotFound();
+            
+            // Nếu API fail hoặc OrderItems không có, fallback về DbContext
+            if (order == null || order.OrderItems == null || !order.OrderItems.Any())
+            {
+                order = await _context.Orders
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
+                
+                if (order == null)
+                    return NotFound();
+
+                // Load OrderItems riêng để đảm bảo có dữ liệu
+                var orderItems = await _context.OrderItems
+                    .AsNoTracking()
+                    .Where(oi => oi.OrderId == orderId)
+                    .ToListAsync();
+
+                order.OrderItems = orderItems;
+            }
 
             return View(order);
         }
