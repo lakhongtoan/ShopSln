@@ -12,7 +12,7 @@ namespace Shop.Services
             _db = db;
         }
 
-        // 🟢 Lấy toàn bộ cart theo session hoặc user
+        // Lấy toàn bộ cart theo session hoặc user
         public async Task<List<CartItem>> GetCartItemsAsync(string sessionId, string? userId = null)
         {
             return await _db.CartItems
@@ -21,7 +21,7 @@ namespace Shop.Services
                 .ToListAsync();
         }
 
-        // 🟢 Thêm sản phẩm vào giỏ
+        // Thêm sản phẩm vào giỏ
         public async Task AddToCartAsync(long productId, int quantity, string sessionId, string? userId = null)
         {
             var product = await _db.Products.FindAsync(productId);
@@ -54,7 +54,7 @@ namespace Shop.Services
             await _db.SaveChangesAsync();
         }
 
-        // 🟢 Cập nhật số lượng
+        // Cập nhật số lượng
         public async Task<bool> UpdateCartItemAsync(int cartItemId, int quantity)
         {
             var item = await _db.CartItems.FindAsync(cartItemId);
@@ -65,7 +65,7 @@ namespace Shop.Services
             return true;
         }
 
-        // 🟢 Xóa sản phẩm khỏi giỏ
+        // Xóa sản phẩm khỏi giỏ
         public async Task<bool> RemoveFromCartAsync(int cartItemId)
         {
             var item = await _db.CartItems.FindAsync(cartItemId);
@@ -76,7 +76,7 @@ namespace Shop.Services
             return true;
         }
 
-        // 🟢 Xóa toàn bộ giỏ hàng (sau khi thanh toán)
+        // Xóa toàn bộ giỏ hàng (sau khi thanh toán)
         public async Task ClearCartAsync(string sessionId, string? userId = null)
         {
             var items = _db.CartItems.Where(c => c.SessionId == sessionId || (userId != null && c.UserId == userId));

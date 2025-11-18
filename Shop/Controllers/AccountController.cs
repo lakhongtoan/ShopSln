@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Shop.Models;
 using Shop.Services;
 using System;
@@ -38,6 +37,7 @@ namespace Shop.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
+            //Chức năng login
             var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
 
             if (result.Succeeded)
@@ -119,7 +119,29 @@ namespace Shop.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            var orders = await _apiService.GetOrdersByUserIdAsync(user.Id);
+            // Luôn load từ DbContext để đảm bảo OrderItems được load đầy đủ
+            var orders = await _context.Orders
+                .Where(o => o.UserId == user.Id)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+
+            // Load tất cả OrderItems cho các orders này
+            var orderIds = orders.Select(o => o.OrderId).ToList();
+            if (orderIds.Any())
+            {
+                var allOrderItems = await _context.OrderItems
+                    .AsNoTracking()
+                    .Where(oi => orderIds.Contains(oi.OrderId))
+                    .ToListAsync();
+
+                // Gán OrderItems cho từng order
+                foreach (var order in orders)
+                {
+                    order.OrderItems = allOrderItems
+                        .Where(oi => oi.OrderId == order.OrderId)
+                        .ToList();
+                }
+            }
 
             return View(orders);
         }
@@ -130,8 +152,21 @@ namespace Shop.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            var order = await _apiService.GetOrderByIdAsync(id);
+            // Luôn load từ DbContext để đảm bảo OrderItems được load đầy đủ
+            var order = await _context.Orders
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+
             if (order == null || order.UserId != user.Id) return NotFound();
+
+            // Load OrderItems riêng để đảm bảo có dữ liệu
+            var orderItems = await _context.OrderItems
+                .AsNoTracking()
+                .Where(oi => oi.OrderId == id)
+                .ToListAsync();
+
+            // Gán OrderItems cho order
+            order.OrderItems = orderItems;
 
             return View(order);
         }
@@ -161,6 +196,11 @@ namespace Shop.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                ViewBag.Error = "Không tìm thấy người dùng.";
+                return View();
+            }
 
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
 

@@ -73,7 +73,7 @@ namespace Shop.Models
                 if (context.Database.GetPendingMigrations().Any())
                     context.Database.Migrate();
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 2714) // Object already exists
+            catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 2714 || ex.Number == 2705) // Object already exists or Duplicate column name
             {
                 // If migration still fails, mark it as applied
                 try

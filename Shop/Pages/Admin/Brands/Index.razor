@@ -12,34 +12,54 @@
 {
     <p><em>Đang tải dữ liệu...</em></p>
 }
-else if (!brands.Any())
-{
-    <p>Chưa có dữ liệu Brand.</p>
-}
 else
 {
+    @if (!string.IsNullOrEmpty(deleteError))
+    {
+        <div class="alert alert-danger">@deleteError</div>
+    }
+    
+    @if (!brands.Any())
+    {
+        <p>Chưa có dữ liệu Brand.</p>
+    }
+    else
+    {
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Tên</th>
                 <th>Slug</th>
                 <th>Mô tả</th>
                 <th>Ảnh</th>
-                <th></th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var b in brands)
             {
                 <tr>
+                    <td>@b.Id</td>
                     <td>@b.Name</td>
                     <td>@b.Slug</td>
-                    <td>@b.Description</td>
+                    <td>@(string.IsNullOrEmpty(b.Description) ? "-" : (b.Description.Length > 50 ? b.Description.Substring(0, 50) + "..." : b.Description))</td>
                     <td>
                         @if (!string.IsNullOrEmpty(b.Image))
                         {
-                            <img src="images/brands/@b.Image" width="60" alt="@b.Name" />
+                            <img src="/images/brands/@b.Image" width="60" height="60" alt="@b.Name" style="object-fit: contain;" />
                         }
+                        else
+                        {
+                            <span class="text-muted">Chưa có ảnh</span>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-sm @(b.IsActive ? "btn-success" : "btn-secondary")"
+                                @onclick="async () => await ToggleBrandStatus(b)">
+                            @(b.IsActive ? "Kích hoạt" : "Ẩn")
+                        </button>
                     </td>
                     <td>
                         <button class="btn btn-warning btn-sm" @onclick="(() => EditBrand(b.Id))">Sửa</button>
@@ -49,12 +69,19 @@ else
             }
         </tbody>
     </table>
+    }
 }
 
 @code {
     private List<Brand>? brands;
+    private string? deleteError;
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
     {
         brands = await Db.Brands
             .AsNoTracking()
@@ -72,20 +99,40 @@ else
         Nav.NavigateTo($"/admin/brands/upsert/{id}");
     }
 
+    private async Task ToggleBrandStatus(Brand brand)
+    {
+        var existing = await Db.Brands.FindAsync(brand.Id);
+        if (existing != null)
+        {
+            existing.IsActive = !existing.IsActive;
+            Db.Brands.Update(existing);
+            await Db.SaveChangesAsync();
+            await LoadData();
+            StateHasChanged();
+        }
+    }
+
     private async Task DeleteBrand(int id)
     {
         var brand = await Db.Brands.FindAsync(id);
-        if (brand != null)
+        if (brand == null)
         {
-            Db.Brands.Remove(brand);
-            await Db.SaveChangesAsync();
+            deleteError = "Không tìm thấy thương hiệu!";
+            return;
         }
 
-        // Load lại danh sách
-        brands = await Db.Brands
-            .AsNoTracking()
-            .OrderBy(b => b.Name)
-            .ToListAsync();
+        // Kiểm tra xem còn Product nào dùng Brand này không
+        bool hasProducts = await Db.Products.AnyAsync(p => p.BrandId == brand.Id);
+        if (hasProducts)
+        {
+            deleteError = $"Thương hiệu '{brand.Name}' vẫn còn sản phẩm đang sử dụng, không thể xóa!";
+            return;
+        }
+
+        Db.Brands.Remove(brand);
+        await Db.SaveChangesAsync();
+        deleteError = null;
+        await LoadData();
         StateHasChanged();
     }
 }

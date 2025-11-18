@@ -3,11 +3,13 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Authorization
 @using Shop.Models
 @using Microsoft.EntityFrameworkCore
 
 @inject AppDbContext Db
 @inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthStateProvider
 
 <h4>@(IsEdit ? "Chỉnh sửa danh mục" : "Thêm danh mục mới")</h4>
 
@@ -50,12 +52,30 @@ else
     {
         if (IsEdit)
         {
-            Category = await Db.Categories
+            // Dùng AsNoTracking để tránh tracking issues
+            var existing = await Db.Categories
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CategoryId == id);
 
-            // Không tìm thấy -> tạo mới
-            if (Category == null)
-                Category = new Category();
+            if (existing != null)
+            {
+                // Tạo bản copy mới
+                Category = new Category
+                {
+                    CategoryId = existing.CategoryId,
+                    Name = existing.Name,
+                    IsActive = existing.IsActive,
+                    CreatedAt = existing.CreatedAt,
+                    CreatedBy = existing.CreatedBy,
+                    UpdatedAt = existing.UpdatedAt,
+                    UpdatedBy = existing.UpdatedBy
+                };
+            }
+            else
+            {
+                // Không tìm thấy -> quay lại danh sách
+                Nav.NavigateTo("/admin/categories");
+            }
         }
         else
         {
@@ -71,13 +91,34 @@ else
     {
         if (Category == null) return;
 
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userName = user.Identity?.Name ?? "Anonymous";
+
         if (IsEdit)
         {
-            Db.Categories.Update(Category);
+            // Load lại entity từ DB và cập nhật từng field
+            var existing = await Db.Categories.FindAsync(Category.CategoryId);
+            if (existing != null)
+            {
+                existing.Name = Category.Name;
+                existing.IsActive = Category.IsActive;
+                existing.UpdatedAt = DateTime.Now;
+                existing.UpdatedBy = userName;
+                Db.Categories.Update(existing);
+            }
+            else
+            {
+                Nav.NavigateTo("/admin/categories");
+                return;
+            }
         }
         else
         {
             Category.CreatedAt = DateTime.Now;
+            Category.CreatedBy = userName;
+            Category.UpdatedAt = DateTime.Now;
+            Category.UpdatedBy = userName;
             Db.Categories.Add(Category);
         }
 

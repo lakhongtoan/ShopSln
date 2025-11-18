@@ -19,6 +19,8 @@ namespace Shop.Api.Models
         public string? Author { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        
+        public DateTime? UpdatedAt { get; set; }
 
         public bool IsPublished { get; set; } = true;
     }

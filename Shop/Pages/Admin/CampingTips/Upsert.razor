@@ -1,5 +1,7 @@
 @page "/admin/campingtips/upsert/{Id:int}"
 @using Shop.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
 @inject AppDbContext Db
 @inject NavigationManager Nav
 @inject IWebHostEnvironment Env
@@ -29,6 +31,9 @@
     <div class="mb-3">
         <label class="form-label">Ảnh minh họa</label>
         <InputFile OnChange="UploadImage" />
+        <small class="form-text text-muted">
+            Chọn ảnh mới để thay đổi (nếu không chọn thì giữ nguyên ảnh cũ).
+        </small>
 
         @if (!string.IsNullOrEmpty(tip.Image))
         {
@@ -65,10 +70,22 @@
         }
         else
         {
-            var dbTip = await Db.CampingTips.FindAsync(Id);
+            // Dùng AsNoTracking để tránh tracking issues
+            var dbTip = await Db.CampingTips.AsNoTracking().FirstOrDefaultAsync(t => t.Id == Id);
             if (dbTip != null)
             {
-                tip = dbTip;
+                // Tạo bản copy mới
+                tip = new CampingTip
+                {
+                    Id = dbTip.Id,
+                    Title = dbTip.Title,
+                    Content = dbTip.Content,
+                    Author = dbTip.Author,
+                    Image = dbTip.Image,
+                    CreatedAt = dbTip.CreatedAt,
+                    UpdatedAt = dbTip.UpdatedAt,
+                    IsPublished = dbTip.IsPublished
+                };
             }
             else
             {
@@ -77,34 +94,99 @@
         }
     }
 
+    private IBrowserFile? uploadedFile;
+
     // 📌 HÀM UPLOAD ẢNH TỪ THIẾT BỊ
-    private async Task UploadImage(InputFileChangeEventArgs e)
+    private void UploadImage(InputFileChangeEventArgs e)
     {
-        var file = e.File;
-
-        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.Name);
-
-        var folder = Path.Combine(Env.WebRootPath, "images/camping");
-        if (!Directory.Exists(folder))
-            Directory.CreateDirectory(folder);
-
-        var filePath = Path.Combine(folder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.OpenReadStream().CopyToAsync(stream);
-        }
-
-        // Lưu đường dẫn vào database
-        tip.Image = $"/images/camping/{fileName}";
+        uploadedFile = e.File;
     }
 
     private async Task HandleValidSubmit()
     {
+        // Validation
+        if (string.IsNullOrWhiteSpace(tip.Title))
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(tip.Content))
+        {
+            return;
+        }
+
+        string? newImagePath = null;
+
+        // Upload ảnh nếu có
+        if (uploadedFile != null)
+        {
+            // Validate file size (10MB)
+            const long maxFileSize = 10_000_000;
+            if (uploadedFile.Size > maxFileSize)
+            {
+                return;
+            }
+
+            // Validate file extension
+            var ext = Path.GetExtension(uploadedFile.Name).ToLower();
+            var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            if (!allowed.Contains(ext))
+            {
+                return;
+            }
+
+            var fileName = Guid.NewGuid().ToString() + ext;
+
+            var folder = Path.Combine(Env.WebRootPath, "images/camping");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var filePath = Path.Combine(folder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await uploadedFile.OpenReadStream(maxFileSize).CopyToAsync(stream);
+            }
+
+            // Lưu đường dẫn mới
+            newImagePath = $"/images/camping/{fileName}";
+        }
+
         if (IsNew)
+        {
+            tip.CreatedAt = DateTime.Now;
+            if (newImagePath != null)
+            {
+                tip.Image = newImagePath;
+            }
             Db.CampingTips.Add(tip);
+        }
         else
-            Db.CampingTips.Update(tip);
+        {
+            // Load lại entity từ DB và cập nhật từng field
+            var existing = await Db.CampingTips.FindAsync(tip.Id);
+            if (existing != null)
+            {
+                existing.Title = tip.Title;
+                existing.Content = tip.Content;
+                existing.Author = tip.Author;
+                existing.IsPublished = tip.IsPublished;
+                existing.UpdatedAt = DateTime.Now;
+                
+                // Chỉ cập nhật ảnh nếu có ảnh mới
+                if (newImagePath != null)
+                {
+                    existing.Image = newImagePath;
+                }
+                
+                Db.CampingTips.Update(existing);
+            }
+            else
+            {
+                Nav.NavigateTo("/admin/campingtips");
+                return;
+            }
+        }
 
         await Db.SaveChangesAsync();
         Nav.NavigateTo("/admin/campingtips");

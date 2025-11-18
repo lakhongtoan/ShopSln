@@ -3,11 +3,17 @@
 
 @using Shop.Models
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
 @inject AppDbContext Db
 @inject NavigationManager Nav
 @inject IWebHostEnvironment Env
 
 <h3>@(brand.Id == 0 ? "Thêm Brand" : "Sửa Brand")</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
 
 <EditForm Model="brand" OnValidSubmit="SaveBrand">
     <DataAnnotationsValidator />
@@ -28,12 +34,17 @@
         <InputTextArea class="form-control" @bind-Value="brand.Description" />
     </div>
 
+    <div class="form-check mb-3">
+        <InputCheckbox class="form-check-input" @bind-Value="brand.IsActive" />
+        <label class="form-check-label">Kích hoạt</label>
+    </div>
+
     <div class="form-group">
         <label>Ảnh</label><br />
 
         @if (!string.IsNullOrEmpty(brand.Image))
         {
-            <img src="images/brands/@brand.Image" width="120" class="mb-2" />
+            <img src="/images/brands/@brand.Image" width="120" height="120" class="mb-2" style="object-fit: contain; border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />
             <br />
         }
 
@@ -43,8 +54,18 @@
         </small>
     </div>
 
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <button type="button" class="btn btn-secondary ml-2" @onclick="BackToList">Hủy</button>
+    <button type="submit" class="btn btn-primary" disabled="@isSaving">
+        @if (isSaving)
+        {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            <text>Đang lưu...</text>
+        }
+        else
+        {
+            <text>Lưu</text>
+        }
+    </button>
+    <button type="button" class="btn btn-secondary ml-2" @onclick="BackToList" disabled="@isSaving">Hủy</button>
 </EditForm>
 
 @code {
@@ -52,16 +73,26 @@
 
     private Brand brand = new();
     private IBrowserFile? uploadedFile;
+    private string? errorMessage;
+    private bool isSaving = false;
 
     protected override async Task OnInitializedAsync()
     {
         if (Id != 0)
         {
-            // Chế độ sửa
-            var existing = await Db.Brands.FindAsync(Id);
+            // Chế độ sửa - tạo bản copy để tránh tracking issues
+            var existing = await Db.Brands.AsNoTracking().FirstOrDefaultAsync(b => b.Id == Id);
             if (existing != null)
             {
-                brand = existing;
+                brand = new Brand
+                {
+                    Id = existing.Id,
+                    Name = existing.Name,
+                    Slug = existing.Slug,
+                    Description = existing.Description,
+                    Image = existing.Image,
+                    IsActive = existing.IsActive
+                };
             }
             else
             {
@@ -72,7 +103,10 @@
         else
         {
             // Chế độ thêm mới
-            brand = new Brand();
+            brand = new Brand
+            {
+                IsActive = true
+            };
         }
     }
 
@@ -83,36 +117,119 @@
 
     private async Task SaveBrand()
     {
-        // Nếu có chọn ảnh mới thì lưu file
-        if (uploadedFile != null)
+        if (isSaving) return; // Tránh double submit
+
+        isSaving = true;
+        errorMessage = null;
+
+        try
         {
-            // Thư mục: wwwroot/images/brands
-            var uploadFolder = Path.Combine(Env.WebRootPath, "images", "brands");
-            Directory.CreateDirectory(uploadFolder);
-
-            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadedFile.Name);
-            var filePath = Path.Combine(uploadFolder, uniqueFileName);
-
-            using (var stream = File.Create(filePath))
+            // Validation
+            if (string.IsNullOrWhiteSpace(brand.Name))
             {
-                await uploadedFile.OpenReadStream(10 * 1024 * 1024).CopyToAsync(stream); // 10MB
+                errorMessage = "Vui lòng nhập tên thương hiệu!";
+                isSaving = false;
+                StateHasChanged();
+                return;
             }
 
-            // Lưu tên file vào DB
-            brand.Image = uniqueFileName;
-        }
+            if (string.IsNullOrWhiteSpace(brand.Slug))
+            {
+                errorMessage = "Vui lòng nhập slug!";
+                isSaving = false;
+                StateHasChanged();
+                return;
+            }
 
-        if (brand.Id == 0)
-        {
-            Db.Brands.Add(brand);
-        }
-        else
-        {
-            Db.Brands.Update(brand);
-        }
+            string? newImageFileName = null;
 
-        await Db.SaveChangesAsync();
-        Nav.NavigateTo("/admin/brands");
+            // Nếu có chọn ảnh mới thì lưu file
+            if (uploadedFile != null)
+            {
+                // Validate file size
+                const long maxFileSize = 10 * 1024 * 1024; // 10MB
+                if (uploadedFile.Size > maxFileSize)
+                {
+                    errorMessage = "Kích thước file không được vượt quá 10MB!";
+                    isSaving = false;
+                    StateHasChanged();
+                    return;
+                }
+
+                // Validate file extension
+                var ext = Path.GetExtension(uploadedFile.Name).ToLower();
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                if (!allowedExtensions.Contains(ext))
+                {
+                    errorMessage = "Chỉ chấp nhận file ảnh (JPG, PNG, GIF, WEBP)!";
+                    isSaving = false;
+                    StateHasChanged();
+                    return;
+                }
+
+                // Thư mục: wwwroot/images/brands
+                var uploadFolder = Path.Combine(Env.WebRootPath, "images", "brands");
+                Directory.CreateDirectory(uploadFolder);
+
+                var uniqueFileName = Guid.NewGuid().ToString() + ext;
+                var filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                using (var stream = File.Create(filePath))
+                {
+                    await uploadedFile.OpenReadStream(maxFileSize).CopyToAsync(stream);
+                }
+
+                // Lưu tên file mới
+                newImageFileName = uniqueFileName;
+            }
+
+            if (brand.Id == 0)
+            {
+                // Thêm mới
+                if (newImageFileName != null)
+                {
+                    brand.Image = newImageFileName;
+                }
+                Db.Brands.Add(brand);
+            }
+            else
+            {
+                // Cập nhật - lấy entity từ DB và cập nhật từng field
+                var existing = await Db.Brands.FindAsync(brand.Id);
+                if (existing != null)
+                {
+                    existing.Name = brand.Name;
+                    existing.Slug = brand.Slug;
+                    existing.Description = brand.Description;
+                    existing.IsActive = brand.IsActive;
+                    
+                    // Chỉ cập nhật ảnh nếu có ảnh mới được upload
+                    if (newImageFileName != null)
+                    {
+                        existing.Image = newImageFileName;
+                    }
+                    // Nếu không có ảnh mới, giữ nguyên ảnh cũ (không cập nhật)
+                    
+                    Db.Brands.Update(existing);
+                }
+                else
+                {
+                    errorMessage = "Không tìm thấy thương hiệu để cập nhật!";
+                    isSaving = false;
+                    StateHasChanged();
+                    return;
+                }
+            }
+
+            await Db.SaveChangesAsync();
+            Nav.NavigateTo("/admin/brands");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi lưu: {ex.Message}";
+            isSaving = false;
+            StateHasChanged();
+        }
     }
 
     private void BackToList()

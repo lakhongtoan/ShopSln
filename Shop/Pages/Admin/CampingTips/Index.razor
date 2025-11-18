@@ -1,10 +1,17 @@
 @page "/admin/campingtips"
 @using Shop.Models
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.JSInterop
 @inject AppDbContext Db
 @inject NavigationManager Nav
+@inject IJSRuntime JsRuntime
 
 <h3>Kinh nghiệm cắm trại</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
 
 <button class="btn btn-primary mb-3" @onclick="Create">
     + Thêm bài viết
@@ -35,9 +42,13 @@ else
             {
                 <tr>
                     <td>@t.Title</td>
-                    <td>@t.Author</td>
-                    <td>@t.CreatedAt.ToString("dd/MM/yyyy")</td>
-                    <td>@(t.IsPublished ? "Có" : "Không")</td>
+                    <td>@(string.IsNullOrEmpty(t.Author) ? "-" : t.Author)</td>
+                    <td>@t.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <span class="badge @(t.IsPublished ? "bg-success" : "bg-secondary")">
+                            @(t.IsPublished ? "Có" : "Không")
+                        </span>
+                    </td>
                     <td>
                         <button class="btn btn-sm btn-warning me-2"
                                 @onclick="() => Edit(t.Id)">
@@ -57,13 +68,26 @@ else
 
 @code {
     private List<CampingTip>? tips;
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        tips = await Db.CampingTips
-            .AsNoTracking()
-            .OrderByDescending(x => x.CreatedAt)
-            .ToListAsync();
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        try
+        {
+            tips = await Db.CampingTips
+                .AsNoTracking()
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi tải dữ liệu: {ex.Message}";
+        }
     }
 
     void Create() => Nav.NavigateTo("/admin/campingtips/upsert/0");
@@ -73,12 +97,26 @@ else
     private async Task Delete(int id)
     {
         var entity = await Db.CampingTips.FindAsync(id);
-        if (entity is null) return;
+        if (entity is null)
+        {
+            errorMessage = "Không tìm thấy bài viết!";
+            return;
+        }
 
-        Db.CampingTips.Remove(entity);
-        await Db.SaveChangesAsync();
+        var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa bài viết '{entity.Title}'?");
+        if (!confirmed) return;
 
-        tips!.Remove(entity);
-        StateHasChanged();
+        try
+        {
+            Db.CampingTips.Remove(entity);
+            await Db.SaveChangesAsync();
+            errorMessage = null;
+            await LoadData();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi khi xóa: {ex.Message}";
+        }
     }
 }

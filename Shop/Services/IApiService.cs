@@ -14,6 +14,14 @@ namespace Shop.Services
         Task<IEnumerable<Category>> GetCategoriesAsync(bool? isActive = null);
         Task<Category?> GetCategoryByIdAsync(int id);
 
+        // Brands
+        Task<IEnumerable<Brand>> GetBrandsAsync(bool? isActive = null);
+        Task<Brand?> GetBrandByIdAsync(int id, bool includeProducts = false);
+        Task<Brand?> CreateBrandAsync(Brand brand);
+        Task<bool> UpdateBrandAsync(int id, Brand brand);
+        Task<bool> DeleteBrandAsync(int id);
+        Task<bool> ToggleBrandActiveAsync(int id);
+
         // Cart Items
         Task<IEnumerable<CartItem>> GetCartItemsAsync(string sessionId);
         Task<CartItem?> AddToCartAsync(string sessionId, long productId, int quantity = 1, string? userId = null);

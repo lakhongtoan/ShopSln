@@ -62,6 +62,7 @@ namespace Shop.Api.Controllers
             tip.Author = model.Author;
             tip.IsPublished = model.IsPublished;
             tip.Image = model.Image;
+            tip.UpdatedAt = DateTime.Now;
 
             await _db.SaveChangesAsync();
             return Ok(tip);

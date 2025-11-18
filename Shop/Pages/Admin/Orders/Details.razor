@@ -111,20 +111,35 @@ else
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in orderItems)
+                            @if (orderItems == null || !orderItems.Any())
                             {
                                 <tr>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(item.ProductImage))
-                                        {
-                                            <img src="@item.ProductImage" alt="@item.ProductName" style="max-width:80px; max-height:80px;" />
-                                        }
+                                    <td colspan="5" class="text-center text-muted">
+                                        <em>Không có sản phẩm nào trong đơn hàng này.</em>
                                     </td>
-                                    <td>@item.ProductName</td>
-                                    <td>@string.Format("{0:N0} ₫", item.UnitPrice)</td>
-                                    <td>@item.Quantity</td>
-                                    <td>@string.Format("{0:N0} ₫", item.TotalPrice)</td>
                                 </tr>
+                            }
+                            else
+                            {
+                                @foreach (var item in orderItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.ProductImage))
+                                            {
+                                                <img src="@item.ProductImage" alt="@item.ProductName" style="max-width:80px; max-height:80px; object-fit: contain;" />
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Không có ảnh</span>
+                                            }
+                                        </td>
+                                        <td>@item.ProductName</td>
+                                        <td>@string.Format("{0:N0} ₫", item.UnitPrice)</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@string.Format("{0:N0} ₫", item.TotalPrice)</td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
@@ -239,7 +254,7 @@ else
     {
         try
         {
-            // Load với AsNoTracking để tránh tracking conflict
+            // Load Order với OrderItems - đảm bảo Include được gọi trước AsNoTracking
             var loadedOrder = await Db.Orders
                 .Include(o => o.OrderItems)
                 .AsNoTracking()
@@ -265,11 +280,21 @@ else
                     BillingAddress = loadedOrder.BillingAddress,
                     ShippedDate = loadedOrder.ShippedDate,
                     DeliveredDate = loadedOrder.DeliveredDate,
-                    Notes = loadedOrder.Notes
+                    Notes = loadedOrder.Notes,
+                    UserId = loadedOrder.UserId
                 };
                 
-                // Copy OrderItems
-                orderItems = loadedOrder.OrderItems?.ToList() ?? new List<OrderItem>();
+                // Load OrderItems riêng để đảm bảo có dữ liệu
+                orderItems = await Db.OrderItems
+                    .AsNoTracking()
+                    .Where(oi => oi.OrderId == id)
+                    .ToListAsync();
+                
+                // Nếu không có OrderItems từ query riêng, thử lấy từ loadedOrder
+                if (!orderItems.Any() && loadedOrder.OrderItems != null && loadedOrder.OrderItems.Any())
+                {
+                    orderItems = loadedOrder.OrderItems.ToList();
+                }
                 
                 // Cập nhật form fields
                 selectedStatus = order.Status;

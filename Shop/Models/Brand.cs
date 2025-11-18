@@ -5,8 +5,7 @@ namespace Shop.Models
     public class Brand
     {
         [Key]
-        public int Id { get; set; }   // KHÓA CHÍNH LÀ Id
-
+        public int Id { get; set; }   
         [Required, StringLength(100)]
         public string Name { get; set; } = string.Empty;
 

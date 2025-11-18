@@ -157,13 +157,157 @@ namespace Shop.Services
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"/api/categories/{id}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<Category>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var response = await _httpClient.GetAsync($"/api/categories/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<Category>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout
             }
             return null;
+        }
+
+        // Brands
+        public async Task<IEnumerable<Brand>> GetBrandsAsync(bool? isActive = null)
+        {
+            try
+            {
+                var url = "/api/brands";
+                if (isActive.HasValue) url += $"?isActive={isActive.Value}";
+
+                var response = await _httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<IEnumerable<Brand>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? Enumerable.Empty<Brand>();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng, trả về empty để fallback về DbContext
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout - fallback nhanh về database
+            }
+            return Enumerable.Empty<Brand>();
+        }
+
+        public async Task<Brand?> GetBrandByIdAsync(int id, bool includeProducts = false)
+        {
+            try
+            {
+                var url = $"/api/brands/{id}";
+                if (includeProducts) url += "?includeProducts=true";
+
+                var response = await _httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<Brand>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout
+            }
+            return null;
+        }
+
+        public async Task<Brand?> CreateBrandAsync(Brand brand)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(brand);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("/api/brands", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseJson = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<Brand>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout
+            }
+            return null;
+        }
+
+        public async Task<bool> UpdateBrandAsync(int id, Brand brand)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(brand);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsync($"/api/brands/{id}", content);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteBrandAsync(int id)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"/api/brands/{id}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout
+            }
+            return false;
+        }
+
+        public async Task<bool> ToggleBrandActiveAsync(int id)
+        {
+            try
+            {
+                var response = await _httpClient.PatchAsync($"/api/brands/{id}/toggle-active", null);
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout
+            }
+            return false;
         }
 
         // Cart Items
@@ -261,23 +405,45 @@ namespace Shop.Services
 
         public async Task<Order?> GetOrderByIdAsync(int orderId)
         {
-            var response = await _httpClient.GetAsync($"/api/orders/{orderId}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<Order>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var response = await _httpClient.GetAsync($"/api/orders/{orderId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<Order>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng, return null để trigger fallback
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout, return null để trigger fallback
             }
             return null;
         }
 
         public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId, int page = 1, int pageSize = 20)
         {
-            var response = await _httpClient.GetAsync($"/api/orders/user/{Uri.EscapeDataString(userId)}?page={page}&pageSize={pageSize}");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<ApiResponse<Order>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return result?.Data ?? Enumerable.Empty<Order>();
+                var response = await _httpClient.GetAsync($"/api/orders/user/{Uri.EscapeDataString(userId)}?page={page}&pageSize={pageSize}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<ApiResponse<Order>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result?.Data ?? Enumerable.Empty<Order>();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // API không khả dụng, return empty để trigger fallback
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout, return empty để trigger fallback
             }
             return Enumerable.Empty<Order>();
         }

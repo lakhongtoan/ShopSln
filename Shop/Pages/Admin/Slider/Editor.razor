@@ -2,6 +2,7 @@
 @page "/admin/sliders/edit/{Id:int}"
 
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.EntityFrameworkCore
 @using Shop.Models
 
@@ -55,7 +56,24 @@
     protected override async Task OnInitializedAsync()
     {
         if (IsEdit)
-            Slider = await Db.Sliders.FirstOrDefaultAsync(s => s.SliderID == Id) ?? new Slider();
+        {
+            // Dùng AsNoTracking để tránh tracking issues
+            var existing = await Db.Sliders.AsNoTracking().FirstOrDefaultAsync(s => s.SliderID == Id);
+            if (existing != null)
+            {
+                // Tạo bản copy mới
+                Slider = new Slider
+                {
+                    SliderID = existing.SliderID,
+                    Title = existing.Title,
+                    Image = existing.Image,
+                    CreatedAt = existing.CreatedAt,
+                    CreatedBy = existing.CreatedBy,
+                    UpdatedAt = existing.UpdatedAt,
+                    UpdatedBy = existing.UpdatedBy
+                };
+            }
+        }
     }
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
@@ -65,8 +83,24 @@
 
     private async Task SaveSlider()
     {
+        // Validation
+        if (string.IsNullOrWhiteSpace(Slider.Title))
+        {
+            UploadError = "Vui lòng nhập tiêu đề!";
+            return;
+        }
+
+        // Nếu là tạo mới hoặc chưa có ảnh, bắt buộc phải upload
+        if (string.IsNullOrEmpty(Slider.Image) && SelectedFile == null)
+        {
+            UploadError = "Vui lòng chọn ảnh slider!";
+            return;
+        }
+
         var user = (await Auth.GetAuthenticationStateAsync()).User;
         string userName = user.Identity?.Name ?? "Anonymous";
+
+        string? newImagePath = null;
 
         // ✅ Upload ảnh nếu có
         if (SelectedFile != null)
@@ -96,7 +130,7 @@
                 await using var fs = new FileStream(filePath, FileMode.Create);
                 await SelectedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
 
-                Slider.Image = $"/images/home/{fileName}";
+                newImagePath = $"/images/home/{fileName}";
                 UploadError = null;
             }
             catch (Exception ex)
@@ -108,12 +142,34 @@
 
         if (IsEdit)
         {
-            Slider.UpdatedAt = DateTime.Now;
-            Slider.UpdatedBy = userName;
-            Db.Sliders.Update(Slider);
+            // Load lại entity từ DB và cập nhật từng field
+            var existing = await Db.Sliders.FindAsync(Slider.SliderID);
+            if (existing != null)
+            {
+                existing.Title = Slider.Title;
+                existing.UpdatedAt = DateTime.Now;
+                existing.UpdatedBy = userName;
+                
+                // Chỉ cập nhật ảnh nếu có ảnh mới
+                if (newImagePath != null)
+                {
+                    existing.Image = newImagePath;
+                }
+                
+                Db.Sliders.Update(existing);
+            }
+            else
+            {
+                Nav.NavigateTo("/admin/sliders");
+                return;
+            }
         }
         else
         {
+            if (newImagePath != null)
+            {
+                Slider.Image = newImagePath;
+            }
             Slider.CreatedAt = DateTime.Now;
             Slider.CreatedBy = userName;
             await Db.Sliders.AddAsync(Slider);
